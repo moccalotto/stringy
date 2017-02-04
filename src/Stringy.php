@@ -45,7 +45,7 @@ class Stringy implements ArrayAccess
     /**
      * Constructor.
      */
-    public function __construct(string $string, $encoding = null)
+    public function __construct(string $string = '', $encoding = null)
     {
         $this->string = $string;
         $this->encoding = $encoding ?? mb_internal_encoding();
