@@ -1,0 +1,31 @@
+{
+    "name": "moccalotto/stringy",
+    "type": "library",
+    "description": "Easy, powerful and fluent string handling",
+    "keywords": ["moccalotto", "string", "chain", "fluent"],
+    "homepage": "https://moccalotto.github.io/docs/stringy",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Kim Ravn Hansen",
+            "email": "moccalotto@gmail.com",
+            "homepage": "https://moccalotto.github.io"
+        }
+    ],
+    "require": {
+        "php": ">=7.0.0"
+    },
+    "require-dev": {
+        "friendsofphp/php-cs-fixer": "^1.11",
+        "phpspec/phpspec": "^3.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Moccalotto\\Stringy\\": "src/"
+        },
+        "files": ["src/helpers.php"]
+    },
+    "scripts": {
+        "test": "phpspec run --format=pretty"
+    }
+}
