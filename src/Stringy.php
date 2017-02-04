@@ -447,6 +447,11 @@ class Stringy implements ArrayAccess
         });
     }
 
+    public function limit(int $length)
+    {
+        return $this->substring(0, $length);
+    }
+
     public function withEncoding(string $encoding)
     {
         $converted = mb_convert_encoding(
