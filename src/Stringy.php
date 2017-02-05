@@ -310,42 +310,14 @@ class Stringy implements ArrayAccess
             ->rightPadded($totalLengthOfResult, $padding);
     }
 
-    /**
-     * Alter the inner string.
-     *
-     * @param callable $callable A function with the signature:
-     *                           function(string $string, [Stringy $original]) : string
-     *
-     * @return Stringy a clone of $this with the result of $callable as its contents
-     */
-    public function transform(callable $callable)
-    {
-        return static::create($callable($this));
-    }
-
-    /**
-     * Transform this string along with another string, but asure that
-     * the other string has the same encoding as this string.
-     *
-     * @param Stringy|string $other
-     * @param callable       $callable A function with the signature:
-     *                                 function(string $string, string $other, [Stringy $original]) : string
-     *
-     * @return Stringy a clone of $this with the result of $callable as its contents
-     */
-    public function transformWithOther($other, callable $callable)
-    {
-        return static::create($callable($this, static::create($other)));
-    }
-
     public function upper()
     {
-        return static::create(mb_strtoupper($this->string, 'UTF-8'), 'UTF-8');
+        return $this->clone(mb_strtoupper($this->string, 'UTF-8'));
     }
 
     public function lower()
     {
-        return static::create(mb_strtolower($this->string, 'UTF-8'), 'UTF-8');
+        return $this->clone(mb_strtoupper($this->string, 'UTF-8'));
     }
 
     /**
