@@ -114,4 +114,12 @@ class StringySpec extends ObjectBehavior
         $this->rightTrimAll(['/', 'regex', ' '])->string()->shouldBe('/some');
         $this->rightTrimAll(['/', 'regex', ' ', 'foo', 'bar', 'baz'])->string()->shouldBe('/some');
     }
+
+    public function it_can_repeat_a_string()
+    {
+        $this->beConstructedWith('foo');
+
+        $this->repeat(3)->string()->shouldBe('foofoofoo');
+        $this->repeat(0)->string()->shouldBe('');
+    }
 }
