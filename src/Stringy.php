@@ -14,11 +14,6 @@ class Stringy implements ArrayAccess
     protected $string;
 
     /**
-     * @var string
-     */
-    protected $encoding;
-
-    /**
      * Factory.
      *
      * @param Stringy|string $string   The string to be Stringyfied.
@@ -30,62 +25,83 @@ class Stringy implements ArrayAccess
      */
     public static function create($string = '', string $encoding = null)
     {
-        if ($string instanceof static) {
-            return $string->withEncoding($encoding ?? $string->encoding);
-        }
-
-        // support for descendants.
         if ($string instanceof self) {
-            return new static($string->string, $string->encoding);
+            return new static($string->string, 'UTF-8');
         }
 
         return new static($string, $encoding);
     }
 
+    public static function createMany(array $strings, $encoding = null)
+    {
+        return array_map(function ($string) use ($encoding) {
+            return static::create($string, $encoding);
+        }, $strings);
+    }
+
+    public static function mapMany(array $strings, callable $callable) : array
+    {
+        return array_map($callable, static::createMany($strings));
+    }
+
+    protected static function utf8Many(array $strings)
+    {
+        return static::mapMany($strings, function ($string) {
+            return $string->string;
+        });
+    }
+
+    protected static function utf8(string $string, string $encoding)
+    {
+        if (!in_array($encoding, mb_list_encodings())) {
+            throw new EncodingException('Encoding not supported', $string, $encoding);
+        }
+
+        $string = mb_convert_encoding($string, 'UTF-8', $encoding);
+
+        if (!mb_check_encoding($string, $encoding)) {
+            throw new EncodingException('Invalid string', $string, $encoding);
+        }
+
+        return $string;
+    }
+
     /**
      * Constructor.
      */
-    public function __construct(string $string = '', $encoding = null)
+    public function __construct(string $string = '', string $currentEncoding = null)
     {
-        $this->string = $string;
-        $this->encoding = $encoding ?? mb_internal_encoding();
+        $this->string = static::utf8($string, $currentEncoding ?? mb_internal_encoding());
+    }
 
-        if (!mb_check_encoding($string, $this->encoding)) {
-            throw new EncodingException($string, $encoding);
+    protected function clone(string $newString = null)
+    {
+        return static::create($newString ?? $this->string, 'UTF-8');
+    }
+
+    /**
+     * Get the inner string of this object encoded as $encoding.
+     *
+     * @param $encoding The encoding to get the string as. NULL = mb_internal_encoding.
+     *
+     * @return string
+     */
+    public function string($encoding = null) : string
+    {
+        if ($encoding === null) {
+            $encoding = mb_internal_encoding();
         }
-    }
+        if (!in_array($encoding, mb_list_encodings())) {
+            throw new EncodingException('Encoding not supported', $this->string, $encoding);
+        }
 
-    /**
-     * Create a new Stringy object that has the same encoding as this string.
-     *
-     * @param string $string   The string that is to be the base of the new Stringy object
-     * @param string $encoding The current encoding of the string
-     *
-     * @return Stringy object that has $string as a base and the same encoding as $this
-     */
-    protected function createCompatible($string, $encoding = null)
-    {
-        return static::create($string, $encoding)->withEncoding($this->encoding);
-    }
+        $string = mb_convert_encoding($this->string, $encoding, 'UTF-8');
 
-    /**
-     * Get the inner string of this object.
-     *
-     * @return string
-     */
-    public function string() : string
-    {
-        return $this->string;
-    }
+        if (!mb_check_encoding($string, $encoding)) {
+            throw new EncodingException('Invalid string', $string, $encoding);
+        }
 
-    /**
-     * Get the encoding of the inner string.
-     *
-     * @return string
-     */
-    public function encoding() : string
-    {
-        return $this->encoding;
+        return $string;
     }
 
     /**
@@ -95,21 +111,7 @@ class Stringy implements ArrayAccess
      */
     public function length() : int
     {
-        return mb_strlen($this->string, $this->encoding);
-    }
-
-    /**
-     * Does the string match the given regex?.
-     *
-     * @see http://php.net/manual/function.preg-match.php
-     *
-     * @param string $regex
-     *
-     * @return bool
-     */
-    public function matches($regex) : bool
-    {
-        return (bool) preg_match($regex, $this->string);
+        return mb_strlen($this->string, 'UTF-8');
     }
 
     /**
@@ -119,77 +121,51 @@ class Stringy implements ArrayAccess
      *
      * @return bool
      */
-    public function contains($needle)
+    public function contains($needle) : bool
     {
-        return $this->strpos($needle) !== false;
+        return $this->positionOf($needle) !== null;
     }
 
     /**
-     * Get the position of the $needle string.
+     * Find a the position of the first character of $needle within this string.
      *
-     * @see http://php.net/manual/function.mb-strpos.php
+     * @param Stringy|string $needle The string to search for
+     * @param int            $index  Which occurrance of the string to get the position of.
+     *                               0 means the first match, 1 means the second match, etc.
+     *                               -1 means the last match, -2 means the penultimate match, etc
      *
-     * @param Stringy|string $needle
-     *
-     * @return int|false
+     * @return int|null The position of the first character of the $needle found.
+     *                  NULL if $needle with the given $index could not be found
      */
-    public function strpos($needle, int $offset = 0)
+    public function positionOf($needle, int $index = 0)
     {
-        return mb_strpos(
+        if (!preg_match_all(
+            static::create($needle)->quoteForRegex('/')->prepend('/')->append('/u')->string,
             $this->string,
-            $this->createCompatible($needle),
-            $offset,
-            $this->encoding
-        );
-    }
-
-    /**
-     * Find position of last occurrence of a string in a string.
-     *
-     * @see http://php.net/manual/function.mb-strrpos.php
-     *
-     * @param Stringy|string $needle
-     *
-     * @return int|false
-     */
-    public function strrpos($needle, int $offset = 0)
-    {
-        return mb_strrpos(
-            $this->string,
-            $this->createCompatible($needle),
-            $offset,
-            $this->encoding
-        );
-    }
-
-    /**
-     * Find a the position of the (first or last) occurrence of a string.
-     *
-     * @param Stringy|string $needle  The string to search for
-     * @param string         $context Must be either 'first' or 'last'
-     *                                If context is 'first', we search from the beginning of the string,
-     *                                If context is 'last', we search from the end of the string
-     *
-     * @return int|bool The position of the first character of the $needle found.
-     *                  FALSE if $needle could not be found
-     */
-    public function positionOf($needle, string $context)
-    {
-        $methodMap = [
-            'first' => 'strpos',
-            'last' => 'strrpos',
-        ];
-
-        if (!isset($methodMap[$context])) {
-            throw new StringyException(vsprintf('Bad Context »%s«. It must be one of [%s]', [
-                $context,
-                implode(', ', $methodMap),
-            ]));
+            $matches,
+            PREG_OFFSET_CAPTURE
+        )) {
+            return null;
         }
 
-        $method = $methodMap[$context];
+        $matchCount = count($matches[0]);
 
-        return $this->$method($needle);
+        // index is too high
+        if ($index >= $matchCount) {
+            return null;
+        }
+
+        // index is negative, correct it into a positive index
+        if ($index < 0) {
+            $index = $matchCount + $index;
+        }
+
+        // index was so low it could not be correct (i.e. too few matches)
+        if ($index < 0) {
+            return null;
+        }
+
+        return $matches[0][$index][1];
     }
 
     /**
@@ -198,23 +174,23 @@ class Stringy implements ArrayAccess
      * @example: str('foo bar baz')->after('foo ') == 'bar baz'
      *
      * @param Stringy|string $needle
-     * @param string         $context Must be either 'first' or 'last'
-     *                                If context is 'first', we search from the beginning of the string,
-     *                                If context is 'last', we search from the end of the string
+     * @param int            $index  Which occurrance of the string to search for:
+     *                               0 means the first match, 1 means the second match, etc.
+     *                               -1 means the last match, -2 means the penultimate match, etc
      *
      * @return Stringy a clone of $this with a inner string containing the
      *                 part that comes after $needle. If $needle is not
      *                 found, an empty Stringy is returned
      */
-    public function after($needle, $context = 'first')
+    public function after($needle, $index = 0)
     {
-        $other = $this->createCompatible($needle);
+        $other = static::create($needle);
 
         if ($other->length() === 0) {
             return $this->clone();
         }
 
-        $pos = $this->positionOf($needle, $context);
+        $pos = $this->positionOf($needle, $index);
 
         if ($pos === false) {
             return $this->clone('');
@@ -224,28 +200,28 @@ class Stringy implements ArrayAccess
     }
 
     /**
-     * Get the part of the string that comes after $needle.
+     * Get the part of the string before the first character of $needle.
      *
      * @example: str('foo bar baz')->before('foo ') == 'bar baz'
      *
      * @param Stringy|string $needle
-     * @param string         $context Must be either 'first' or 'last'
-     *                                If context is 'first', we search from the beginning of the string,
-     *                                If context is 'last', we search from the end of the string
+     * @param int            $index  Which occurrance of the string to search for:
+     *                               0 means the first match, 1 means the second match, etc.
+     *                               -1 means the last match, -2 means the penultimate match, etc
      *
      * @return Stringy a clone of $this with a inner string containing the
      *                 part that comes after $needle. If $needle is not
      *                 found, an empty Stringy is returned
      */
-    public function before($needle, $context = 'first')
+    public function before($needle, $index = 0)
     {
-        $other = $this->createCompatible($needle);
+        $other = static::create($needle);
 
         if ($other->length() === 0) {
             return $this->clone();
         }
 
-        $pos = $this->positionOf($needle, $context);
+        $pos = $this->positionOf($needle, $index);
 
         if ($pos === false) {
             return $this->clone('');
@@ -279,9 +255,7 @@ class Stringy implements ArrayAccess
      */
     public function substring(int $start, int $length = null)
     {
-        return $this->transform(function ($string) use ($start, $length) {
-            return $this->clone(mb_substr($string, $start, $length, $this->encoding));
-        });
+        return $this->clone(mb_substr($this->string, $start, $length, 'UTF-8'));
     }
 
     /**
@@ -289,21 +263,19 @@ class Stringy implements ArrayAccess
      *
      * @param int $times
      *
-     * @return Stringy a string repeated $times times.
+     * @return Stringy a string repeated $times times
      */
     public function repeat(int $times)
     {
         if ($times == 0) {
-            return $this->clone('');
+            return static::create('');
         }
 
         if ($times < 0) {
-            throw new StringyException('Cannot repeat a string a negative number of times');
+            throw new StringyException('Cannot repeat a string a negative number of times', $this->string);
         }
 
-        return $this->clone(
-            str_repeat($this->string, $times)
-        );
+        return static::create(str_repeat($this->string, $times));
     }
 
     public function rightPadded(int $totalLengthOfResult, $padding = ' ')
@@ -318,7 +290,6 @@ class Stringy implements ArrayAccess
 
         return $this->append($padding->repeat($paddingLength));
     }
-
 
     public function leftPadded(int $totalLengthOfResult, $padding = ' ')
     {
@@ -349,7 +320,7 @@ class Stringy implements ArrayAccess
      */
     public function transform(callable $callable)
     {
-        return $this->clone($callable($this->string, $this));
+        return static::create($callable($this));
     }
 
     /**
@@ -364,33 +335,17 @@ class Stringy implements ArrayAccess
      */
     public function transformWithOther($other, callable $callable)
     {
-        return $this->clone($callable(
-            $this->string,
-            $this->createCompatible($other),
-            $this
-        ));
+        return static::create($callable($this, static::create($other)));
     }
 
-    public function clone(string $string = null, string $encoding = null)
+    public function upper()
     {
-        return new static(
-            $string ?? $this->string,
-            $encoding ?? $this->encoding
-        );
+        return static::create(mb_strtoupper($this->string, 'UTF-8'), 'UTF-8');
     }
 
-    public function toUpper()
+    public function lower()
     {
-        return $this->transform(function ($string, $original) {
-            return mb_strtoupper($string, $original->encoding());
-        });
-    }
-
-    public function toLower()
-    {
-        return $this->transform(function ($string, $original) {
-            return mb_strtolower($string, $original->encoding());
-        });
+        return static::create(mb_strtolower($this->string, 'UTF-8'), 'UTF-8');
     }
 
     /**
@@ -398,17 +353,15 @@ class Stringy implements ArrayAccess
      *
      * @see http://php.net/manual/function.explode.php
      *
-     * @param string $pattern
-     * @param int    $limit
+     * @param Stringy|string $pattern
+     * @param int            $limit
      *
      * @return Stringy[] array of strings as Stringy instances
      */
-    public function explode(string $pattern, int $limit = PHP_INT_MAX) : array
+    public function explode($pattern, int $limit = PHP_INT_MAX) : array
     {
-        return array_map(function ($string) {
-            return $this->clone($string);
-        }, explode(
-            $this->createCompatible($pattern),
+        return static::createMany(explode(
+            static::create($pattern)->string,
             $this->string,
             $limit
         ));
@@ -419,32 +372,123 @@ class Stringy implements ArrayAccess
      *
      * @see http://php.net/manual/function.str-replace.php
      *
-     * @param string $search
-     * @param string $replace
+     * @param Stringy|string $search
+     * @param Stringy|string $replace
      *
      * @return Stringy
      */
-    public function replace(string $search, string $replace)
+    public function replace($search, $replace)
     {
         return $this->clone(str_replace(
-            $this->createCompatible($search),
-            $this->createCompatible($replace),
+            static::create($search),
+            static::create($replace),
             $this->string
         ));
     }
 
-    public function append(string $other)
+    public function quoteForRegex($delimiter)
     {
-        return $this->transformWithOther($other, function ($string, $other) {
-            return $string.$other;
-        });
+        return $this->clone(preg_quote(
+            $this->string,
+            static::create($delimiter)->string
+        ));
     }
 
-    public function prepend(string $other)
+    /**
+     * Append a string to $this.
+     *
+     * @param Stringy|string $other
+     *
+     * @return Stringy a clone of $this where contents of $other is prepended
+     */
+    public function append($other)
     {
-        return $this->transformWithOther($other, function ($string, $other) {
-            return $other.$string;
-        });
+        return $this->clone(
+            $this->string . static::create($other)->string
+        );
+    }
+
+    /**
+     * Prepend a string to $this.
+     *
+     * @param Stringy|string $other
+     *
+     * @return Stringy a clone of $this where contents of $other is prepended
+     */
+    public function prepend($other)
+    {
+        return $this->clone(
+            static::create($other)->string . $this->string
+        );
+    }
+
+    public function surroundWith($left, $right = null)
+    {
+        return $this->prepend($left)->append($right ?? $left);
+    }
+
+    public function leftTrim($needle)
+    {
+        return $this->leftTrimAll([$needle]);
+    }
+
+    public function rightTrim($needle)
+    {
+        return $this->rightTrimAll([$needle]);
+    }
+
+    public function includeIn($string)
+    {
+        return static::create($string)->format([$this]);
+    }
+
+    public function format(array $args)
+    {
+        return $this->clone(vsprintf($this, static::createMany($args)));
+    }
+
+    public function leftTrimAll(array $strings)
+    {
+        $regex = $this->clone('|')->glue(static::mapMany($strings, function ($string) {
+            return $string->quoteForRegex('/');
+        }, $strings))->includeIn('/(^%s)+/u');
+
+        return $this->clone(preg_replace($regex, '', $this->string));
+    }
+
+    public function rightTrimAll(array $strings)
+    {
+        $regex = $this->clone('|')->glue(static::mapMany($strings, function ($string) {
+            return $string->quoteForRegex('/');
+        }))->includeIn('/(%s)+$/u');
+
+        return $this->clone(preg_replace($regex, '', $this->string));
+    }
+
+    public function startSwith($needle) : bool
+    {
+        return $this->positionOf($needle) === 0;
+    }
+
+    public function endsWith($needle) : bool
+    {
+        $pos = $this->positionOf($needle);
+
+        if ($pos === null) {
+            return false;
+        }
+
+        return $pos + static::create($needle)->length() === $this->length();
+    }
+
+    public function reverse()
+    {
+        return $this->clone('')->glue(array_reverse($this->characters()));
+    }
+
+    public function glue(array $strings)
+    {
+        return $this->clone(implode($this->string, static::utf8Many($strings)));
     }
 
     public function limit(int $length)
@@ -452,27 +496,11 @@ class Stringy implements ArrayAccess
         return $this->substring(0, $length);
     }
 
-    public function withEncoding(string $encoding)
+    public function slug($separator = '-', string $replaceBadCharWith = '')
     {
-        $converted = mb_convert_encoding(
-            $this->string,
-            $encoding,
-            $this->encoding
-        );
-
-        return $this->clone($converted, $encoding);
-    }
-
-    public function toUtf8()
-    {
-        return $this->withEncoding('UTF-8');
-    }
-
-    public function toSlug($separator = '-', string $replaceBadCharWith = '')
-    {
-        return $this->toUtf8()
-            ->toLower()
-            ->toAscii()
+        return $this
+            ->lower()
+            ->asciiSafe()
             ->transform(function ($string) use ($separator) {
 
                 // convert all spaces to the $separator character.
@@ -484,45 +512,33 @@ class Stringy implements ArrayAccess
             });
     }
 
-    public function toAscii()
+    public function asciiSafe()
     {
-        return $this->toUtf8()->transform(function ($string) {
-            return iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $string);
-        })->clone(null, 'ASCII');
+        return static::create(iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $this->string), 'ASCII');
     }
 
-    public function toHtmlEntities()
+    public function entityEncoded()
     {
-        return $this->withEncoding('HTML-ENTITIES');
-    }
-
-    public function toSystemEncoding()
-    {
-        return $this->withEncoding(mb_internal_encoding());
+        return $this->transform(function ($self) {
+            return $self->string('HTML-ENTITIES');
+        });
     }
 
     public function characters() : array
     {
-        $utf8 = $this->toUtf8()->string;
-
-        return array_map(
-            function ($character) {
-                return $this->createCompatible($character, 'UTF-8');
-            },
-            preg_split('//u', $utf8, -1, PREG_SPLIT_NO_EMPTY)
-        );
+        return static::createMany(preg_split('//u', $this->string, -1, PREG_SPLIT_NO_EMPTY));
     }
 
     public function __toString()
     {
-        return $this->toSystemEncoding()->string;
+        return $this->string();
     }
 
     public function __debugInfo()
     {
         return [
-            'string' => $this->string,
-            'encoding' => $this->encoding,
+            'utf8string' => $this->string,
+            'systemString' => $this->string(),
         ];
     }
 }

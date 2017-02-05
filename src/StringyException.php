@@ -19,7 +19,7 @@ class StringyException extends Exception
     /**
      * Constructor
      */
-    public function __construct(string $message, string $string, string $encoding, Exception $previous = null)
+    public function __construct(string $message, string $string, string $encoding = 'UTF-8', Exception $previous = null)
     {
         $this->encoding = $encoding;
         $this->string = $string;
