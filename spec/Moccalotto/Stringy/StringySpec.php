@@ -198,4 +198,29 @@ class StringySpec extends ObjectBehavior
         $this->shouldThrow('UnexpectedValueException')
             ->during('centered', [11, '=', 'foo']);
     }
+
+    /**
+     * TODO:
+     * before
+     * acter
+     * between
+     * substring
+     * upper
+     * lower
+     * explode
+     * characters
+     * append
+     * prepend
+     * surroundWith
+     * includeIn
+     * reverse
+     * glue
+     * limit
+     * slug
+     * length
+     * asciiSafe
+     * entityEncoded
+     * __toString
+     */
+
 }
