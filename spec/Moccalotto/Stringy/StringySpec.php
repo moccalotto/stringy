@@ -221,6 +221,6 @@ class StringySpec extends ObjectBehavior
      * asciiSafe
      * entityEncoded
      * __toString
+     * [array access]
      */
-
 }
