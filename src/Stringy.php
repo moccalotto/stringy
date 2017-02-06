@@ -3,6 +3,7 @@
 namespace Moccalotto\Stringy;
 
 use ArrayAccess;
+use UnexpectedValueException;
 
 class Stringy implements ArrayAccess
 {
@@ -299,10 +300,31 @@ class Stringy implements ArrayAccess
         return $this->prepend($padding->repeat($paddingLength));
     }
 
-    public function centered(int $totalLengthOfResult, $padding = ' ')
+    public function centered(int $totalLengthOfResult, $padding = ' ', $tieBreak = 'left')
     {
-        return $this->leftPadded(floor($totalLengthOfResult / 2), $padding)
-            ->rightPadded($totalLengthOfResult, $padding);
+        $methodMap = [
+            'left' => 'floor',
+            'right' => 'ceil',
+        ];
+
+        if (!isset($methodMap[$tieBreak])) {
+            throw new UnexpectedValueException(sprintf(
+                'tieBreak must be one [%s]',
+                implode(', ', array_keys($methodMap))
+            ));
+        }
+
+        $tieBreakerMethod = $methodMap[$tieBreak];
+
+        $leftPadding = $tieBreakerMethod($totalLengthOfResult + $this->length()) / 2;
+
+        return $this->leftPadded(
+            $tieBreakerMethod($leftPadding),
+            $padding
+        )->rightPadded(
+            $totalLengthOfResult,
+            $padding
+        );
     }
 
     public function upper()
