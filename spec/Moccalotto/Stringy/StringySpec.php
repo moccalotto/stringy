@@ -158,6 +158,6 @@ class StringySpec extends ObjectBehavior
     {
         $this->beConstructedWith('%s %s');
 
-        $this->shouldThrow(StringyException::class)->during('format', [['one one arg']]);
+        $this->shouldThrow(StringyException::class)->during('format', [['only one arg']]);
     }
 }
