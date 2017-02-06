@@ -437,7 +437,7 @@ class Stringy implements ArrayAccess
         return $this->clone(preg_replace($regex, '', $this->string));
     }
 
-    public function startSwith($needle) : bool
+    public function startsWith($needle) : bool
     {
         return $this->positionOf($needle) === 0;
     }
