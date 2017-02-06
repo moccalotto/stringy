@@ -413,7 +413,17 @@ class Stringy implements ArrayAccess
 
     public function format(array $args)
     {
-        return static::create(vsprintf($this, static::createMany($args)));
+        $result = @vsprintf($this, static::createMany($args));
+
+        if ($result === false) {
+            $error = error_get_last()['message'];
+            throw new StringyException(
+                sprintf('Could not format string: %s', $error),
+                $this->string
+            );
+        }
+
+        return static::create($result);
     }
 
     public function leftTrimAll(array $strings)
