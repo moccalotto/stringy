@@ -135,7 +135,7 @@ class Stringy implements ArrayAccess
     public function positionOf($needle, int $index = 0)
     {
         if (!preg_match_all(
-            static::create($needle)->quoteForRegex('/')->prepend('/')->append('/u')->string,
+            static::create($needle)->escapeForRegex('/')->prepend('/')->append('/u')->string,
             $this->string,
             $matches,
             PREG_OFFSET_CAPTURE
@@ -353,7 +353,7 @@ class Stringy implements ArrayAccess
         ), 'UTF-8');
     }
 
-    public function quoteForRegex($delimiter)
+    public function escapeForRegex($delimiter)
     {
         return static::create(preg_quote(
             $this->string,
@@ -419,7 +419,7 @@ class Stringy implements ArrayAccess
     public function leftTrimAll(array $strings)
     {
         $regex = static::create('|')->glue(static::mapMany($strings, function ($string) {
-            return $string->quoteForRegex('/');
+            return $string->escapeForRegex('/');
         }, $strings))->includeIn('/(^%s)+/u');
 
         return static::create(preg_replace($regex, '', $this->string));
@@ -428,7 +428,7 @@ class Stringy implements ArrayAccess
     public function rightTrimAll(array $strings)
     {
         $regex = static::create('|')->glue(static::mapMany($strings, function ($string) {
-            return $string->quoteForRegex('/');
+            return $string->escapeForRegex('/');
         }))->includeIn('/(%s)+$/u');
 
         return static::create(preg_replace($regex, '', $this->string), 'UTF-8');
