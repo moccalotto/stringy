@@ -53,7 +53,11 @@ trait HasArrayAccess
         }
 
         if ($offset >= $this->length()) {
-            throw new OutOfRangeException(sprintf('Offset must be < %d', $this->length()));
+            throw new OutOfRangeException(sprintf(
+                'Illegal offset "%d". Must be lower than length of string: %d',
+                $offset,
+                $this->length()
+            ));
         }
 
         return $this->characters()[(int) $offset];
