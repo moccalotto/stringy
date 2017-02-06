@@ -122,4 +122,27 @@ class StringySpec extends ObjectBehavior
         $this->repeat(3)->string()->shouldBe('foofoofoo');
         $this->repeat(0)->string()->shouldBe('');
     }
+
+    public function it_can_detect_if_a_string_starts_with()
+    {
+        $this->beConstructedWith('foo bar baz');
+
+        $this->startsWith('foo')->shouldBe(true);
+        $this->startsWith('foo bar baz')->shouldBe(true);
+
+        $this->startsWith('bar')->shouldBe(false);
+        $this->startsWith('foo baz')->shouldBe(false);
+    }
+
+    public function it_can_detect_if_a_string_ends_with()
+    {
+        $this->beConstructedWith('foo bar baz');
+
+        $this->endsWith('baz')->shouldBe(true);
+        $this->endsWith('foo bar baz')->shouldBe(true);
+
+        $this->endsWith('bar')->shouldBe(false);
+        $this->endsWith('foo baz')->shouldBe(false);
+    }
+
 }
