@@ -160,4 +160,42 @@ class StringySpec extends ObjectBehavior
 
         $this->shouldThrow(StringyException::class)->during('format', [['only one arg']]);
     }
+
+    public function it_can_right_pad_a_string()
+    {
+        $this->beConstructedWith('foo');
+
+        $this->rightPadded(5)->string()->shouldBe('foo  ');
+        $this->rightPadded(5, ' ')->string()->shouldBe('foo  ');
+        $this->rightPadded(5, '=')->string()->shouldBe('foo==');
+
+        $this->shouldThrow('OutOfRangeException')->during('rightPadded', [5, '']);
+    }
+
+    public function it_can_left_pad_a_string()
+    {
+        $this->beConstructedWith('foo');
+
+        $this->leftPadded(5)->string()->shouldBe('  foo');
+        $this->leftPadded(5, ' ')->string()->shouldBe('  foo');
+        $this->leftPadded(5, '=')->string()->shouldBe('==foo');
+
+        $this->shouldThrow('OutOfRangeException')->during('leftPadded', [5, '']);
+    }
+
+    public function it_can_center_a_string()
+    {
+        $this->beConstructedWith('foobar');
+
+        $this->centered(6)->string()->shouldBe('foobar');
+        $this->centered(10)->string()->shouldBe('  foobar  ');
+        $this->centered(10, ' ')->string()->shouldBe('  foobar  ');
+        $this->centered(10, '=')->string()->shouldBe('==foobar==');
+        $this->centered(11, '=')->string()->shouldBe('==foobar===');
+        $this->centered(11, '=', 'left')->string()->shouldBe('==foobar===');
+        $this->centered(11, '=', 'right')->string()->shouldBe('===foobar==');
+
+        $this->shouldThrow('UnexpectedValueException')
+            ->during('centered', [11, '=', 'foo']);
+    }
 }
