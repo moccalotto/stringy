@@ -74,11 +74,6 @@ class Stringy implements ArrayAccess
         $this->string = static::utf8($string, $currentEncoding ?? mb_internal_encoding());
     }
 
-    protected function clone(string $newString = null)
-    {
-        return static::create($newString ?? $this->string, 'UTF-8');
-    }
-
     /**
      * Get the inner string of this object encoded as $encoding.
      *
@@ -187,13 +182,13 @@ class Stringy implements ArrayAccess
         $other = static::create($needle);
 
         if ($other->length() === 0) {
-            return $this->clone();
+            return clone $this;
         }
 
         $pos = $this->positionOf($needle, $index);
 
         if ($pos === false) {
-            return $this->clone('');
+            return static::create('');
         }
 
         return $this->substring($pos + $other->length());
@@ -218,13 +213,13 @@ class Stringy implements ArrayAccess
         $other = static::create($needle);
 
         if ($other->length() === 0) {
-            return $this->clone();
+            return clone $this;
         }
 
         $pos = $this->positionOf($needle, $index);
 
         if ($pos === false) {
-            return $this->clone('');
+            return static::create('');
         }
 
         return $this->substring(0, $pos);
@@ -255,7 +250,7 @@ class Stringy implements ArrayAccess
      */
     public function substring(int $start, int $length = null)
     {
-        return $this->clone(mb_substr($this->string, $start, $length, 'UTF-8'));
+        return static::create(mb_substr($this->string, $start, $length, 'UTF-8'), 'UTF-8');
     }
 
     /**
@@ -285,7 +280,7 @@ class Stringy implements ArrayAccess
         $paddingLength = $totalLengthOfResult - $this->length();
 
         if ($paddingLength <= 0) {
-            return $this->clone();
+            return clone $this;
         }
 
         return $this->append($padding->repeat($paddingLength));
@@ -298,7 +293,7 @@ class Stringy implements ArrayAccess
         $paddingLength = $totalLengthOfResult - $this->length();
 
         if ($paddingLength <= 0) {
-            return $this->clone();
+            return clone $this;
         }
 
         return $this->prepend($padding->repeat($paddingLength));
@@ -312,12 +307,12 @@ class Stringy implements ArrayAccess
 
     public function upper()
     {
-        return $this->clone(mb_strtoupper($this->string, 'UTF-8'));
+        return static::create(mb_strtoupper($this->string, 'UTF-8'), 'UTF-8');
     }
 
     public function lower()
     {
-        return $this->clone(mb_strtoupper($this->string, 'UTF-8'));
+        return static::create(mb_strtoupper($this->string, 'UTF-8'), 'UTF-8');
     }
 
     /**
@@ -351,19 +346,19 @@ class Stringy implements ArrayAccess
      */
     public function replace($search, $replace)
     {
-        return $this->clone(str_replace(
+        return static::create(str_replace(
             static::create($search),
             static::create($replace),
             $this->string
-        ));
+        ), 'UTF-8');
     }
 
     public function quoteForRegex($delimiter)
     {
-        return $this->clone(preg_quote(
+        return static::create(preg_quote(
             $this->string,
             static::create($delimiter)->string
-        ));
+        ), 'UTF-8');
     }
 
     /**
@@ -375,8 +370,9 @@ class Stringy implements ArrayAccess
      */
     public function append($other)
     {
-        return $this->clone(
-            $this->string . static::create($other)->string
+        return static::create(
+            $this->string . static::create($other)->string,
+            'UTF-8'
         );
     }
 
@@ -389,8 +385,9 @@ class Stringy implements ArrayAccess
      */
     public function prepend($other)
     {
-        return $this->clone(
-            static::create($other)->string . $this->string
+        return static::create(
+            static::create($other)->string . $this->string,
+            'UTF-8'
         );
     }
 
@@ -416,25 +413,25 @@ class Stringy implements ArrayAccess
 
     public function format(array $args)
     {
-        return $this->clone(vsprintf($this, static::createMany($args)));
+        return static::create(vsprintf($this, static::createMany($args)));
     }
 
     public function leftTrimAll(array $strings)
     {
-        $regex = $this->clone('|')->glue(static::mapMany($strings, function ($string) {
+        $regex = static::create('|')->glue(static::mapMany($strings, function ($string) {
             return $string->quoteForRegex('/');
         }, $strings))->includeIn('/(^%s)+/u');
 
-        return $this->clone(preg_replace($regex, '', $this->string));
+        return static::create(preg_replace($regex, '', $this->string));
     }
 
     public function rightTrimAll(array $strings)
     {
-        $regex = $this->clone('|')->glue(static::mapMany($strings, function ($string) {
+        $regex = static::create('|')->glue(static::mapMany($strings, function ($string) {
             return $string->quoteForRegex('/');
         }))->includeIn('/(%s)+$/u');
 
-        return $this->clone(preg_replace($regex, '', $this->string));
+        return static::create(preg_replace($regex, '', $this->string), 'UTF-8');
     }
 
     public function startsWith($needle) : bool
@@ -455,12 +452,12 @@ class Stringy implements ArrayAccess
 
     public function reverse()
     {
-        return $this->clone('')->glue(array_reverse($this->characters()));
+        return static::create('')->glue(array_reverse($this->characters()));
     }
 
     public function glue(array $strings)
     {
-        return $this->clone(implode($this->string, static::utf8Many($strings)));
+        return static::create(implode($this->string, static::utf8Many($strings)));
     }
 
     public function limit(int $length)
