@@ -7,10 +7,10 @@
  */
 namespace spec\Moccalotto\Stringy;
 
+use Prophecy\Argument;
+use PhpSpec\ObjectBehavior;
 use Moccalotto\Stringy\Stringy;
 use Moccalotto\Stringy\StringyException;
-use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
 
 class StringySpec extends ObjectBehavior
 {
