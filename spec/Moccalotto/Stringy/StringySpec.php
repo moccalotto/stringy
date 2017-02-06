@@ -8,6 +8,7 @@
 namespace spec\Moccalotto\Stringy;
 
 use Moccalotto\Stringy\Stringy;
+use Moccalotto\Stringy\StringyException;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 
@@ -145,4 +146,18 @@ class StringySpec extends ObjectBehavior
         $this->endsWith('foo baz')->shouldBe(false);
     }
 
+    public function it_can_be_a_sprintf_template()
+    {
+        $this->beConstructedWith('foo %s baz');
+
+        $this->format(['bar'])->string()->shouldBe('foo bar baz');
+        $this->format(['bing'])->string()->shouldBe('foo bing baz');
+    }
+
+    public function it_throws_exceptions_if_format_is_used_incorrectly()
+    {
+        $this->beConstructedWith('%s %s');
+
+        $this->shouldThrow(StringyException::class)->during('format', [['one one arg']]);
+    }
 }
