@@ -275,7 +275,7 @@ class Stringy implements ArrayAccess
 
     public function rightPadded(int $totalLengthOfResult, $padding = ' ')
     {
-        $padding = $this->createCompatible($padding)[0];
+        $padding = static::create($padding)[0];
 
         $paddingLength = $totalLengthOfResult - $this->length();
 
@@ -288,7 +288,7 @@ class Stringy implements ArrayAccess
 
     public function leftPadded(int $totalLengthOfResult, $padding = ' ')
     {
-        $padding = $this->createCompatible($padding)[0];
+        $padding = static::create($padding)[0];
 
         $paddingLength = $totalLengthOfResult - $this->length();
 
