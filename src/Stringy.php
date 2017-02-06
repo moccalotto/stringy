@@ -5,6 +5,22 @@ namespace Moccalotto\Stringy;
 use ArrayAccess;
 use UnexpectedValueException;
 
+/**
+ * TODO:
+ * is($otherString)
+ * urlencode
+ * escapeForHtml
+ * camelCase
+ * studlyCase
+ * titleCase
+ * snakeCase
+ * uncase (turn cased string into spaced words)
+ * random()
+ * singular
+ * plural
+ * https://github.com/ICanBoogie/Inflector
+ */
+
 class Stringy implements ArrayAccess
 {
     use Traits\HasArrayAccess;
