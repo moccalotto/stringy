@@ -334,6 +334,24 @@ EOT;
         $this->between('non-existing', 'non-existing')->string()->shouldBe('');
     }
 
+    public function it_can_transform_a_string_via_callback()
+    {
+        $this->beConstructedWith('foo bar bing baz');
+
+        $this->transform(function ($stringy) {
+            return preg_replace('/\s*bing/', '', $stringy->string());
+        })->string()->shouldBe('foo bar baz');
+
+        $this->transform(function ($stringy) {
+            return 'OTHER';
+        })->string()->shouldBe('OTHER');
+
+        $this->transform(function ($stringy) {
+            return Stringy::create('THING');
+        })->string()->shouldBe('THING');
+    }
+
+
     /**
      * TODO:
      * before

@@ -186,6 +186,18 @@ class Stringy implements ArrayAccess
     }
 
     /**
+     * Transform the string.
+     *
+     * @param callable $callable a function with the signature (Stringy $string) : Stringy|string
+     *
+     * @return Stringy
+     */
+    public function transform(callable $callable)
+    {
+        return static::create($callable(clone $this));
+    }
+
+    /**
      * Get the part of the string that comes after $needle.
      *
      * @example: str('foo bar baz')->after('foo ') == 'bar baz'
