@@ -571,10 +571,14 @@ class Stringy implements ArrayAccess
         return static::create(iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $this->string), 'ASCII');
     }
 
-    public function entityEncoded()
+    public function entityEncoded(int $flags = ENT_QUOTES | ENT_HTML5)
     {
-        return $this->transform(function ($self) {
-            return $self->string('HTML-ENTITIES');
+        return $this->transform(function ($stringy) use ($flags) {
+            return htmlentities(
+                $stringy->string,
+                $flags,
+                'UTF-8'
+            );
         });
     }
 
