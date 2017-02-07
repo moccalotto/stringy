@@ -580,7 +580,6 @@ class Stringy implements ArrayAccess
             ->lower()
             ->asciiSafe()
             ->transform(function ($stringy) use ($replaceBadCharWith, $separator) {
-
                 return preg_replace_callback('/[^a-z0-9]/u', function ($matches) use ($replaceBadCharWith, $separator) {
                     if ($matches[0] == $separator) {
                         return $separator;
@@ -594,9 +593,12 @@ class Stringy implements ArrayAccess
                 }, $stringy->string);
             })
             ->transform(function ($stringy) use ($separator) {
-                return preg_replace(static::create($separator)->escapeForRegex('/')->surroundWith('/', '+/u'), $separator, $stringy->string);
+                return preg_replace(
+                    static::create($separator)->escapeForRegex('/')->includeIn('/%s+/u'),
+                    $separator,
+                    $stringy->string
+                );
             });
-            ;
     }
 
     public function asciiSafe()
