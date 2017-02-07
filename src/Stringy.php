@@ -555,14 +555,14 @@ class Stringy implements ArrayAccess
         return $this
             ->lower()
             ->asciiSafe()
-            ->transform(function ($string) use ($separator) {
+            ->transform(function ($stringy) use ($separator) {
 
                 // convert all spaces to the $separator character.
-                return preg_replace('/(\s|_)+/m', $separator, $string);
-            })->transform(function ($string) use ($replaceBadCharWith) {
+                return preg_replace('/(\s|_)+/m', $separator, $stringy->string);
+            })->transform(function ($stringy) use ($replaceBadCharWith) {
 
                 // Convert any non-allowed character into the $replaceBadCharWith
-                return preg_replace('/[^a-z0-9-]/', $replaceBadCharWith, $string);
+                return preg_replace('/[^a-z0-9-]/', $replaceBadCharWith, $stringy->string);
             });
     }
 
