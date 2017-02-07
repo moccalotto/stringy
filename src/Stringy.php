@@ -94,23 +94,23 @@ class Stringy implements ArrayAccess
     /**
      * Get the inner string of this object encoded as $encoding.
      *
-     * @param $encoding The encoding to get the string as. NULL = mb_internal_encoding.
+     * @param $encodedAs The encoding to get the string as. NULL = mb_internal_encoding.
      *
      * @return string
      */
-    public function string($encoding = null) : string
+    public function string($encodedAs = null) : string
     {
-        if ($encoding === null) {
-            $encoding = mb_internal_encoding();
+        if ($encodedAs === null) {
+            $encodedAs = mb_internal_encoding();
         }
-        if (!in_array($encoding, mb_list_encodings())) {
-            throw new EncodingException('Encoding not supported', $this->string, $encoding);
+        if (!in_array($encodedAs, mb_list_encodings())) {
+            throw new EncodingException('Encoding not supported', $this->string, $encodedAs);
         }
 
-        $string = mb_convert_encoding($this->string, $encoding, 'UTF-8');
+        $string = mb_convert_encoding($this->string, $encodedAs, 'UTF-8');
 
-        if (!mb_check_encoding($string, $encoding)) {
-            throw new EncodingException('Invalid string', $string, $encoding);
+        if (!mb_check_encoding($string, $encodedAs)) {
+            throw new EncodingException('Invalid string', $string, $encodedAs);
         }
 
         return $string;
