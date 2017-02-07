@@ -555,15 +555,24 @@ class Stringy implements ArrayAccess
         return $this
             ->lower()
             ->asciiSafe()
+            ->transform(function ($stringy) use ($replaceBadCharWith, $separator) {
+
+                return preg_replace_callback('/[^a-z0-9]/u', function ($matches) use ($replaceBadCharWith, $separator) {
+                    if ($matches[0] == $separator) {
+                        return $separator;
+                    }
+
+                    if (preg_match('/\s|-|_|:/', $matches[0])) {
+                        return $separator;
+                    }
+
+                    return $replaceBadCharWith;
+                }, $stringy->string);
+            })
             ->transform(function ($stringy) use ($separator) {
-
-                // convert all spaces to the $separator character.
-                return preg_replace('/(\s|_)+/m', $separator, $stringy->string);
-            })->transform(function ($stringy) use ($replaceBadCharWith) {
-
-                // Convert any non-allowed character into the $replaceBadCharWith
-                return preg_replace('/[^a-z0-9-]/', $replaceBadCharWith, $stringy->string);
+                return preg_replace(static::create($separator)->escapeForRegex('/')->surroundWith('/', '+/u'), $separator, $stringy->string);
             });
+            ;
     }
 
     public function asciiSafe()
