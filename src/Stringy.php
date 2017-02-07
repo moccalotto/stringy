@@ -87,7 +87,7 @@ class Stringy implements ArrayAccess
     /**
      * Get the inner string of this object encoded as $encoding.
      *
-     * @param $encodedAs The encoding to get the string as. NULL = mb_internal_encoding.
+     * @param $encodedAs The encoding to get the string as. NULL = mb_internal_encoding
      *
      * @return string
      */
@@ -114,7 +114,7 @@ class Stringy implements ArrayAccess
      *
      * @param Stringy|string $string
      *
-     * @return bool only true if the two strings are equal.
+     * @return bool only true if the two strings are equal
      */
     public function is($string) : bool
     {
