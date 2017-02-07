@@ -117,6 +117,18 @@ class Stringy implements ArrayAccess
     }
 
     /**
+     * Compare this string to another.
+     *
+     * @param Stringy|string $string
+     *
+     * @return bool only true if the two strings are equal.
+     */
+    public function is($string) : bool
+    {
+        return static::create($string)->string === $this->string;
+    }
+
+    /**
      * Get the length (in characters) of the inner string.
      *
      * @return int
