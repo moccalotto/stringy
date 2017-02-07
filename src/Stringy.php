@@ -206,7 +206,7 @@ class Stringy implements ArrayAccess
      *                 part that comes after $needle. If $needle is not
      *                 found, an empty Stringy is returned
      */
-    public function after($needle, $index = 0)
+    public function after($needle, int $index = 0)
     {
         $other = static::create($needle);
 
@@ -237,7 +237,7 @@ class Stringy implements ArrayAccess
      *                 part that comes after $needle. If $needle is not
      *                 found, an empty Stringy is returned
      */
-    public function before($needle, $index = 0)
+    public function before($needle, int $index = 0)
     {
         $other = static::create($needle);
 
