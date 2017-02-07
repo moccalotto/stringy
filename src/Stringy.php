@@ -259,13 +259,28 @@ class Stringy implements ArrayAccess
      *
      * @param Stringy|string $start
      * @param Stringy|string $stop
+     * @param int            $pairIndex search for the nth pair and
+     *                       find what lies between those strings.
      *
      * @return Stringy the string between $start and $stop
      */
-    public function between($start, $stop)
+    public function between($start, $stop, int $pairIndex = 0)
     {
-        return $this->after($start)
-            ->before($stop);
+        $idxStart = $this->positionOf($start, $pairIndex);
+        $idxStop = $this->positionOf($stop, $pairIndex);
+
+        if ($idxStart === null || $idxStop === null) {
+            return static::create('');
+        }
+
+        $pos = $idxStart + static::create($start)->length();
+        $length = $idxStop - $pos;
+
+        if ($length <= 0) {
+            return static::create('');
+        }
+
+        return $this->substring($pos, $length);
     }
 
     /**
