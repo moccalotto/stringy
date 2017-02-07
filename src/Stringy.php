@@ -61,13 +61,6 @@ class Stringy implements ArrayAccess
         return array_map($callable, static::createMany($strings));
     }
 
-    protected static function utf8Many(array $strings)
-    {
-        return static::mapMany($strings, function ($string) {
-            return $string->string;
-        });
-    }
-
     protected static function utf8(string $string, string $encoding)
     {
         if (!in_array($encoding, mb_list_encodings())) {
@@ -532,7 +525,12 @@ class Stringy implements ArrayAccess
 
     public function glue(array $strings)
     {
-        return static::create(implode($this->string, static::utf8Many($strings)));
+        return static::create(implode(
+            $this->string,
+            static::mapMany($strings, function ($string) {
+                return $string->string;
+            })
+        ));
     }
 
     public function limit(int $length)
