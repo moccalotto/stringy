@@ -9,9 +9,8 @@ use UnexpectedValueException;
 
 /**
  * TODO:
- * is($otherString)
+ * shorten
  * urlencode
- * escapeForHtml
  * camelCase
  * studlyCase
  * titleCase
@@ -20,9 +19,8 @@ use UnexpectedValueException;
  * random()
  * singular
  * plural
- * https://github.com/ICanBoogie/Inflector
+ * https://github.com/ICanBoogie/Inflector.
  */
-
 class Stringy implements ArrayAccess
 {
     use Traits\HasArrayAccess;
