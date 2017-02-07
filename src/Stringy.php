@@ -155,7 +155,7 @@ class Stringy implements ArrayAccess
      * @return int|null The position of the first character of the $needle found.
      *                  NULL if $needle with the given $index could not be found
      *                  NOTE: that this behavior deviates from strpos in that strpos returns FALSE
-     *                  in case $needle was not found.
+     *                  in case $needle was not found
      */
     public function positionOf($needle, int $index = 0)
     {
