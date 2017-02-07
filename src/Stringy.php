@@ -617,8 +617,9 @@ class Stringy implements ArrayAccess
     public function __debugInfo()
     {
         return [
-            'utf8string' => $this->string,
-            'systemString' => $this->string(),
+            'string' => $this->string(),
+            'length' => $this->length(),
+            'width'  => mb_strwidth($this->string),
         ];
     }
 }
