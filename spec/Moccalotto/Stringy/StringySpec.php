@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
  * Stringy test package.
@@ -293,7 +293,7 @@ EOT;
             ->during('centered', [11, '=', 'foo']);
     }
 
-    public function it_finds_what_comes_before_a_given_string()
+    public function it_finds_what_comes_before_a_given_substring()
     {
         $this->beConstructedWith('foo bar baz foo bar baz');
 
@@ -304,6 +304,34 @@ EOT;
 
         $this->before('foo', 1)->string()->shouldBe('foo bar baz ');
         $this->before('bar', 1)->string()->shouldBe('foo bar baz foo ');
+        $this->before('bar', 2)->string()->shouldBe('');
+    }
+
+    public function it_finds_what_comes_after_a_given_substring()
+    {
+        $this->beConstructedWith('foo bar baz foo bar baz');
+
+        $this->after('baz')->string()->shouldBe(' foo bar baz');
+        $this->after('foo')->string()->shouldBe(' bar baz foo bar baz');
+        $this->after('')->string()->shouldBe($this->string());
+        $this->after('not in parent string')->string()->shouldBe('');
+
+        $this->after('baz', 1)->string()->shouldBe('');
+        $this->after('bar', 1)->string()->shouldBe(' baz');
+        $this->after('bar', 2)->string()->shouldBe('');
+    }
+
+    public function it_finds_the_string_between_two_substrings()
+    {
+        $this->beConstructedWith('foo bar1 baz foo bar2 baz');
+
+        $this->between('foo', 'baz')->string()->shouldBe(' bar1 ');
+        $this->between('foo', 'baz', 0)->string()->shouldBe(' bar1 ');
+        $this->between('foo', 'baz', 1)->string()->shouldBe(' bar2 ');
+        $this->between('foo', 'baz', 2)->string()->shouldBe('');
+        $this->between('non-existing', 'baz')->string()->shouldBe('');
+        $this->between('foo', 'non-existing')->string()->shouldBe('');
+        $this->between('non-existing', 'non-existing')->string()->shouldBe('');
     }
 
     /**
