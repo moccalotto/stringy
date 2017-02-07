@@ -391,15 +391,8 @@ EOT;
         $this[0]->string()->shouldBe('f');
     }
 
-
-
-
-
     /**
      * TODO:
-     * before
-     * acter
-     * between
      * substring
      * upper
      * lower
