@@ -628,6 +628,29 @@ class Stringy implements ArrayAccess
         });
     }
 
+    /**
+     * Truncate a string in a pretty way.
+     *
+     * @param int            $maxLength  The maximum length of the string
+     * @param Stringy|string $breakPoint The "signature" of the point where the string is to be "cut off".
+     *                                   Default value is "" which means that we allow a cut-off anywhere.
+     * @param Stringy|string $padding    The padding to add to the end of the string, to indicate it has been truncated
+     *
+     * @return Stringy|string the truncated string'
+     */
+    public function shorten($maxLength, $breakPoint = '', $padding = '…')
+    {
+        if ($this->length() <= $maxLength) {
+            return clone $this;
+        }
+
+        $padding = self::create($padding);
+
+        return $this->substring(0, $maxLength - $padding->length())
+            ->removeAfter($breakPoint, -1)
+            ->append($padding);
+    }
+
     public function characters() : array
     {
         return static::createMany(preg_split('//u', $this->string, -1, PREG_SPLIT_NO_EMPTY));
