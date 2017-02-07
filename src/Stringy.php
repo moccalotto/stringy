@@ -582,6 +582,17 @@ class Stringy implements ArrayAccess
         });
     }
 
+    public function escapeForHtml(int $flags = ENT_QUOTES | ENT_HTML5)
+    {
+        return $this->transform(function ($stringy) use ($flags) {
+            return htmlspecialchars(
+                $stringy->string,
+                $flags,
+                'UTF-8'
+            );
+        });
+    }
+
     public function characters() : array
     {
         return static::createMany(preg_split('//u', $this->string, -1, PREG_SPLIT_NO_EMPTY));
