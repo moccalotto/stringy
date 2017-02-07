@@ -359,10 +359,10 @@ class Stringy implements ArrayAccess
 
         $tieBreakerMethod = $methodMap[$tieBreak];
 
-        $leftPadding = $tieBreakerMethod($totalLengthOfResult + $this->length()) / 2;
+        $leftLength = (int) $tieBreakerMethod(($totalLengthOfResult + $this->length()) / 2);
 
         return $this->leftPadded(
-            $tieBreakerMethod($leftPadding),
+            $leftLength,
             $padding
         )->rightPadded(
             $totalLengthOfResult,
