@@ -362,6 +362,37 @@ EOT;
         $this->slug('_', '--deleted--')->string()->shouldBe('some_--deleted--_odd_string_that_needs_slugging');
     }
 
+    public function it_can_select_a_substring_in_the_same_way_as_phps_substr_method()
+    {
+        $this->beConstructedWith('foo bar baz');
+
+        $this->substring(0, 11)->string()->shouldBe('foo bar baz');
+        $this->substring(0)->string()->shouldBe('foo bar baz');
+
+        $this->substring(0, 7)->string()->shouldBe('foo bar');
+
+        $this->substring(0, -4)->string()->shouldBe('foo bar');
+        $this->substring(-3, null)->string()->shouldBe('baz');
+        $this->substring(-3)->string()->shouldBe('baz');
+
+        $this->substring(-7, 3)->string()->shouldBe('bar');
+
+        $this->substring(-7, -1)->string()->shouldBe('bar ba');
+        $this->substring(-7, -4)->string()->shouldBe('bar');
+        $this->substring(-7, -7)->string()->shouldBe('');
+
+        $this->shouldThrow('TypeError')->during('substring', [null]);
+    }
+
+    public function it_can_select_individual_characters_via_array_access()
+    {
+        $this->beConstructedWith('foo bar baz');
+
+        $this[0]->string()->shouldBe('f');
+    }
+
+
+
 
 
     /**
