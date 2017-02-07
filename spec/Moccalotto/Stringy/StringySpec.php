@@ -11,19 +11,95 @@ use Prophecy\Argument;
 use PhpSpec\ObjectBehavior;
 use Moccalotto\Stringy\Stringy;
 use Moccalotto\Stringy\StringyException;
+use Moccalotto\Stringy\EncodingException;
 
 class StringySpec extends ObjectBehavior
 {
+    const UTF_8_TEST_STRING = <<<EOT
+         Arabic بارد وبارد مع دودة ضخمة كيم
+        Braille ⠠⠅⠊⠍⠀⠻⠀⠎⠑⠚⠀⠕⠛⠀⠉⠕⠕⠇
+          Greek Κιμ δροσερό και δροσερό
+            Han 金正日的冷静和冷静
+         Hangul 김위원장의시원하고멋진
+         Hebrew סודות מן העברית הקלאסית
+       Hiragana たたみさむらいてんぷら
+       Katakana ペンビールワインスカートネクタイバナナ
+          Latin Kæmpe tests ér bare über niße
+         Number 13, 3.14 3,14 1.000.000,42 1,000,000.42
+           Thai คิมเย็นและเย็นในวิธีที่เย็น
+       Cyrillic Аз рӯи нуқтаи назари олимони
+EOT;
+
+    public function toggleEncoding($newEncoding)
+    {
+        static $oldEncoding = null;
+
+        if ($oldEncoding === null) {
+            $oldEncoding = mb_internal_encoding();
+        }
+
+        if ($newEncoding === null) {
+            mb_internal_encoding($oldEncoding);
+        } else {
+            mb_internal_encoding($newEncoding);
+        }
+    }
+
+    /**
+     * Setup
+     */
+    public function let()
+    {
+        $this->toggleEncoding('UTF-8');
+    }
+
+    public function letGo()
+    {
+        $this->toggleEncoding(null);
+    }
+
+
+    function testString($encodedAs = 'UTF-8')
+    {
+        return mb_convert_encoding(static::UTF_8_TEST_STRING, $encodedAs, 'UTF-8');
+    }
+
     function it_is_initializable_with_an_empty_string()
     {
         $this->beConstructedWith('');
         $this->shouldHaveType(Stringy::class);
     }
 
+    function it_detects_bad_strings_during_instantiation()
+    {
+        $this->beConstructedWith(
+            $this->testString('UTF-32')
+        );
+
+        $this->shouldThrow(EncodingException::class)->duringInstantiation();
+    }
+
+    function it_can_be_created_from_utf_32()
+    {
+        $this->beConstructedWith(
+            $this->testString('UTF-32'),
+            'UTF-32'
+        );
+
+        $this->string()->shouldBe(static::UTF_8_TEST_STRING);
+    }
+
+    function it_has_a_static_constructor()
+    {
+        $this->beConstructedThrough('create', ['foo']);
+        $this->string()->shouldBe('foo');
+    }
+
+
     function it_contains_a_string()
     {
-        $this->beConstructedWith('foo');
-        $this->string()->shouldBe('foo');
+        $this->beConstructedWith($this->testString());
+        $this->string('UTF-8')->shouldBe($this->testString());
     }
 
     function it_has_sane_default_parameters_in_constructor()
@@ -32,19 +108,37 @@ class StringySpec extends ObjectBehavior
         $this->string()->shouldBe('');
     }
 
+    function it_can_be_constructed_with_strings_of_non_native_encoding()
+    {
+        $this->beConstructedWith($this->testString('UTF-32'), 'UTF-32');
+
+        $this->string('UTF-8')->shouldBe($this->testString());
+    }
+
     function it_can_convert_encoding()
     {
-        $this->beConstructedWith('some string');
+        $this->beConstructedWith($this->testString());
 
         $this->string('UTF-32')->shouldBe(
-            mb_convert_encoding('some string', 'UTF-32')
+            $this->testString('UTF-32')
         );
     }
 
-    function it_has_a_static_constructor()
+    function it_can_compare_similarity()
     {
-        $this->beConstructedThrough('create', ['foo']);
-        $this->string()->shouldBe('foo');
+        $this->beConstructedWith(static::UTF_8_TEST_STRING);
+        $this->is(static::UTF_8_TEST_STRING)->shouldBe(true);
+
+        $this->is(static::create($this->testString()))->shouldBe(true);
+        $this->is(static::create($this->testString())->string())->shouldBe(true);
+
+        $this->is('foo')->shouldBe(false);
+        $this->is(Stringy::create('foo'))->shouldBe(false);
+
+        $this->shouldThrow(EncodingException::class)->during(
+            'is',
+            [$this->testString('UTF-32')]
+        );
     }
 
     function it_can_make_a_string_shorter_via_the_limit_method()
@@ -197,6 +291,19 @@ class StringySpec extends ObjectBehavior
 
         $this->shouldThrow('UnexpectedValueException')
             ->during('centered', [11, '=', 'foo']);
+    }
+
+    public function it_finds_what_comes_before_a_given_string()
+    {
+        $this->beConstructedWith('foo bar baz foo bar baz');
+
+        $this->before('baz')->string()->shouldBe('foo bar ');
+        $this->before('foo')->string()->shouldBe('');
+        $this->before('')->string()->shouldBe($this->string());
+        $this->before('not in parent string')->string()->shouldBe('');
+
+        $this->before('foo', 1)->string()->shouldBe('foo bar baz ');
+        $this->before('bar', 1)->string()->shouldBe('foo bar baz foo ');
     }
 
     /**
