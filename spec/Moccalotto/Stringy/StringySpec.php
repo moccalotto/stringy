@@ -393,7 +393,6 @@ EOT;
 
     /**
      * TODO:
-     * substring
      * upper
      * lower
      * explode
@@ -404,8 +403,6 @@ EOT;
      * includeIn
      * reverse
      * glue
-     * limit
-     * slug
      * length
      * asciiSafe
      * entityEncoded
