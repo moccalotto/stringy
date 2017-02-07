@@ -497,9 +497,12 @@ class Stringy implements ArrayAccess
         return $this->rightTrimAll([$needle]);
     }
 
-    public function includeIn($string)
+    public function includeIn($string, array $extraParams = [])
     {
-        return static::create($string)->format([$this]);
+        return static::create($string)->format(array_merge(
+            [$this],
+            $extraParams
+        ));
     }
 
     public function format(array $args)
