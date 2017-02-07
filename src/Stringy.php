@@ -370,7 +370,7 @@ class Stringy implements ArrayAccess
 
     public function lower()
     {
-        return static::create(mb_strtoupper($this->string, 'UTF-8'), 'UTF-8');
+        return static::create(mb_strtolower($this->string, 'UTF-8'), 'UTF-8');
     }
 
     /**
