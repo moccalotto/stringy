@@ -216,7 +216,7 @@ class Stringy implements ArrayAccess
 
         $pos = $this->positionOf($needle, $index);
 
-        if ($pos === false) {
+        if ($pos === null) {
             return static::create('');
         }
 
@@ -247,7 +247,7 @@ class Stringy implements ArrayAccess
 
         $pos = $this->positionOf($needle, $index);
 
-        if ($pos === false) {
+        if ($pos === null) {
             return static::create('');
         }
 
