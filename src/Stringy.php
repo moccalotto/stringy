@@ -262,6 +262,24 @@ class Stringy implements ArrayAccess
         return $this->substring(0, $pos);
     }
 
+    public function removeAfter($needle, int $index = 0)
+    {
+        if (!$this->contains($needle, $index)) {
+            return clone $this;
+        }
+
+        return $this->before($needle, $index);
+    }
+
+    public function removeBefore($needle, int $index = 0)
+    {
+        if (!$this->contains($needle, $index)) {
+            return clone $this;
+        }
+
+        return $this->after($needle, $index);
+    }
+
     /**
      * Return the text that comes after $start and before $stop.
      *
