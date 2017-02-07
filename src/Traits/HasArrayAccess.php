@@ -1,19 +1,32 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Moccalotto\Stringy\Traits;
 
+use Exception;
 use OutOfRangeException;
-use OutOfBoundsException;
+use InvalidArgumentException;
+use Moccalotto\Stringy\Stringy;
 
 /**
- * Adds array access to Stringy
+ * Adds array access to Stringy.
  */
 trait HasArrayAccess
 {
+    /**
+     * Check if an offset is legal.
+     *
+     * @param int $offset
+     *
+     * @throws InvalidArgumentException if $offset is not an integer
+     * @throws OutOfRangeException      if $offset is < 0
+     * @throws InvalidArgumentException if $offset is larget than the length of the string
+     */
     protected function ensureOffsetOk($offset)
     {
         if ($offset != intval($offset)) {
-            throw new OutOfBoundsException('Invalid non-integer offset');
+            throw new InvalidArgumentException('Invalid non-integer offset');
         }
 
         if ($offset < 0) {
@@ -30,43 +43,78 @@ trait HasArrayAccess
     }
 
     /**
+     * Set character/value in string.
+     *
+     * Now allowed.
+     *
+     * @param mixed $offsetSet
+     * @param mixed $value
+     *
+     * @throws StringyException if called
+     *
      * @SuppressWarnings(PHPMD.UnusedFormalParameters)
      */
     public function offsetSet($offset, $value)
     {
-        throw new StringyException('Direct object modification not allowed');
+        throw new StringyException(sprintf(
+            'Trying to set $this[%s] to %s. Object mutation not allowed',
+            $offset,
+            $value
+        ));
     }
 
     /**
+     * Unset character/value in string.
+     *
+     * Now allowed.
+     *
+     * @param mixed $offsetSet
+     *
+     * @throws StringyException if called
+     *
      * @SuppressWarnings(PHPMD.UnusedFormalParameters)
      */
     public function offsetUnset($offset)
     {
-        throw new StringyException('Direct object modification not allowed');
+        throw new StringyException(sprintf(
+            'Trying to unset [%s]. Object mutation not allowed',
+            $offset
+        ));
     }
 
+    /**
+     * Check hhether an offset exists.
+     *
+     * @param mixed $offset
+     *
+     * @return bool
+     */
     public function offsetExists($offset)
     {
-        if ($offset != intval($offset)) {
+        try {
+            $this->ensureOffsetOk($offset);
+
+            return true;
+        } catch (Exception $e) {
             return false;
         }
-
-        $offset = (int) $offset;
-
-        if ($offset < 0) {
-            return false;
-        }
-
-        if ($offset >= $this->length()) {
-            return false;
-        }
-
-        return true;
     }
 
+    /**
+     * Gets a character from the string.
+     *
+     * @param int $offset The index/position of the character
+     *
+     * @return Stringy The character encoded as a Stringy
+     *
+     * @throws InvalidArgumentException if $offset is not an integer
+     * @throws OutOfRangeException      if $offset is < 0
+     * @throws InvalidArgumentException if $offset is larget than the length of the string
+     */
     public function offsetGet($offset)
     {
         $this->ensureOffsetOk($offset);
+
         return $this->characters()[(int) $offset];
     }
 }
