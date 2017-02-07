@@ -135,12 +135,13 @@ class Stringy implements ArrayAccess
      * Does the string contain $needle.
      *
      * @param Stringy|string $needle
+     * @param int            $index
      *
      * @return bool
      */
-    public function contains($needle) : bool
+    public function contains($needle, int $index = 0) : bool
     {
-        return $this->positionOf($needle) !== null;
+        return $this->positionOf($needle, $index) !== null;
     }
 
     /**
