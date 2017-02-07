@@ -507,7 +507,7 @@ class Stringy implements ArrayAccess
 
     public function format(array $args)
     {
-        $result = @vsprintf($this, static::createMany($args));
+        $result = @vsprintf($this->string, $args);
 
         if ($result === false) {
             $error = error_get_last()['message'];
