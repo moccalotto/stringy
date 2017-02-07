@@ -74,11 +74,11 @@ class Stringy implements ArrayAccess
             throw new EncodingException('Encoding not supported', $string, $encoding);
         }
 
-        $string = mb_convert_encoding($string, 'UTF-8', $encoding);
-
         if (!mb_check_encoding($string, $encoding)) {
             throw new EncodingException('Invalid string', $string, $encoding);
         }
+
+        $string = mb_convert_encoding($string, 'UTF-8', $encoding);
 
         return $string;
     }
