@@ -405,6 +405,10 @@ EOT;
      * glue
      * length
      * asciiSafe
+     * remove
+     * removeMany
+     * replace
+     * replaceMany
      * entityEncoded
      * __toString
      * [array access]
