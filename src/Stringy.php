@@ -444,6 +444,26 @@ class Stringy implements ArrayAccess
         ), 'UTF-8');
     }
 
+    public function replaceMany(array $replacePairs)
+    {
+        return $this->transform(function ($stringy) use ($replacePairs) {
+            return strtr((string) $stringy, $replacePairs);
+        });
+    }
+
+    public function remove($search)
+    {
+        return $this->replace($search, '');
+    }
+
+    public function removeMany(array $searches)
+    {
+        return $this->replaceMany(array_combine(
+            $searches,
+            array_fill(0, count($searches), '')
+        ));
+    }
+
     public function escapeForRegex($delimiter)
     {
         return static::create(preg_quote(
