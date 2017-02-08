@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Moccalotto\Stringy;
 
+use Throwable;
+
 /**
  * Turns variables into a easy-debuggable textual representation.
  */
@@ -41,6 +43,9 @@ class Dumper
         return (new static($maxStringLength))->dump($variable);
     }
 
+    /**
+     * Turn a scalar into a string.
+     */
     protected function scalar($scalar) : Stringy
     {
         if (is_int($scalar)) {
@@ -48,7 +53,7 @@ class Dumper
         }
 
         if (is_float($scalar)) {
-            return Stringy::create('Float(%s)')->format([$scalar]);
+            return Stringy::create('Float(%s)')->format([(float) $scalar]);
         }
 
         if (is_bool($scalar)) {
@@ -57,25 +62,28 @@ class Dumper
 
         return Stringy::create($scalar)
             ->shorten($this->maxStringLength)
+            ->replace("\r", ' ')
+            ->replace("\n", ' ')
             ->includeIn('String("%s")');
     }
 
     protected function callable($callable) : Stringy
     {
+        if (is_string($callable)) {
+            return Stringy::create('Callable(%s)')->format([$callable]);
+        }
+
         if (is_object($callable)) {
             return Stringy::create(get_class($callable))->includeIn('Callable(%s->__invoke)');
         }
 
-        // below this line, $callable must be an array, other posibilities are exhausted.
-        [$classOrObject, $method] = $callable;
+        if (is_array($callable)) {
+            [$classOrObject, $method] = $callable;
 
-        if (is_object($classOrObject)) {
-            return Stringy::create('Callable(%s->%s)')
-                ->format([get_class($classOrObject), $method]);
+            return is_object($classOrObject)
+                ? Stringy::create('Callable(%s->%s)')->format([get_class($classOrObject), $method])
+                : Stringy::create('Callable(%s::%s)')->format([$classOrObject, $method]);
         }
-
-        return Stringy::create('Callable(%s::%s)')
-            ->format([$classOrObject, $method]);
     }
 
     protected function resource($resource)
@@ -89,16 +97,24 @@ class Dumper
 
     protected function object($object)
     {
-        if (method_exists($object, '__toString')) {
-            return Stringy::create('Object(%s: "%s")')
+        if ($object instanceof Throwable) {
+            return Stringy::create('Object(%s: %s:%s)')
                 ->format([
                     get_class($object),
-                    Stringy::create((string) $object)->shorten($this->maxStringLength),
+                    $object->getFile(),
+                    $object->getLine(),
                 ]);
         }
 
-        return Stringy::create('Object(%s)')
-            ->format([get_class($object)]);
+        if (method_exists($object, '__toString')) {
+            return Stringy::create((string) $object)
+                ->shorten($this->maxStringLength, PHP_EOL)
+                ->replace("\r", ' ')
+                ->replace("\n", ' ')
+                ->includeIn('Object(%2$s: %1$s)', [get_class($object)]);
+        }
+
+        return Stringy::create('Object(%s)')->format([get_class($object)]);
     }
 
     protected function array($array)
@@ -108,14 +124,16 @@ class Dumper
 
     public function dump($variable)
     {
-        // check for callable before anything else.
-        // callables can be strings, objects or arrays.
-        if (is_callable($variable)) {
-            return $this->callable($variable);
-        }
-
         if (is_scalar($variable)) {
             return $this->scalar($variable);
+        }
+
+        // check for callable before objects and arrays.
+        // callables can be strings, objects or arrays,
+        // but we do not want to interpret strings like
+        // "strlen", "count" as callables.
+        if (is_callable($variable)) {
+            return $this->callable($variable);
         }
 
         if (is_null($variable)) {
