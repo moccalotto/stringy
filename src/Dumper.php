@@ -88,11 +88,28 @@ class Dumper
 
     protected function resource($resource)
     {
+        $type = get_resource_type($resource);
+
+        if ($type === 'curl') {
+            return Stringy::create('Resource(curl: %s)')
+                ->format([curl_getinfo($resource, CURLINFO_EFFECTIVE_URL)]);
+        }
+
+        if ($type === 'stream') {
+            $metaData = stream_get_meta_data($resource);
+
+            $info = $metaData['uri']
+                ?? $metaData['stream_type']
+                ?? 'unknown type';
+
+            return Stringy::create('Resource(stream: %s)')->format([$info]);
+        }
+
         return Stringy::create('Resource(#%s: %s)')
-        ->format([
-            Stringy::create((string) $resource)->replace('Resource id #', ''),
-            get_resource_type($resource),
-        ]);
+            ->format([
+                Stringy::create((string) $resource)->replace('Resource id #', ''),
+                $type,
+            ]);
     }
 
     protected function object($object)
