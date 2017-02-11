@@ -9,7 +9,6 @@ use UnexpectedValueException;
 
 /**
  * TODO:
- * shorten
  * urlencode
  * camelCase
  * studlyCase
