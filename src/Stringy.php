@@ -405,6 +405,14 @@ class Stringy implements ArrayAccess
         return static::create(mb_strtolower($this->string, 'UTF-8'), 'UTF-8');
     }
 
+    /**
+     * Turn the first letter of every word uppercase.
+     *
+     * Does not interfere with the casing of the rest of the letters.
+     * Words are defined as strings separated by a word-boundary (such as white space, dashes, dots, etc.)
+     *
+     * @return Stringy
+     */
     public function ucwords()
     {
         return $this->transform(function ($stringy) {
