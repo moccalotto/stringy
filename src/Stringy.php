@@ -447,6 +447,37 @@ class Stringy implements ArrayAccess
         });
     }
 
+    /**
+     * Turn first letter lowercased.
+     *
+     * Do not change the casing of the rest of the letters.
+     */
+    public function lcfirst()
+    {
+        if ($this->length() === 0) {
+            return clone $this;
+        }
+
+        $first = $this->limit(1)->lower();
+
+        return $first->append($this->substring(1));
+    }
+
+    /**
+     * Turn first letter uppercased.
+     *
+     * Do not change the casing of the rest of the letters.
+     */
+    public function ucfirst()
+    {
+        if ($this->length() === 0) {
+            return clone $this;
+        }
+
+        $first = $this->limit(1)->upper();
+
+        return $first->append($this->substring(1));
+    }
 
     /**
      * Split the string into segments.
@@ -642,6 +673,31 @@ class Stringy implements ArrayAccess
     public function limit(int $length)
     {
         return $this->substring(0, $length);
+    }
+
+    public function words()
+    {
+        preg_match_all('/\w+/u', $this->string('UTF-8'), $matches);
+
+        return static::createMany($matches[0], 'UTF-8');
+    }
+
+    public function studlyCase()
+    {
+        return static::create('')->glue($this->ucwords()->words());
+    }
+
+    public function camelCase()
+    {
+        return $this->studlyCase()->lcfirst();
+    }
+
+    public function snakeCase($delimiter = '_')
+    {
+        return static::create(
+            preg_replace('/(.)(?=\p{Lu})/u', "\$1$delimiter", $this->string('UTF-8')),
+            'UTF-8'
+        )->lower();
     }
 
     public function slug($separator = '-', string $replaceBadCharWith = '')
