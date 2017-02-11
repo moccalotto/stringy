@@ -150,6 +150,21 @@ EOT;
         $this->limit(4)->string()->shouldBe('test');
     }
 
+    function it_can_make_a_string_shorter_via_the_shorten_method()
+    {
+        $this->beConstructedWith('test string of doom');
+
+        $this->shorten(100)->shouldHaveType(Stringy::class);
+
+        $this->shorten(12)->string()->shouldBe('test string…');
+        $this->shorten(13)->string()->shouldBe('test string …');
+        $this->shorten(13, ' ')->string()->shouldBe('test string…');
+        $this->shorten(15, ' ')->string()->shouldBe('test string…');
+        $this->shorten(16, ' ')->string()->shouldBe('test string of…');
+        $this->shorten(16, ' ', '...')->string()->shouldBe('test string...');
+        $this->shorten(18, ' ', '...')->string()->shouldBe('test string of...');
+    }
+
     function it_can_detect_the_precense_of_substrings()
     {
         $this->beConstructedWith('Foo 1/Foo 2/Foo 3-Foo 4\Foo 5\Foo 6');
@@ -195,6 +210,7 @@ EOT;
         $this->leftTrim('some')->string()->shouldBe('/some regex/');
         $this->leftTrim('regex/')->string()->shouldBe('/some regex/');
 
+        $this->leftTrimAll(['/'])->string()->shouldBe('some regex/');
         $this->leftTrimAll(['/', 'some', ' '])->string()->shouldBe('regex/');
         $this->leftTrimAll(['/', 'some', ' ', 'foo', 'bar', 'baz'])->string()->shouldBe('regex/');
     }
