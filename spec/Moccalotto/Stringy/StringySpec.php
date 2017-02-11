@@ -218,12 +218,13 @@ EOT;
     public function it_can_right_trim()
     {
         $this->beConstructedWith('/some regex/');
-        $this->rightTrimAll(['/'])->string()->shouldBe('/some regex');
+        $this->rightTrim('/')->string()->shouldBe('/some regex');
         $this->rightTrim('regex/')->string()->shouldBe('/some ');
 
         $this->rightTrim('regex')->string()->shouldBe('/some regex/');
         $this->rightTrim('some')->string()->shouldBe('/some regex/');
 
+        $this->rightTrimAll(['/'])->string()->shouldBe('/some regex');
         $this->rightTrimAll(['/', 'regex', ' '])->string()->shouldBe('/some');
         $this->rightTrimAll(['/', 'regex', ' ', 'foo', 'bar', 'baz'])->string()->shouldBe('/some');
     }
