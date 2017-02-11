@@ -405,6 +405,17 @@ class Stringy implements ArrayAccess
         return static::create(mb_strtolower($this->string, 'UTF-8'), 'UTF-8');
     }
 
+    public function ucwords()
+    {
+        return $this->transform(function ($stringy) {
+            return preg_replace_callback('/\b\w+/u', function ($matches) {
+                return static::create($matches[0])
+                    ->limit(1)->upper()
+                    ->append(static::create($matches[0])->substring(1));
+            }, $stringy->string('UTF-8'));
+        });
+    }
+
     /**
      * Split the string into segments.
      *
