@@ -425,6 +425,26 @@ class Stringy implements ArrayAccess
     }
 
     /**
+     * Turn the first letter of every word lowercase.
+     *
+     * Does not interfere with the casing of the rest of the letters.
+     * Words are defined as strings separated by a word-boundary (such as white space, dashes, dots, etc.)
+     *
+     * @return Stringy
+     */
+    public function lcwords()
+    {
+        return $this->transform(function ($stringy) {
+            return preg_replace_callback('/\b\w+/u', function ($matches) {
+                return static::create($matches[0])
+                    ->limit(1)->lower()
+                    ->append(static::create($matches[0])->substring(1));
+            }, $stringy->string('UTF-8'));
+        });
+    }
+
+
+    /**
      * Split the string into segments.
      *
      * @see http://php.net/manual/function.explode.php
