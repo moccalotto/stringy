@@ -391,10 +391,43 @@ EOT;
         $this[0]->string()->shouldBe('f');
     }
 
+    public function it_can_replace_substring()
+    {
+        $this->beConstructedWith('foo bar baz');
+
+        $this->replace('bar', 'bing')->string()->shouldBe('foo bing baz');
+    }
+
+
+    public function it_can_uppercase_a_string()
+    {
+        $this->beConstructedWith('foo');
+
+        $this->upper()->string()->shouldBe('FOO');
+
+        // don't uppercase an already uppercased string.
+        $this->replace('foo', 'FOO')->upper()->string()->shouldBe('FOO');
+
+        // handle a more complex string.
+        $this->replace('foo', 'æøåü€$ÿ123fƒç')->upper()->string()->shouldBe('ÆØÅÜ€$Ÿ123FƑÇ');
+    }
+
+    public function it_can_lowercase_string()
+    {
+        $this->beConstructedWith('FOO');
+
+        $this->lower()->string()->shouldBe('foo');
+
+        // don't lowercase an already lowercased string.
+        $this->replace('FOO', 'foo')->lower()->string()->shouldBe('foo');
+
+        // handle a more complex string.
+        $this->replace('FOO', 'ÆØÅÜ€$Ÿ123FƑÇ')->lower()->string()->shouldBe('æøåü€$ÿ123fƒç');
+    }
+
+
     /**
      * TODO:
-     * upper
-     * lower
      * explode
      * characters
      * append
@@ -407,7 +440,6 @@ EOT;
      * asciiSafe
      * remove
      * removeMany
-     * replace
      * replaceMany
      * entityEncoded
      * __toString
