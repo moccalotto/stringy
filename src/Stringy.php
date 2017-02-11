@@ -417,9 +417,11 @@ class Stringy implements ArrayAccess
     {
         return $this->transform(function ($stringy) {
             return preg_replace_callback('/\b\w+/u', function ($matches) {
-                return static::create($matches[0])
-                    ->limit(1)->upper()
-                    ->append(static::create($matches[0])->substring(1));
+                $match = static::create($matches[0], 'UTF-8');
+                return $match
+                    ->limit(1)
+                    ->upper()
+                    ->append($match->substring(1));
             }, $stringy->string('UTF-8'));
         });
     }
@@ -436,9 +438,11 @@ class Stringy implements ArrayAccess
     {
         return $this->transform(function ($stringy) {
             return preg_replace_callback('/\b\w+/u', function ($matches) {
-                return static::create($matches[0])
-                    ->limit(1)->lower()
-                    ->append(static::create($matches[0])->substring(1));
+                $match = static::create($matches[0], 'UTF-8');
+                return $match
+                    ->limit(1)
+                    ->lower()
+                    ->append($match->substring(1));
             }, $stringy->string('UTF-8'));
         });
     }
@@ -582,9 +586,13 @@ class Stringy implements ArrayAccess
     {
         $regex = static::create('|')->glue(static::mapMany($strings, function ($string) {
             return $string->escapeForRegex('/');
-        }, $strings))->includeIn('/(^%s)+/u');
+        }, $strings))->includeIn('/^(%s)+/u');
 
-        return static::create(preg_replace($regex, '', $this->string));
+        return static::create(preg_replace(
+            $regex->string('UTF-8'),
+            '',
+            $this->string('UTF-8')
+        ), 'UTF-8');
     }
 
     public function rightTrimAll(array $strings)
@@ -593,7 +601,11 @@ class Stringy implements ArrayAccess
             return $string->escapeForRegex('/');
         }))->includeIn('/(%s)+$/u');
 
-        return static::create(preg_replace($regex, '', $this->string), 'UTF-8');
+        return static::create(preg_replace(
+            $regex->string('UTF-8'),
+            '',
+            $this->string('UTF-8')
+        ), 'UTF-8');
     }
 
     public function startsWith($needle) : bool
