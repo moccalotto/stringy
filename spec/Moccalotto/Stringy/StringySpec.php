@@ -425,11 +425,51 @@ EOT;
         $this->replace('FOO', 'ÆØÅÜ€$Ÿ123FƑÇ')->lower()->string()->shouldBe('æøåü€$ÿ123fƒç');
     }
 
+    public function it_can_explode_a_string_into_an_array()
+    {
+        $this->beConstructedWith('foo');
+
+        $result = $this->replace('foo', 'a,b,c')->explode(',');
+
+        $result->shouldBeArray();
+        foreach (['a', 'b', 'c'] as $index => $str) {
+            $result[$index]->shouldHaveType(Stringy::class);
+            $result[$index]->string()->shouldBe($str);
+        }
+
+        $result = $this->replace('foo', 'one word another word')->explode(' ');
+
+        $result->shouldBeArray();
+        foreach (['one', 'word', 'another', 'word'] as $index => $str) {
+            $result[$index]->shouldHaveType(Stringy::class);
+            $result[$index]->string()->shouldBe($str);
+        }
+
+        $result = $this->replace('foo', 'foo')->explode('foo');
+
+        $result->shouldBeArray();
+        foreach (['', ''] as $index => $str) {
+            $result[$index]->shouldHaveType(Stringy::class);
+            $result[$index]->string()->shouldBe($str);
+        }
+    }
+
+    public function it_can_explode_a_string_into_individual_characters()
+    {
+        $this->beConstructedWith('fooæøåπ');
+
+        $result = $this->characters();
+
+        $result->shouldBeArray();
+
+        foreach (['f', 'o', 'o', 'æ', 'ø', 'å', 'π'] as $index => $char) {
+            $result[$index]->shouldHaveType(Stringy::class);
+            $result[$index]->string()->shouldBe($char);
+        }
+    }
 
     /**
      * TODO:
-     * explode
-     * characters
      * append
      * prepend
      * surroundWith
