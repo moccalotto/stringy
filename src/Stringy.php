@@ -620,11 +620,7 @@ class Stringy implements ArrayAccess
             return $string->escapeForRegex('/');
         }, $strings))->includeIn('/^(%s)+/u');
 
-        return static::create(preg_replace(
-            $regex->string('UTF-8'),
-            '',
-            $this->string('UTF-8')
-        ), 'UTF-8');
+        return static::create(preg_replace($regex->string, '', $this->string), 'UTF-8');
     }
 
     public function rightTrimAll(array $strings)
@@ -633,11 +629,7 @@ class Stringy implements ArrayAccess
             return $string->escapeForRegex('/');
         }))->includeIn('/(%s)+$/u');
 
-        return static::create(preg_replace(
-            $regex->string('UTF-8'),
-            '',
-            $this->string('UTF-8')
-        ), 'UTF-8');
+        return static::create(preg_replace($regex->string, '', $this->string), 'UTF-8');
     }
 
     public function startsWith($needle) : bool
