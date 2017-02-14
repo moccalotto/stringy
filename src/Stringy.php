@@ -702,6 +702,11 @@ class Stringy implements ArrayAccess
         return static::create('')->glue($this->ucwords()->words());
     }
 
+    /**
+     * Turn the normally worded string into a camelCasedVersionOfItself
+     *
+     * @return Stringy
+     */
     public function camelCase()
     {
         return $this->studlyCase()->lcfirst();
