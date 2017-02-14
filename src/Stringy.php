@@ -799,7 +799,7 @@ class Stringy implements ArrayAccess
     public function slug($separator = '-', string $replaceBadCharWith = '')
     {
         return $this
-            ->lower()
+            ->snakeCase()
             ->asciiSafe()
             ->transform(function ($stringy) use ($replaceBadCharWith, $separator) {
                 return preg_replace_callback('/[^a-z0-9]/u', function ($matches) use ($replaceBadCharWith, $separator) {

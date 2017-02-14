@@ -372,7 +372,7 @@ EOT;
 
     public function it_can_slugify_a_string()
     {
-        $this->beConstructedWith('some % Ødd_string-that    needs sluGging');
+        $this->beConstructedWith('some % Ødd_string-that    needsSlugging');
 
         $this->slug()->string()->shouldBe('some-odd-string-that-needs-slugging');
         $this->slug('_')->string()->shouldBe('some_odd_string_that_needs_slugging');
