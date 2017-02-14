@@ -735,6 +735,14 @@ class Stringy implements ArrayAccess
             });
     }
 
+    /**
+     * Ensure that all characters are ASCII.
+     *
+     * Convert non-ascii characters to ASCII if possible (i.e. 'ü' is converted to 'u' and 'æ' to 'ae').
+     * Remove any characters that cannot be converted (i.e. most characters that are not based on the latin script).
+     *
+     * @return Stringy
+     */
     public function asciiSafe()
     {
         return static::create(iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $this->string), 'ASCII');
