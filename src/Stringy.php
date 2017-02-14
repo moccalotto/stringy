@@ -25,6 +25,8 @@ class Stringy implements ArrayAccess
     use Traits\HasArrayAccess;
 
     /**
+     * UTF-8 encoded contents of this object.
+     *
      * @var string
      */
     protected $string;
