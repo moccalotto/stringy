@@ -714,7 +714,11 @@ class Stringy implements ArrayAccess
     public function snakeCase($delimiter = '_')
     {
         return static::create(
-            preg_replace('/(.)(?=\p{Lu})/u', "\$1$delimiter", $this->string),
+            preg_replace(
+                '/(.)(?=\p{Lu})/u',
+                static::create($delimiter)->prepend('$1'),
+                $this->string
+            ),
             'UTF-8'
         )->lower();
     }
