@@ -707,6 +707,11 @@ class Stringy implements ArrayAccess
         return $this->studlyCase()->lcfirst();
     }
 
+    /**
+     * Convert a studly- or snake cased string into snake_case
+     *
+     * @param Stringy|string $delimiter
+     */
     public function snakeCase($delimiter = '_')
     {
         return static::create(
