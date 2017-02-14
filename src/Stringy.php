@@ -673,7 +673,7 @@ class Stringy implements ArrayAccess
 
     public function words()
     {
-        preg_match_all('/\w+/u', $this->string('UTF-8'), $matches);
+        preg_match_all('/\w+/u', $this->string, $matches);
 
         return static::createMany($matches[0], 'UTF-8');
     }
@@ -691,7 +691,7 @@ class Stringy implements ArrayAccess
     public function snakeCase($delimiter = '_')
     {
         return static::create(
-            preg_replace('/(.)(?=\p{Lu})/u', "\$1$delimiter", $this->string('UTF-8')),
+            preg_replace('/(.)(?=\p{Lu})/u', "\$1$delimiter", $this->string),
             'UTF-8'
         )->lower();
     }
