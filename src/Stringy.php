@@ -735,7 +735,7 @@ class Stringy implements ArrayAccess
     }
 
     /**
-     * Convert the content string to Title Case
+     * Convert a studly- or snake cased string into a Title Cased Version Of Itself:
      *
      * @return Stringy
      */
