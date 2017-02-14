@@ -724,7 +724,7 @@ class Stringy implements ArrayAccess
     }
 
     /**
-     * Turn the normally worded string into a StudlyCasedVersionOfItself.
+     * Turn the normally worded (or snakeCased) string into a StudlyCasedVersionOfItself.
      *
      * @return Stringy
      */
@@ -738,7 +738,7 @@ class Stringy implements ArrayAccess
     }
 
     /**
-     * Turn the normally worded string into a camelCasedVersionOfItself.
+     * Turn the normally worded (or snakeCased) string into a camelCasedVersionOfItself.
      *
      * @return Stringy
      */
@@ -748,7 +748,7 @@ class Stringy implements ArrayAccess
     }
 
     /**
-     * Convert a studly- or snake cased string into a snake_cased_version_of_itself.
+     * Convert a normally worded, studly cased, and/or camel cased string into a snake_cased_version_of_itself.
      *
      * @param Stringy|string $delimiter
      */
@@ -765,7 +765,7 @@ class Stringy implements ArrayAccess
     }
 
     /**
-     * Turn a studly-, snake- or camel cased word into a string of space-separated lowercase words.
+     * Turn a studly-, snake- and/or camel cased word into a string of space-separated lowercase words.
      *
      * @return Stringy
      */
