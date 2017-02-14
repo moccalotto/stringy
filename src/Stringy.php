@@ -765,6 +765,16 @@ class Stringy implements ArrayAccess
     }
 
     /**
+     * Turn a studly-, snake- or camel cased word into a string of space-separated lowercase words.
+     *
+     * @return Stringy
+     */
+    public function uncase($snakeCaseDelimiter = '_')
+    {
+        return $this->snakeCase(' ')->replace($snakeCaseDelimiter, ' ')->unrepeat(' ');
+    }
+
+    /**
      * Convert a studly- or snake cased string into a Title Cased Version Of Itself:.
      *
      * @return Stringy
