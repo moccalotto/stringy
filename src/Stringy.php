@@ -718,7 +718,7 @@ class Stringy implements ArrayAccess
     }
 
     /**
-     * Convert a studly- or snake cased string into snake_case
+     * Convert a studly- or snake cased string into a snake_cased_version_of_itself
      *
      * @param Stringy|string $delimiter
      */
