@@ -61,7 +61,7 @@ class Stringy implements ArrayAccess
         return array_map($callable, static::createMany($strings));
     }
 
-    protected static function utf8(string $string, string $encoding)
+    protected static function toUtf8(string $string, string $encoding)
     {
         if (!in_array($encoding, mb_list_encodings())) {
             throw new EncodingException('Encoding not supported', $string, $encoding);
@@ -81,7 +81,7 @@ class Stringy implements ArrayAccess
      */
     public function __construct(string $string = '', string $currentEncoding = null)
     {
-        $this->string = static::utf8($string, $currentEncoding ?? mb_internal_encoding());
+        $this->string = static::toUtf8($string, $currentEncoding ?? mb_internal_encoding());
     }
 
     /**
