@@ -9,10 +9,6 @@ use UnexpectedValueException;
 
 /**
  * TODO:
- * camelCase
- * studlyCase
- * titleCase
- * snakeCase
  * uncase (turn cased string into spaced words)
  * random()
  * singular
