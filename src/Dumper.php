@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the Stringy package.
+ *
+ * @package Stringy
+ * @author Kim Ravn Hansen <moccalotto@gmail.com>
+ * @copyright 2017
+ * @license MIT
+ */
+
 declare(strict_types=1);
 
 namespace Moccalotto\Stringy;
@@ -32,7 +41,7 @@ class Dumper
     }
 
     /**
-     * Static helper
+     * Static helper.
      */
     public static function stringify($variable, int $maxStringLength = PHP_INT_MAX) : Stringy
     {
