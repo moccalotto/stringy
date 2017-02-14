@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the Stringy package.
+ *
+ * @package Stringy
+ * @author Kim Ravn Hansen <moccalotto@gmail.com>
+ * @copyright 2017
+ * @license MIT
+ */
+
 declare(strict_types=1);
 
 namespace Moccalotto\Stringy;
@@ -59,11 +68,11 @@ class Stringy implements ArrayAccess
 
     protected static function toUtf8(string $string, string $encoding)
     {
-        if (!in_array($encoding, mb_list_encodings())) {
+        if (! in_array($encoding, mb_list_encodings())) {
             throw new EncodingException('Encoding not supported', $string, $encoding);
         }
 
-        if (!mb_check_encoding($string, $encoding)) {
+        if (! mb_check_encoding($string, $encoding)) {
             throw new EncodingException('Invalid string', $string, $encoding);
         }
 
@@ -95,13 +104,13 @@ class Stringy implements ArrayAccess
         if ($encodedAs === null) {
             $encodedAs = mb_internal_encoding();
         }
-        if (!in_array($encodedAs, mb_list_encodings())) {
+        if (! in_array($encodedAs, mb_list_encodings())) {
             throw new EncodingException('Encoding not supported', $this->string, $encodedAs);
         }
 
         $string = mb_convert_encoding($this->string, $encodedAs, 'UTF-8');
 
-        if (!mb_check_encoding($string, $encodedAs)) {
+        if (! mb_check_encoding($string, $encodedAs)) {
             throw new EncodingException('Invalid string', $string, $encodedAs);
         }
 
@@ -158,20 +167,20 @@ class Stringy implements ArrayAccess
      */
     public function positionOf($needle, int $index = 0)
     {
-        if (!preg_match_all(
+        if (! preg_match_all(
             static::create($needle)->escapeForRegex('/')->prepend('/')->append('/u')->string,
             $this->string,
             $matches,
             PREG_OFFSET_CAPTURE
         )) {
-            return null;
+            return;
         }
 
         $matchCount = count($matches[0]);
 
         // index is too high
         if ($index >= $matchCount) {
-            return null;
+            return;
         }
 
         // index is negative, correct it into a positive index
@@ -181,7 +190,7 @@ class Stringy implements ArrayAccess
 
         // index was so low it could not be correct (i.e. too few matches)
         if ($index < 0) {
-            return null;
+            return;
         }
 
         return $matches[0][$index][1];
@@ -263,7 +272,7 @@ class Stringy implements ArrayAccess
 
     public function removeAfter($needle, int $index = 0)
     {
-        if (!$this->contains($needle, $index)) {
+        if (! $this->contains($needle, $index)) {
             return clone $this;
         }
 
@@ -272,7 +281,7 @@ class Stringy implements ArrayAccess
 
     public function removeBefore($needle, int $index = 0)
     {
-        if (!$this->contains($needle, $index)) {
+        if (! $this->contains($needle, $index)) {
             return clone $this;
         }
 
@@ -398,7 +407,7 @@ class Stringy implements ArrayAccess
             'right' => 'ceil',
         ];
 
-        if (!isset($methodMap[$tieBreak])) {
+        if (! isset($methodMap[$tieBreak])) {
             throw new UnexpectedValueException(sprintf(
                 'tieBreak must be one [%s]',
                 implode(', ', array_keys($methodMap))
@@ -441,6 +450,7 @@ class Stringy implements ArrayAccess
         return $this->transform(function ($stringy) {
             return preg_replace_callback('/\b\w+/u', function ($matches) {
                 $match = static::create($matches[0], 'UTF-8');
+
                 return $match
                     ->limit(1)
                     ->upper()
@@ -462,6 +472,7 @@ class Stringy implements ArrayAccess
         return $this->transform(function ($stringy) {
             return preg_replace_callback('/\b\w+/u', function ($matches) {
                 $match = static::create($matches[0], 'UTF-8');
+
                 return $match
                     ->limit(1)
                     ->lower()
@@ -713,7 +724,7 @@ class Stringy implements ArrayAccess
     }
 
     /**
-     * Turn the normally worded string into a StudlyCasedVersionOfItself
+     * Turn the normally worded string into a StudlyCasedVersionOfItself.
      *
      * @return Stringy
      */
@@ -723,7 +734,7 @@ class Stringy implements ArrayAccess
     }
 
     /**
-     * Turn the normally worded string into a camelCasedVersionOfItself
+     * Turn the normally worded string into a camelCasedVersionOfItself.
      *
      * @return Stringy
      */
@@ -733,7 +744,7 @@ class Stringy implements ArrayAccess
     }
 
     /**
-     * Convert a studly- or snake cased string into a snake_cased_version_of_itself
+     * Convert a studly- or snake cased string into a snake_cased_version_of_itself.
      *
      * @param Stringy|string $delimiter
      */
@@ -750,7 +761,7 @@ class Stringy implements ArrayAccess
     }
 
     /**
-     * Convert a studly- or snake cased string into a Title Cased Version Of Itself:
+     * Convert a studly- or snake cased string into a Title Cased Version Of Itself:.
      *
      * @return Stringy
      */
