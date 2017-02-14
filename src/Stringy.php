@@ -697,7 +697,15 @@ class Stringy implements ArrayAccess
         return $this->substring(0, $length);
     }
 
-    public function words()
+    /**
+     * Convert the content string into an array of words.
+     *
+     * Note that this method will not correctly split kanji, thai, braille, and
+     * other scripts where words are not necessarily clearly bounded.
+     *
+     * @return Stringy[]
+     */
+    public function words() : array
     {
         preg_match_all('/\w+/u', $this->string, $matches);
 
