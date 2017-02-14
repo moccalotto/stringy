@@ -730,7 +730,11 @@ class Stringy implements ArrayAccess
      */
     public function studlyCase()
     {
-        return static::create('')->glue($this->ucwords()->words());
+        return $this->replace('-', ' ')
+            ->replace('_', ' ')
+            ->unrepeat(' ')
+            ->ucwords()
+            ->replace(' ', '');
     }
 
     /**
