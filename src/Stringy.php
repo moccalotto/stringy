@@ -346,6 +346,29 @@ class Stringy implements ArrayAccess
         return static::create(str_repeat($this->string, $times));
     }
 
+    /**
+     * If a substring is repeated 2 or more times in a rowwithin the content string, reduce it to being there only once.
+     *
+     * str('hello    world')->unrepeat(' ') would be turned into 'hello world'
+     * str('foo    bar    baz')->unrepeat(' ') would be turned into 'foo bar baz'
+     *
+     * @param Stringy|string $substring
+     *
+     * @return Stringy
+     */
+    public function unrepeat($substring)
+    {
+        $regex = static::create($substring)
+            ->escapeForRegex('/')
+            ->includeIn('/(%s)+/u');
+
+        return static::create(preg_replace(
+            $regex->string,
+            '$1',
+            $this->string
+        ), 'UTF-8');
+    }
+
     public function rightPadded(int $totalLengthOfResult, $padding = ' ')
     {
         $padding = static::create($padding)[0];
