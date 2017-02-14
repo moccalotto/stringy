@@ -685,6 +685,13 @@ class Stringy implements ArrayAccess
         ));
     }
 
+    /**
+     * Limit the length of the content string by truncating it.
+     *
+     * @param int $length The maximum length (in characters) of the content string.
+     *
+     * @return Stringy
+     */
     public function limit(int $length)
     {
         return $this->substring(0, $length);
