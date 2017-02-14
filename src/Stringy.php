@@ -9,7 +9,6 @@ use UnexpectedValueException;
 
 /**
  * TODO:
- * urlencode
  * camelCase
  * studlyCase
  * titleCase
@@ -700,6 +699,18 @@ class Stringy implements ArrayAccess
             preg_replace('/(.)(?=\p{Lu})/u', "\$1$delimiter", $this->string('UTF-8')),
             'UTF-8'
         )->lower();
+    }
+
+    /**
+     * Turn this string into a url-encoed version of itself.
+     *
+     * The url-encoding is performed while the string is encoed as mb_internal_encoding.
+     *
+     * @return Stringy
+     */
+    public function urlencode()
+    {
+        return static::create($this->string());
     }
 
     public function slug($separator = '-', string $replaceBadCharWith = '')
