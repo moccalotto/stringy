@@ -697,6 +697,11 @@ class Stringy implements ArrayAccess
         return static::createMany($matches[0], 'UTF-8');
     }
 
+    /**
+     * Turn the normally worded string into a StudlyCasedVersionOfItself
+     *
+     * @return Stringy
+     */
     public function studlyCase()
     {
         return static::create('')->glue($this->ucwords()->words());
