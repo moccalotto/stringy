@@ -78,6 +78,9 @@ class Stringy implements ArrayAccess
 
     /**
      * Constructor.
+     *
+     * @param string $string          The string contents of the Stringy object.
+     * @param string $currentEncoding The current encoding of $string.
      */
     public function __construct(string $string = '', string $currentEncoding = null)
     {
