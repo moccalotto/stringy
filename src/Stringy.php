@@ -18,7 +18,6 @@ use UnexpectedValueException;
 
 /**
  * TODO:
- * uncase (turn cased string into spaced words)
  * random()
  * singular
  * plural
