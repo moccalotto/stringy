@@ -725,6 +725,16 @@ class Stringy implements ArrayAccess
     }
 
     /**
+     * Convert the content string to Title Case
+     *
+     * @return Stringy
+     */
+    public function titleCase()
+    {
+        return static::create(mb_convert_case($this->string, MB_CASE_TITLE, 'UTF-8'), 'UTF-8');
+    }
+
+    /**
      * Turn this string into a url-encoed version of itself.
      *
      * The url-encoding is performed while the string is encoed as mb_internal_encoding.
