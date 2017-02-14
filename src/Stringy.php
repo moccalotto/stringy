@@ -444,7 +444,7 @@ class Stringy implements ArrayAccess
                     ->limit(1)
                     ->lower()
                     ->append($match->substring(1));
-            }, $stringy->string('UTF-8'));
+            }, $stringy->string);
         });
     }
 
