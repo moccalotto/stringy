@@ -909,6 +909,13 @@ class Stringy implements ArrayAccess
             ->append($padding);
     }
 
+    public function randomChar()
+    {
+        $index = mt_rand(0, $this->length() - 1);
+
+        return $this[$index];
+    }
+
     public function characters() : array
     {
         return static::createMany(preg_split('//u', $this->string, -1, PREG_SPLIT_NO_EMPTY));
