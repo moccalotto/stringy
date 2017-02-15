@@ -115,6 +115,6 @@ trait HasArrayAccess
     {
         $this->ensureOffsetOk($offset);
 
-        return $this->characters()[(int) $offset];
+        return $this->substring($offset, 1);
     }
 }
