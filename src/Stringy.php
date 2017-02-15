@@ -73,6 +73,27 @@ class Stringy implements ArrayAccess
         return array_map($callable, static::createMany($strings));
     }
 
+    /**
+     * Factory for a random string of a given length.
+     *
+     * @return Stringy
+     */
+    public static function random($length)
+    {
+        $res = static::create(base64_encode(random_bytes($length)), 'UTF-8')
+            ->replace('/', '')
+            ->replace('+', '')
+            ->replace('=', '');
+
+        $remainder = $length - $res->length();
+
+        if ($remainder > 0) {
+            return $res->append(static::random($remainder));
+        }
+
+        return $res->substring(0, $length);
+    }
+
     protected static function toUtf8(string $string, string $encoding)
     {
         if (! in_array($encoding, mb_list_encodings())) {
