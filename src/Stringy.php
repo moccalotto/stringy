@@ -8,7 +8,6 @@
  * @copyright 2017
  * @license MIT
  */
-
 declare(strict_types=1);
 
 namespace Moccalotto\Stringy;
@@ -53,6 +52,14 @@ class Stringy implements ArrayAccess
         return new static($string, $encoding);
     }
 
+    /**
+     * Turn an array of strings into Stringy objects.
+     *
+     * @param Stringy[]|string[] $strings
+     * @param string|null        $encoding
+     *
+     * @return Stringy[]
+     */
     public static function createMany(array $strings, $encoding = null)
     {
         return array_map(function ($string) use ($encoding) {
@@ -96,11 +103,11 @@ class Stringy implements ArrayAccess
 
     protected static function toUtf8(string $string, string $encoding)
     {
-        if (! in_array($encoding, mb_list_encodings())) {
+        if (!in_array($encoding, mb_list_encodings())) {
             throw new EncodingException('Encoding not supported', $string, $encoding);
         }
 
-        if (! mb_check_encoding($string, $encoding)) {
+        if (!($encoding === 'pass' || mb_check_encoding($string, $encoding))) {
             throw new EncodingException('Invalid string', $string, $encoding);
         }
 
@@ -112,8 +119,8 @@ class Stringy implements ArrayAccess
     /**
      * Constructor.
      *
-     * @param string $string          The string contents of the Stringy object.
-     * @param string $currentEncoding The current encoding of $string.
+     * @param string $string          the string contents of the Stringy object
+     * @param string $currentEncoding the current encoding of $string
      */
     public function __construct(string $string = '', string $currentEncoding = null)
     {
@@ -132,13 +139,13 @@ class Stringy implements ArrayAccess
         if ($encodedAs === null) {
             $encodedAs = mb_internal_encoding();
         }
-        if (! in_array($encodedAs, mb_list_encodings())) {
+        if (!in_array($encodedAs, mb_list_encodings())) {
             throw new EncodingException('Encoding not supported', $this->string, $encodedAs);
         }
 
         $string = mb_convert_encoding($this->string, $encodedAs, 'UTF-8');
 
-        if (! mb_check_encoding($string, $encodedAs)) {
+        if (!mb_check_encoding($string, $encodedAs)) {
             throw new EncodingException('Invalid string', $string, $encodedAs);
         }
 
@@ -195,7 +202,7 @@ class Stringy implements ArrayAccess
      */
     public function positionOf($needle, int $index = 0)
     {
-        if (! preg_match_all(
+        if (!preg_match_all(
             static::create($needle)->escapeForRegex('/')->prepend('/')->append('/u')->string,
             $this->string,
             $matches,
@@ -300,7 +307,7 @@ class Stringy implements ArrayAccess
 
     public function removeAfter($needle, int $index = 0)
     {
-        if (! $this->contains($needle, $index)) {
+        if (!$this->contains($needle, $index)) {
             return clone $this;
         }
 
@@ -309,7 +316,7 @@ class Stringy implements ArrayAccess
 
     public function removeBefore($needle, int $index = 0)
     {
-        if (! $this->contains($needle, $index)) {
+        if (!$this->contains($needle, $index)) {
             return clone $this;
         }
 
@@ -322,7 +329,7 @@ class Stringy implements ArrayAccess
      * @param Stringy|string $start
      * @param Stringy|string $stop
      * @param int            $pairIndex search for the nth pair and
-     *                       find what lies between those strings.
+     *                                  find what lies between those strings
      *
      * @return Stringy the string between $start and $stop
      */
@@ -435,7 +442,7 @@ class Stringy implements ArrayAccess
             'right' => 'ceil',
         ];
 
-        if (! isset($methodMap[$tieBreak])) {
+        if (!isset($methodMap[$tieBreak])) {
             throw new UnexpectedValueException(sprintf(
                 'tieBreak must be one [%s]',
                 implode(', ', array_keys($methodMap))
@@ -727,7 +734,7 @@ class Stringy implements ArrayAccess
     /**
      * Limit the length of the content string by truncating it.
      *
-     * @param int $length The maximum length (in characters) of the content string.
+     * @param int $length the maximum length (in characters) of the content string
      *
      * @return Stringy
      */
@@ -931,7 +938,7 @@ class Stringy implements ArrayAccess
         return [
             'string' => $this->string(),
             'length' => $this->length(),
-            'width'  => mb_strwidth($this->string),
+            'width' => mb_strwidth($this->string),
         ];
     }
 }
