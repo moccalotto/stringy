@@ -60,6 +60,14 @@ class Stringy implements ArrayAccess
         }, $strings);
     }
 
+    /**
+     * Turn an array of strings into Stringy objects and map them.
+     *
+     * @param Stringy|string $strings
+     * @param callable       $callable
+     *
+     * @return array
+     */
     public static function mapMany(array $strings, callable $callable) : array
     {
         return array_map($callable, static::createMany($strings));
