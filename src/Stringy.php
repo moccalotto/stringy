@@ -16,11 +16,7 @@ use ArrayAccess;
 use UnexpectedValueException;
 
 /**
- * TODO:
- * random()
- * singular
- * plural
- * https://github.com/ICanBoogie/Inflector.
+ * A php-string turned into an immutable object.
  */
 class Stringy implements ArrayAccess
 {
@@ -916,6 +912,9 @@ class Stringy implements ArrayAccess
             ->append($padding);
     }
 
+    /**
+     * Get a random character from the content string.
+     */
     public function randomChar()
     {
         $index = mt_rand(0, $this->length() - 1);
@@ -923,16 +922,33 @@ class Stringy implements ArrayAccess
         return $this[$index];
     }
 
+    /**
+     * Get an array of characters in the content string.
+     *
+     * @return Stringy[]
+     */
     public function characters() : array
     {
         return static::createMany(preg_split('//u', $this->string, -1, PREG_SPLIT_NO_EMPTY));
     }
 
+    /**
+     * Get the content string encoded as the system's default encoding
+     *
+     * @return string
+     */
     public function __toString()
     {
         return $this->string();
     }
 
+    /**
+     * Get the debug info of the string.
+     *
+     * Useful for PSY shell debugging, var_dump, etc
+     *
+     * @return array
+     */
     public function __debugInfo()
     {
         return [
