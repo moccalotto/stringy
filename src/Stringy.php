@@ -51,12 +51,12 @@ class Stringy implements ArrayAccess
     /**
      * Turn an array of strings into Stringy objects.
      *
-     * @param Stringy[]|string[] $strings
-     * @param string|null        $encoding
+     * @param array       $strings Array of strings or Stringy objects.
+     * @param string|null $encoding
      *
      * @return Stringy[]
      */
-    public static function createMany(array $strings, $encoding = null)
+    public static function createMany(array $strings, $encoding = null) : array
     {
         return array_map(function ($string) use ($encoding) {
             return static::create($string, $encoding);
