@@ -485,11 +485,37 @@ EOT;
         }
     }
 
+    public function it_can_append_two_strings()
+    {
+        $this->beConstructedWith('foo');
+
+        $this->append('')->string()->shouldBe('foo');
+        $this->append(' ')->append('bar')->string()->shouldBe('foo bar');
+        $this->append(' ')->append(Stringy::create('bar'))->string()->shouldBe('foo bar');
+    }
+
+    public function it_can_prepend_string_to_another()
+    {
+        $this->beConstructedWith('foo');
+
+        $this->prepend('')->string()->shouldBe('foo');
+        $this->prepend(' ')->prepend('bar')->string()->shouldBe('bar foo');
+        $this->prepend(' ')->prepend(Stringy::create('bar'))->string()->shouldBe('bar foo');
+    }
+
+    public function it_can_surround_a_string_with_another()
+    {
+        $this->beConstructedWith('bar');
+
+        $this->surroundWith('')->string()->shouldBe('bar');
+        $this->surroundWith('::')->string()->shouldBe('::bar::');
+        $this->surroundWith(Stringy::create('::'))->string()->shouldBe('::bar::');
+        $this->surroundWith(' ')->surroundWith('foo', 'baz')->string()->shouldBe('foo bar baz');
+    }
+
+
     /**
      * TODO:
-     * append
-     * prepend
-     * surroundWith
      * includeIn
      * reverse
      * glue
