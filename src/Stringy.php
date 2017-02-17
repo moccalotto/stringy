@@ -172,6 +172,16 @@ class Stringy implements ArrayAccess, Countable
     }
 
     /**
+     * Get the size (in bytes) of the content string.
+     *
+     * @return int
+     */
+    public function size() : int
+    {
+        return mb_strlen($this->string, '8bit');
+    }
+
+    /**
      * Does the string contain $needle.
      *
      * @param Stringy|string $needle
