@@ -19,7 +19,7 @@ use UnexpectedValueException;
 /**
  * A php-string turned into an immutable object.
  */
-class Stringy implements ArrayAccess
+class Stringy implements ArrayAccess, Countable
 {
     use Traits\HasArrayAccess;
 
@@ -52,7 +52,7 @@ class Stringy implements ArrayAccess
     /**
      * Turn an array of strings into Stringy objects.
      *
-     * @param array       $strings Array of strings or Stringy objects.
+     * @param array       $strings  array of strings or Stringy objects
      * @param string|null $encoding
      *
      * @return Stringy[]
@@ -700,12 +700,14 @@ class Stringy implements ArrayAccess
     public function startsWith($needle) : bool
     {
         $needleStringy = static::create($needle);
+
         return $this->substring(0, $needleStringy->length())->string == $needleStringy->string;
     }
 
     public function endsWith($needle) : bool
     {
         $needleStringy = static::create($needle);
+
         return $this->substring(-$needleStringy->length())->string == $needleStringy->string;
     }
 
@@ -926,14 +928,13 @@ class Stringy implements ArrayAccess
     {
         $length = $this->length();
 
-        for ($subLength = $length >> $minLength; $subLength > 0; $subLength--) {
-            // number of complete possible repetitions.
-            for ($offset = 0; $offset + $subLength < $length; $offset ++) {
+        for ($subLength = $length >> $minLength; $subLength > 0; --$subLength) {
+            for ($offset = 0; $offset + $subLength < $length; ++$offset) {
                 $substring = $this->substring($offset, $subLength);
                 $restLength = $length - $offset;
-                $possibleReps = (int) ($restLength / $subLength);
-                for ($reps = $possibleReps; $reps > 1; $reps--) {
-                    $needle = $substring->repeat($reps);
+                $possibleCycles = (int) ($restLength / $subLength);
+                for ($cycles = $possibleCycles; $cycles > 1; --$cycles) {
+                    $needle = $substring->repeat($cycles);
                     $rest = $this->substring($offset + $needle->length());
 
                     if (!$substring->startsWith($rest)) {
@@ -971,7 +972,7 @@ class Stringy implements ArrayAccess
     }
 
     /**
-     * Get the content string encoded as the system's default encoding
+     * Get the content string encoded as the system's default encoding.
      *
      * @return string
      */
