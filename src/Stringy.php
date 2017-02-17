@@ -607,6 +607,19 @@ class Stringy implements ArrayAccess, Countable
         ), 'UTF-8');
     }
 
+    /**
+     * Perform to => from translation.
+     *
+     * @see http://php.net/manual/function.strtr.php
+     *
+     * @param array $replacePairs an array in the form array('from' => 'to', ...).
+     *
+     * @return Stringy a Stringy where all the occurrences
+     *                 of the array keys have been replaced by the corresponding values.
+     *                 The longest keys will be tried first.
+     *                 Once a substring has been replaced,
+     *                 its new value will not be searched again.
+     */
     public function replaceMany(array $replacePairs)
     {
         return $this->transform(function ($stringy) use ($replacePairs) {
@@ -614,6 +627,13 @@ class Stringy implements ArrayAccess, Countable
         });
     }
 
+    /**
+     * Remove a substring. (I.e. replace $search with an empty string).
+     *
+     * @param Stringy|string $search the substring to be removed.
+     *
+     * @return Stringy
+     */
     public function remove($search)
     {
         return $this->replace($search, '');
