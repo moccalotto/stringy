@@ -630,7 +630,7 @@ class Stringy implements ArrayAccess, Countable
     /**
      * Remove a substring. (I.e. replace $search with an empty string).
      *
-     * @param Stringy|string $search the substring to be removed.
+     * @param Stringy|string $search the substring to be removed
      *
      * @return Stringy
      */
@@ -639,6 +639,14 @@ class Stringy implements ArrayAccess, Countable
         return $this->replace($search, '');
     }
 
+    /**
+     * Remove a number of substrings.
+     *
+     * @param array $searches an array of strings (or Stringy objects)
+     *                        to be removed
+     *
+     * @return Stringy
+     */
     public function removeMany(array $searches)
     {
         return $this->replaceMany(array_combine(
