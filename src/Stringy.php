@@ -371,8 +371,16 @@ class Stringy implements ArrayAccess, Countable
      * @see http://php.net/manual/function.mb-substr.php
      *      for details about the $start and $length paramteers
      *
-     * @param int $start
-     * @param int $length
+     * @param int      $start  The offset of the substring.
+     *                         If negative, it counts backwards
+     *                         from the end of the content string.
+     * @param int|null $length The length of the substring to extract.
+     *                         If negative, it counts backwards from
+     *                         the end of the content string.
+     *                         If NULL, the entire string after $start
+     *                         is extracted.
+     *
+     * @return Stringy
      */
     public function substring(int $start, int $length = null)
     {
