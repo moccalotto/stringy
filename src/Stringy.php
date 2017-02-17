@@ -756,16 +756,44 @@ class Stringy implements ArrayAccess, Countable
         return $this->prepend($left)->append($right ?? $left);
     }
 
+    /**
+     * Remove all instances of $needle from the beginning of the content string.
+     *
+     * @param Stringy|string $needle the substring to remove from the
+     *                               beginning of the content string
+     *
+     * @return Stringy
+     */
     public function leftTrim($needle)
     {
         return $this->leftTrimAll([$needle]);
     }
 
+    /**
+     * Remove all instances of $needle from the end of the content string.
+     *
+     * @param Stringy|string $needle the substring to remove from the
+     *                               end of the content string
+     *
+     * @return Stringy
+     */
     public function rightTrim($needle)
     {
         return $this->rightTrimAll([$needle]);
     }
 
+    /**
+     * Include the content string in another, using sprintf syntax.
+     *
+     * @see http://php.net/manual/function.sprintf.php
+     *
+     * @param Stringy|string $string The template string to use.
+     *                               Must include at least one "%s"
+     *
+     * @param array $extraParams Extra params to use in the sprintf operation.
+     *
+     * @return Stringy
+     */
     public function includeIn($string, array $extraParams = [])
     {
         return static::create($string)->format(array_merge(
