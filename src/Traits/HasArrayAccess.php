@@ -117,4 +117,14 @@ trait HasArrayAccess
 
         return $this->substring($offset, 1);
     }
+
+    /**
+     * Get the number of characters in the content string.
+     *
+     * @return int
+     */
+    public function count()
+    {
+        return $this->length();
+    }
 }
