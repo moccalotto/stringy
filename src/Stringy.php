@@ -127,7 +127,7 @@ class Stringy implements ArrayAccess, Countable
     /**
      * Get the inner string of this object encoded as $encoding.
      *
-     * @param $encodedAs The encoding to get the string as. NULL = mb_internal_encoding
+     * @param string|null $encodedAs The encoding to get the string as. NULL = mb_internal_encoding
      *
      * @return string
      */
