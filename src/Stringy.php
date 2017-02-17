@@ -704,13 +704,8 @@ class Stringy implements ArrayAccess
 
     public function endsWith($needle) : bool
     {
-        $pos = $this->positionOf($needle);
-
-        if ($pos === null) {
-            return false;
-        }
-
-        return $pos + static::create($needle)->length() === $this->length();
+        $needleStringy = static::create($needle);
+        return $this->substring(-$needleStringy->length())->string == $needleStringy->string;
     }
 
     public function reverse()
