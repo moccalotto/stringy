@@ -24,8 +24,7 @@ return PhpCsFixer\Config::create()
 
 $finder = PhpCsFixer\Finder::create()
     ->in('src')
-    ->in('spec')
-    ;
+    ->in('spec');
 
 return Config::create()
     ->finder(DefaultFinder::create()->in(__DIR__))
