@@ -512,11 +512,21 @@ class Stringy implements ArrayAccess, Countable
         );
     }
 
+    /**
+     * Convert the content string to uppercase.
+     *
+     * @return Stringy
+     */
     public function upper()
     {
         return static::create(mb_strtoupper($this->string, 'UTF-8'), 'UTF-8');
     }
 
+    /**
+     * Convert the content string to lowercase.
+     *
+     * @return Stringy
+     */
     public function lower()
     {
         return static::create(mb_strtolower($this->string, 'UTF-8'), 'UTF-8');
