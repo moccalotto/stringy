@@ -116,8 +116,8 @@ class Stringy implements ArrayAccess, Countable
     /**
      * Constructor.
      *
-     * @param string $string          the string contents of the Stringy object
-     * @param string $currentEncoding the current encoding of $string
+     * @param string      $string          the string contents of the Stringy object
+     * @param string|null $currentEncoding the current encoding of $string
      */
     public function __construct(string $string = '', string $currentEncoding = null)
     {
