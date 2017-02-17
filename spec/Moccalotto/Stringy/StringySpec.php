@@ -513,6 +513,33 @@ EOT;
         $this->surroundWith(' ')->surroundWith('foo', 'baz')->string()->shouldBe('foo bar baz');
     }
 
+    public function it_can_detect_the_shortest_cycle_in_a_string()
+    {
+        $this->beConstructedWith('bar');
+
+        $this->cycle()->string()->shouldBe('');
+
+        $this->replace('bar', 'something barbar')
+            ->cycle()->string()->shouldBe('bar');
+
+        $this->replace('bar', '123123123')
+            ->cycle()->string()->shouldBe('123');
+
+        $this->replace('bar', 'bar foofoofoo')
+            ->cycle()->string()->shouldBe('foo');
+
+        $this->replace('bar', 'something foo bar baz foo bar baz fo')
+            ->cycle()->string()->shouldBe(' foo bar baz');
+
+        $this->replace('bar', 'something foo bar baz foo bar baz else')
+            ->cycle()->string()->shouldBe('');
+
+        $this->replace('bar', 'something foo bar baz foo bar baz bar')
+            ->cycle()->string()->shouldBe('');
+
+    }
+
+
 
     /**
      * TODO:

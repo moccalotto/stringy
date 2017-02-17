@@ -910,6 +910,47 @@ class Stringy implements ArrayAccess
     }
 
     /**
+     * Detect if the string ends with a cycle and return said cycle.
+     *
+     * The substring MUST repeat at least one full cycle and be more than $minLength characters long.
+     * The substring does not have to repeat a whole number of times. For instance, it can repeat 2.4 times.
+     *
+     * A valid cycle would be:   "Start Foo Bar Baz Foo Bar Baz Foo"
+     * An invalid cycle would be "Start Foo Bar Baz Foo Bar Baz End"
+     *
+     * @param int $minLength
+     *
+     * @return Stringy
+     */
+    public function cycle(int $minLength = 1)
+    {
+        $length = $this->length();
+
+        for ($subLength = $length >> $minLength; $subLength > 0; $subLength--) {
+            // number of complete possible repetitions.
+            for ($offset = 0; $offset + $subLength < $length; $offset ++) {
+                $substring = $this->substring($offset, $subLength);
+                $restLength = $length - $offset;
+                $possibleReps = (int) ($restLength / $subLength);
+                for ($reps = $possibleReps; $reps > 1; $reps--) {
+                    $needle = $substring->repeat($reps);
+                    $rest = $this->substring($offset + $needle->length());
+
+                    if (!$substring->startsWith($rest)) {
+                        break;
+                    }
+
+                    if ($this->endsWith($needle->append($rest))) {
+                        return $substring;
+                    }
+                }
+            }
+        }
+
+        return static::create('', 'UTF-8');
+    }
+
+    /**
      * Get a random character from the content string.
      */
     public function randomChar()
