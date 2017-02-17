@@ -703,6 +703,15 @@ class Stringy implements ArrayAccess, Countable
         );
     }
 
+    /**
+     * Surround the content string with two other strings.
+     *
+     * @param Stringy|string      $left  the string to be prepended to the content string
+     * @param Stringy|string|null $right The string to be appended to the content string.
+     *                                   if NULL, the $left string will be used.
+     *
+     * @return Stringy
+     */
     public function surroundWith($left, $right = null)
     {
         return $this->prepend($left)->append($right ?? $left);
