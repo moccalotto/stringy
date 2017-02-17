@@ -17,7 +17,7 @@ use ArrayAccess;
 use UnexpectedValueException;
 
 /**
- * A php-string turned into an immutable object.
+ * A php-string turned into an immutable object with a fluent syntax.
  */
 class Stringy implements ArrayAccess, Countable
 {
