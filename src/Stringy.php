@@ -451,6 +451,14 @@ class Stringy implements ArrayAccess, Countable
         return $this->append($padding->repeat($paddingLength));
     }
 
+    /**
+     * Prepend padding to the left hand side of the string.
+     *
+     * @param int            $totalLengthOfResult the total length of the result string
+     * @param Stringy|string $padding             the padding character to use
+     *
+     * @return Stringy
+     */
     public function leftPadded(int $totalLengthOfResult, $padding = ' ')
     {
         $padding = static::create($padding)[0];
@@ -464,6 +472,19 @@ class Stringy implements ArrayAccess, Countable
         return $this->prepend($padding->repeat($paddingLength));
     }
 
+    /**
+     * Add padding to both sides of the content string such that it becomes centered.
+     *
+     * @param int            $totalLengthOfResult the total length of the result string
+     * @param Stringy|string $padding             the padding character to use
+     * @param string         $tieBreak            Can either be "left" or "right".
+     *                                            In case the content string cannot be
+     *                                            centered, should the content string
+     *                                            be to the left of center or the right of
+     *                                            center.
+     *
+     * @return Stringy
+     */
     public function centered(int $totalLengthOfResult, $padding = ' ', $tieBreak = 'left')
     {
         $methodMap = [
