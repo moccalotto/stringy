@@ -787,10 +787,9 @@ class Stringy implements ArrayAccess, Countable
      *
      * @see http://php.net/manual/function.sprintf.php
      *
-     * @param Stringy|string $string The template string to use.
-     *                               Must include at least one "%s"
-     *
-     * @param array $extraParams Extra params to use in the sprintf operation.
+     * @param Stringy|string $string      The sprintf-template string to use.
+     *                                    Must include at least one "%s"
+     * @param array          $extraParams extra params to use in the sprintf operation
      *
      * @return Stringy
      */
@@ -802,6 +801,15 @@ class Stringy implements ArrayAccess, Countable
         ));
     }
 
+    /**
+     * Use the content string as a sprintf-template string.
+     *
+     * @see http://php.net/manual/function.vsprintf.php
+     *
+     * @param array $args an array of args to use á la vsprintf
+     *
+     * @return Stringy
+     */
     public function format(array $args)
     {
         $result = @vsprintf($this->string, $args);
