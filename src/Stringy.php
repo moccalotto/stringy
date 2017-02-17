@@ -14,12 +14,13 @@ namespace Moccalotto\Stringy;
 
 use Countable;
 use ArrayAccess;
+use Serializable;
 use UnexpectedValueException;
 
 /**
  * A php-string turned into an immutable object with a fluent syntax.
  */
-class Stringy implements ArrayAccess, Countable
+class Stringy implements ArrayAccess, Countable, Serializable
 {
     use Traits\HasArrayAccess;
 
@@ -1125,6 +1126,30 @@ class Stringy implements ArrayAccess, Countable
     public function characters() : array
     {
         return static::createMany(preg_split('//u', $this->string, -1, PREG_SPLIT_NO_EMPTY));
+    }
+
+    /**
+     * Serialize this object into a string.
+     *
+     * @see http://php.net/manual/class.serializable.php
+     *
+     * @return string
+     */
+    public function serialize()
+    {
+        return $this->string;
+    }
+
+    /**
+     * Wake this object up after serialization.
+     *
+     * @see http://php.net/manual/class.serializable.php
+     *
+     * @param string $data
+     */
+    public function unserialize($data)
+    {
+        $this->string = $data;
     }
 
     /**
