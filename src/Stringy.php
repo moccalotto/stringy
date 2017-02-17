@@ -655,6 +655,16 @@ class Stringy implements ArrayAccess, Countable
         ));
     }
 
+    /**
+     * Escape a string so it can be used in a regular expression.
+     *
+     * @param Stringy|string $delimiter the delimiter used to start and
+     *                                  terminate the regular expression.
+     *                                  Usually the forward slash will be
+     *                                  used to encluse regular expression.
+     *
+     * @return Stringy|string
+     */
     public function escapeForRegex($delimiter)
     {
         return static::create(preg_quote(
