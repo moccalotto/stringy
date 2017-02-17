@@ -699,7 +699,8 @@ class Stringy implements ArrayAccess
 
     public function startsWith($needle) : bool
     {
-        return $this->positionOf($needle) === 0;
+        $needleStringy = static::create($needle);
+        return $this->substring(0, $needleStringy->length())->string == $needleStringy->string;
     }
 
     public function endsWith($needle) : bool
