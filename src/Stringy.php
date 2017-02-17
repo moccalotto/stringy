@@ -302,6 +302,14 @@ class Stringy implements ArrayAccess, Countable
         return $this->substring(0, $pos);
     }
 
+    /**
+     * Remove the substring that comes after the nth $needle.
+     *
+     * @param Stringy|string $needle
+     * @param int            $index
+     *
+     * @return Stringy
+     */
     public function removeAfter($needle, int $index = 0)
     {
         if (!$this->contains($needle, $index)) {
@@ -311,6 +319,14 @@ class Stringy implements ArrayAccess, Countable
         return $this->before($needle, $index);
     }
 
+    /**
+     * Remove the substring that comes before the nth $needle.
+     *
+     * @param Stringy|string $needle
+     * @param int            $index
+     *
+     * @return Stringy
+     */
     public function removeBefore($needle, int $index = 0)
     {
         if (!$this->contains($needle, $index)) {
