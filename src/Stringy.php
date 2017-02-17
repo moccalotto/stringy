@@ -430,6 +430,14 @@ class Stringy implements ArrayAccess, Countable
         ), 'UTF-8');
     }
 
+    /**
+     * Append padding to the right hand side of the string.
+     *
+     * @param int            $totalLengthOfResult the total length of the result string
+     * @param Stringy|string $padding             the padding character to use
+     *
+     * @return Stringy
+     */
     public function rightPadded(int $totalLengthOfResult, $padding = ' ')
     {
         $padding = static::create($padding)[0];
