@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Moccalotto\Stringy;
 
+use Countable;
 use ArrayAccess;
 use UnexpectedValueException;
 
