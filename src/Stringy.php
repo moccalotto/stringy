@@ -1149,7 +1149,7 @@ class Stringy implements ArrayAccess, Countable
         return [
             'string' => $this->string(),
             'length' => $this->length(),
-            'width' => mb_strwidth($this->string),
+            'size' => $this->size(),
         ];
     }
 }
