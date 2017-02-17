@@ -15,12 +15,13 @@ namespace Moccalotto\Stringy;
 use Countable;
 use ArrayAccess;
 use Serializable;
+use JsonSerializable;
 use UnexpectedValueException;
 
 /**
  * A php-string turned into an immutable object with a fluent syntax.
  */
-class Stringy implements ArrayAccess, Countable, Serializable
+class Stringy implements ArrayAccess, Countable, Serializable, JsonSerializable
 {
     use Traits\HasArrayAccess;
 
@@ -1136,6 +1137,18 @@ class Stringy implements ArrayAccess, Countable, Serializable
      * @return string
      */
     public function serialize()
+    {
+        return $this->string;
+    }
+
+    /**
+     * Serialize this object into a json string.
+     *
+     * @see http://php.net/manual/class.serializable.php
+     *
+     * @return string
+     */
+    public function jsonSerialize()
     {
         return $this->string;
     }
