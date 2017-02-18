@@ -25,6 +25,7 @@ use UnexpectedValueException;
 class Stringy implements ArrayAccess, Countable, Serializable, JsonSerializable
 {
     use Traits\HasArrayAccess;
+    use Traits\CanBeSerialized;
 
     /**
      * UTF-8 encoded contents of this object.
@@ -1162,42 +1163,6 @@ class Stringy implements ArrayAccess, Countable, Serializable, JsonSerializable
     public function characters() : array
     {
         return static::createMany(preg_split('//u', $this->string, -1, PREG_SPLIT_NO_EMPTY));
-    }
-
-    /**
-     * Serialize this object into a string.
-     *
-     * @see http://php.net/manual/class.serializable.php
-     *
-     * @return string
-     */
-    public function serialize()
-    {
-        return $this->string;
-    }
-
-    /**
-     * Serialize this object into a json string.
-     *
-     * @see http://php.net/manual/class.serializable.php
-     *
-     * @return string
-     */
-    public function jsonSerialize()
-    {
-        return $this->string;
-    }
-
-    /**
-     * Wake this object up after serialization.
-     *
-     * @see http://php.net/manual/class.serializable.php
-     *
-     * @param string $data
-     */
-    public function unserialize($data)
-    {
-        $this->string = $data;
     }
 
     /**
