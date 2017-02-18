@@ -2,7 +2,7 @@
     "name": "moccalotto/stringy",
     "type": "library",
     "description": "Easy, powerful and fluent string handling",
-    "keywords": ["moccalotto", "delarative", "fluent", "strings"],
+    "keywords": ["moccalotto", "stringy", "delarative", "fluent", "strings"],
     "homepage": "https://moccalotto.github.io/docs/stringy",
     "license": "MIT",
     "authors": [
