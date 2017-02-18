@@ -1039,6 +1039,15 @@ class Stringy implements ArrayAccess, Countable, Serializable, JsonSerializable
         return static::create(iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $this->string), 'ASCII');
     }
 
+    /**
+     * Convert all non-ASCII  characters into html entities.
+     *
+     * @see http://php.net/manual/function.htmlentities.php
+     *
+     * @param int $flags See php documentation for htmlentities
+     *
+     * @return Stringy
+     */
     public function entityEncoded(int $flags = ENT_QUOTES | ENT_HTML5)
     {
         return $this->transform(function ($stringy) use ($flags) {
@@ -1050,6 +1059,15 @@ class Stringy implements ArrayAccess, Countable, Serializable, JsonSerializable
         });
     }
 
+    /**
+     * Escape this string for use as html text.
+     *
+     * @see http://php.net/manual/function.htmlspecialchars.php
+     *
+     * @param int $flags See php documentation for htmlspecialchars
+     *
+     * @return Stringy
+     */
     public function escapeForHtml(int $flags = ENT_QUOTES | ENT_HTML5)
     {
         return $this->transform(function ($stringy) use ($flags) {
@@ -1126,6 +1144,8 @@ class Stringy implements ArrayAccess, Countable, Serializable, JsonSerializable
 
     /**
      * Get a random character from the content string.
+     *
+     * @return Stringy
      */
     public function randomChar()
     {
