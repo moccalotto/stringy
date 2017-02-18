@@ -26,6 +26,6 @@
         "files": ["src/helpers.php"]
     },
     "scripts": {
-        "test": "phpspec run --format=pretty"
+        "test": "phpspec run --format=pretty -vvv -n"
     }
 }
