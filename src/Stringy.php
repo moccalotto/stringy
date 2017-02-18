@@ -19,7 +19,8 @@ use JsonSerializable;
 use UnexpectedValueException;
 
 /**
- * A php-string turned into an immutable object with a fluent syntax.
+ * A php-string turned into an immutable object with a fluent syntax
+ * for declarative coding.
  */
 class Stringy implements ArrayAccess, Countable, Serializable, JsonSerializable
 {
@@ -127,7 +128,7 @@ class Stringy implements ArrayAccess, Countable, Serializable, JsonSerializable
     }
 
     /**
-     * Get the inner string of this object encoded as $encoding.
+     * Get the content string of this object encoded as $encoding.
      *
      * @param string|null $encodedAs The encoding to get the string as. NULL = mb_internal_encoding
      *
@@ -164,7 +165,7 @@ class Stringy implements ArrayAccess, Countable, Serializable, JsonSerializable
     }
 
     /**
-     * Get the length (in characters) of the inner string.
+     * Get the length (in characters) of the content string.
      *
      * @return int
      */
@@ -262,7 +263,7 @@ class Stringy implements ArrayAccess, Countable, Serializable, JsonSerializable
      *                               0 means the first match, 1 means the second match, etc.
      *                               -1 means the last match, -2 means the penultimate match, etc
      *
-     * @return Stringy a clone of $this with a inner string containing the
+     * @return Stringy a clone of $this with a content string containing the
      *                 part that comes after $needle. If $needle is not
      *                 found, an empty Stringy is returned
      */
@@ -293,7 +294,7 @@ class Stringy implements ArrayAccess, Countable, Serializable, JsonSerializable
      *                               0 means the first match, 1 means the second match, etc.
      *                               -1 means the last match, -2 means the penultimate match, etc
      *
-     * @return Stringy a clone of $this with a inner string containing the
+     * @return Stringy a clone of $this with a content string containing the
      *                 part that comes after $needle. If $needle is not
      *                 found, an empty Stringy is returned
      */
@@ -955,6 +956,9 @@ class Stringy implements ArrayAccess, Countable, Serializable, JsonSerializable
     /**
      * Turn a studly-, snake- and/or camel cased word into a string of space-separated lowercase words.
      *
+     * @param Stringy|string $snakeCaseDelimiter the delimiter used to separate snake-cased words in the
+     *                                           content string
+     *
      * @return Stringy
      */
     public function uncase($snakeCaseDelimiter = '_')
@@ -984,6 +988,17 @@ class Stringy implements ArrayAccess, Countable, Serializable, JsonSerializable
         return static::create($this->string());
     }
 
+    /**
+     * Turn this string into a url-friendly "slug".
+     *
+     * @see https://en.wikipedia.org/wiki/Semantic_URL#Slug
+     *
+     * @param Stringy|string $separator          seperator used to separate words
+     * @param Stringy|string $replaceBadCharWith if a non-translatable character is found,
+     *                                           replace it with this character
+     *
+     * @return Stringy
+     */
     public function slug($separator = '-', string $replaceBadCharWith = '')
     {
         return $this
