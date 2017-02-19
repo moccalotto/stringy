@@ -52,6 +52,7 @@ EOT;
      */
     public function let()
     {
+        setlocale(LC_ALL, 'en_US.UTF-8');
         $this->toggleEncoding('UTF-8');
     }
 
@@ -59,7 +60,6 @@ EOT;
     {
         $this->toggleEncoding(null);
     }
-
 
     function testString($encodedAs = 'UTF-8')
     {
