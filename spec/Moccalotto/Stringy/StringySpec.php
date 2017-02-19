@@ -560,10 +560,44 @@ EOT;
         $this->replace('foo', '')->reverse()->string()->shouldBe('');
     }
 
+    public function it_can_be_used_as_glue_to_implode_an_array()
+    {
+        $this->beConstructedWith(' ');
+
+        $this->glue(['foo', 'bar', 'baz'])->string()->shouldBe('foo bar baz');
+
+        $this->glue([
+            Stringy::create('foo', 'UTF-8'),
+            Stringy::create('bar', 'UTF-8'),
+            Stringy::create('baz', 'UTF-8'),
+        ])->string()->shouldBe('foo bar baz');
+    }
+
+    public function it_can_return_its_length()
+    {
+        $this->beConstructedWith('foo');
+
+        $this->length()->shouldBe(3);
+
+        $this->replace('foo', $this->testString())
+            ->length()
+            ->shouldBe(mb_strlen($this->testString(), 'UTF-8'));
+    }
+
+    public function it_can_remove_a_substring()
+    {
+        $this->beConstructedWith('foo bar bing baz');
+
+        $this->remove('bing ')->string()->shouldBe('foo bar baz');
+
+        $this->remove('o')->string()->shouldBe('f bar bing baz');
+        $this->remove('a')->string()->shouldBe('foo br bing bz');
+        $this->remove('b')->string()->shouldBe('foo ar ing az');
+        $this->remove(' ')->string()->shouldBe('foobarbingbaz');
+    }
+
     /**
      * TODO:
-     * glue
-     * length
      * asciiSafe
      * remove
      * removeMany
