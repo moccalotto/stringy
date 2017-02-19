@@ -17,6 +17,7 @@ use ArrayAccess;
 use Serializable;
 use JsonSerializable;
 use UnexpectedValueException;
+use Behat\Transliterator\Transliterator;
 
 /**
  * A php-string turned into an immutable object with a fluent syntax
@@ -1039,7 +1040,10 @@ class Stringy implements ArrayAccess, Countable, Serializable, JsonSerializable
      */
     public function asciiSafe()
     {
-        return static::create(iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $this->string), 'ASCII');
+        return static::create(
+            Transliterator::utf8ToAscii($this->replace('€', 'EUR')->string),
+            'ASCII'
+        );
     }
 
     /**
