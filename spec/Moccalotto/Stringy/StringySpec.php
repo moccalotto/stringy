@@ -536,14 +536,29 @@ EOT;
 
         $this->replace('bar', 'something foo bar baz foo bar baz bar')
             ->cycle()->string()->shouldBe('');
-
     }
 
+    public function it_can_be_included_in_another_template_string()
+    {
+        $this->beConstructedWith('foo');
+
+        $this->includeIn('')->string()->shouldBe('');
+        $this->includeIn('%s')->string()->shouldBe('foo');
+        $this->includeIn('%s bar baz')->string()->shouldBe('foo bar baz');
+        $this->includeIn('%s %s baz', ['bar'])->string()->shouldBe('foo bar baz');
+        $this->includeIn('%s %s %s', ['bar', 'baz'])->string()->shouldBe('foo bar baz');
+    }
+
+    public function it_can_be_reversed()
+    {
+        $this->beConstructedWith('foo');
+
+        $this->reverse()->string()->shouldBe('oof');
+    }
 
 
     /**
      * TODO:
-     * includeIn
      * reverse
      * glue
      * length
