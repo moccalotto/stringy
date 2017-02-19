@@ -1126,7 +1126,7 @@ class Stringy implements ArrayAccess, Countable, Serializable, JsonSerializable
     {
         $length = $this->length();
 
-        for ($subLength = $length >> $minLength; $subLength > 0; --$subLength) {
+        for ($subLength = intval($length / ($minLength + 1)); $subLength > 0; --$subLength) {
             for ($offset = 0; $offset + $subLength < $length; ++$offset) {
                 $substring = $this->substring($offset, $subLength);
                 $restLength = $length - $offset;
