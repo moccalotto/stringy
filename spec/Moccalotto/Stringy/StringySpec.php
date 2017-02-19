@@ -554,12 +554,11 @@ EOT;
         $this->beConstructedWith('foo');
 
         $this->reverse()->string()->shouldBe('oof');
+        $this->replace('foo', '')->reverse()->string()->shouldBe('');
     }
-
 
     /**
      * TODO:
-     * reverse
      * glue
      * length
      * asciiSafe
