@@ -436,7 +436,7 @@ EOT;
         $this->lower()->string()->shouldBe('foo');
 
         // don't lowercase an already lowercased string.
-        $this->replace('FOO', 'foo')->lower()->string()->shouldBe('foo');
+        $this->lower()->lower()->string()->shouldBe($this->lower()->string());
 
         // handle a more complex string.
         $this->replace('FOO', 'ÆØÅÜ€$Ÿ123FƑÇ')->lower()->string()->shouldBe('æøåü€$ÿ123fƒç');
