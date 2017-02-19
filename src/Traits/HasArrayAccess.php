@@ -29,11 +29,7 @@ trait HasArrayAccess
             throw new InvalidArgumentException('Invalid non-integer offset');
         }
 
-        if ($offset < 0) {
-            throw new OutOfRangeException('Offset must be >= 0');
-        }
-
-        if ($offset >= $this->length()) {
+        if (abs($offset) >= $this->length()) {
             throw new OutOfRangeException(sprintf(
                 'Illegal offset "%d". Must be lower than length of string: %d',
                 $offset,
