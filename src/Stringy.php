@@ -158,7 +158,7 @@ class Stringy implements ArrayAccess, Countable, Serializable, JsonSerializable
      *
      * @param Stringy|string $string
      *
-     * @return bool only true if the two strings are equal
+     * @return bool only true if the two strings are equal using strict (===) comparison.
      */
     public function is($string) : bool
     {
