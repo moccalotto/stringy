@@ -594,6 +594,8 @@ EOT;
         $this->remove('a')->string()->shouldBe('foo br bing bz');
         $this->remove('b')->string()->shouldBe('foo ar ing az');
         $this->remove(' ')->string()->shouldBe('foobarbingbaz');
+
+        $this->removeMany(['a', 'o', 'b', ' '])->string()->shouldBe('fringz');
     }
 
     public function it_can_make_a_string_safe_for_ascii()
@@ -602,17 +604,17 @@ EOT;
 
         $this->asciiSafe()->string()->shouldBe('foo');
 
-        $this->replace('foo', '金正日的冷静和冷静')->asciiSafe()->string()->shouldBe('');
-
+        $this->replace('foo', '金')->asciiSafe()->string()->shouldBe('Jin ');
+        $this->replace('foo', 'u')->asciiSafe()->string()->shouldBe('u');
         $this->replace('foo', 'æ')->asciiSafe()->string()->shouldBe('ae');
         $this->replace('foo', 'ø')->asciiSafe()->string()->shouldBe('o');
+        $this->replace('foo', 'π')->asciiSafe()->string()->shouldBe('p');
         $this->replace('foo', '€')->asciiSafe()->string()->shouldBe('EUR');
     }
 
 
     /**
      * TODO:
-     * remove
      * removeMany
      * replaceMany
      * entityEncoded
