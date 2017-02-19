@@ -1110,28 +1110,39 @@ class Stringy implements ArrayAccess, Countable, Serializable, JsonSerializable
     }
 
     /**
-     * Detect if the string ends with a cycle and return said cycle.
+     * Detect if the string ends with a repeating pattern.
      *
-     * The substring MUST repeat at least one full cycle and be more than $minLength characters long.
-     * The substring does not have to repeat a whole number of times. For instance, it can repeat 2.4 times.
+     * The pattern MUST appear at least $minCycles number of times in a row.
+     * The pattern MUST be at least $minChars characters long.
+     * The string must end with part of the pattern.
      *
-     * A valid cycle would be:   "Start Foo Bar Baz Foo Bar Baz Foo"
-     * An invalid cycle would be "Start Foo Bar Baz Foo Bar Baz End"
+     * In the string: "Start Foo Bar Baz Foo Bar Baz Foo", the pattern would be " Foo Bar Baz"
+     * In the string: "Start Foo Bar Baz Foo Bar Baz End", there would be no pattern because the string
+     * does not end with the part of the pattern.
      *
-     * @param int $minLength
+     * @param int $minChars  The minimum length (in characters) of the pattern.
+     * @param int $minCycles The minimum number of full cycles the pattern must appear in.
      *
      * @return Stringy
      */
-    public function cycle(int $minLength = 1)
+    public function cycle(int $minChars = 1, int $minCycles = 2)
     {
         $length = $this->length();
 
-        for ($subLength = intval($length / ($minLength + 1)); $subLength > 0; --$subLength) {
+        if ($minChars < 1) {
+            throw new UnexpectedValueException('minChars must be > 0');
+        }
+
+        if ($minCycles < 1) {
+            throw new UnexpectedValueException('minCycles must be > 0');
+        }
+
+        for ($subLength = $length; $subLength >= $minChars; --$subLength) {
             for ($offset = 0; $offset + $subLength < $length; ++$offset) {
                 $substring = $this->substring($offset, $subLength);
                 $restLength = $length - $offset;
                 $possibleCycles = (int) ($restLength / $subLength);
-                for ($cycles = $possibleCycles; $cycles > 1; --$cycles) {
+                for ($cycles = $possibleCycles; $cycles >= $minCycles; --$cycles) {
                     $needle = $substring->repeat($cycles);
                     $rest = $this->substring($offset + $needle->length());
 
