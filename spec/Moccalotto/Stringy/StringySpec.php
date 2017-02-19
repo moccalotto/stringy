@@ -143,14 +143,14 @@ EOT;
         );
     }
 
-    function it_can_make_a_string_shorter_via_the_limit_method()
+    function it_can_be_truncated()
     {
         $this->beConstructedWith('test string');
         $this->limit(0)->shouldHaveType(Stringy::class);
         $this->limit(4)->string()->shouldBe('test');
     }
 
-    function it_can_make_a_string_shorter_via_the_shorten_method()
+    function it_can_be_shortened_for_human_readability()
     {
         $this->beConstructedWith('test string of doom');
 
@@ -201,7 +201,7 @@ EOT;
         $this->positionOf('Bar', 6)->shouldBe(null);
     }
 
-    public function it_can_left_trim()
+    public function it_can_be_left_trimmed()
     {
         $this->beConstructedWith('/some regex/');
         $this->leftTrim('/')->string()->shouldBe('some regex/');
@@ -215,7 +215,7 @@ EOT;
         $this->leftTrimAll(['/', 'some', ' ', 'foo', 'bar', 'baz'])->string()->shouldBe('regex/');
     }
 
-    public function it_can_right_trim()
+    public function it_can_be_right_trimmed()
     {
         $this->beConstructedWith('/some regex/');
         $this->rightTrim('/')->string()->shouldBe('/some regex');
@@ -229,7 +229,7 @@ EOT;
         $this->rightTrimAll(['/', 'regex', ' ', 'foo', 'bar', 'baz'])->string()->shouldBe('/some');
     }
 
-    public function it_can_repeat_a_string()
+    public function it_can_be_repeated()
     {
         $this->beConstructedWith('foo');
 
@@ -237,7 +237,7 @@ EOT;
         $this->repeat(0)->string()->shouldBe('');
     }
 
-    public function it_can_detect_if_a_string_starts_with()
+    public function it_can_detect_if_it_starts_with_a_given_string()
     {
         $this->beConstructedWith('foo bar baz');
 
@@ -248,7 +248,7 @@ EOT;
         $this->startsWith('foo baz')->shouldBe(false);
     }
 
-    public function it_can_detect_if_a_string_ends_with()
+    public function it_can_detect_if_it_ends_with_a_given_string()
     {
         $this->beConstructedWith('foo bar baz');
 
@@ -265,13 +265,9 @@ EOT;
 
         $this->format(['bar'])->string()->shouldBe('foo bar baz');
         $this->format(['bing'])->string()->shouldBe('foo bing baz');
-    }
 
-    public function it_throws_exceptions_if_format_is_used_incorrectly()
-    {
-        $this->beConstructedWith('%s %s');
-
-        $this->shouldThrow(StringyException::class)->during('format', [['only one arg']]);
+        // should throw exception if not enough sprintf args
+        $this->shouldThrow(StringyException::class)->during('format', [[]]);
     }
 
     public function it_can_right_pad_a_string()
@@ -312,7 +308,7 @@ EOT;
             ->during('centered', [11, '=', 'foo']);
     }
 
-    public function it_finds_what_comes_before_a_given_substring()
+    public function it_can_be_reduced_to_the_content_before_a_given_substring()
     {
         $this->beConstructedWith('foo bar baz foo bar baz');
 
@@ -326,7 +322,7 @@ EOT;
         $this->before('bar', 2)->string()->shouldBe('');
     }
 
-    public function it_finds_what_comes_after_a_given_substring()
+    public function it_can_be_reduced_to_the_content_after_a_given_substring()
     {
         $this->beConstructedWith('foo bar baz foo bar baz');
 
@@ -340,7 +336,7 @@ EOT;
         $this->after('bar', 2)->string()->shouldBe('');
     }
 
-    public function it_finds_the_string_between_two_substrings()
+    public function it_can_be_reduced_to_the_content_between_two_substrings()
     {
         $this->beConstructedWith('foo bar1 baz foo bar2 baz');
 
@@ -370,7 +366,7 @@ EOT;
         })->string()->shouldBe('THING');
     }
 
-    public function it_can_slugify_a_string()
+    public function it_can_be_sluggified()
     {
         $this->beConstructedWith('some % Ødd_string-that    needsSlugging');
 
@@ -406,6 +402,12 @@ EOT;
         $this->beConstructedWith('foo bar baz');
 
         $this[0]->string()->shouldBe('f');
+        $this[1]->string()->shouldBe('o');
+        $this[2]->string()->shouldBe('o');
+
+        $this[-3]->string()->shouldBe('b');
+        $this[-2]->string()->shouldBe('a');
+        $this[-1]->string()->shouldBe('z');
     }
 
     public function it_can_replace_substring()
@@ -416,7 +418,7 @@ EOT;
     }
 
 
-    public function it_can_uppercase_a_string()
+    public function it_can_be_uppercased()
     {
         $this->beConstructedWith('foo');
 
@@ -429,7 +431,7 @@ EOT;
         $this->replace('foo', 'æøåü€$ÿ123fƒç')->upper()->string()->shouldBe('ÆØÅÜ€$Ÿ123FƑÇ');
     }
 
-    public function it_can_lowercase_string()
+    public function it_can_be_lowercased()
     {
         $this->beConstructedWith('FOO');
 
@@ -442,7 +444,7 @@ EOT;
         $this->replace('FOO', 'ÆØÅÜ€$Ÿ123FƑÇ')->lower()->string()->shouldBe('æøåü€$ÿ123fƒç');
     }
 
-    public function it_can_explode_a_string_into_an_array()
+    public function it_can_be_exploded_into_an_array()
     {
         $this->beConstructedWith('foo');
 
@@ -457,6 +459,7 @@ EOT;
         $result = $this->replace('foo', 'one word another word')->explode(' ');
 
         $result->shouldBeArray();
+
         foreach (['one', 'word', 'another', 'word'] as $index => $str) {
             $result[$index]->shouldHaveType(Stringy::class);
             $result[$index]->string()->shouldBe($str);
@@ -471,7 +474,7 @@ EOT;
         }
     }
 
-    public function it_can_explode_a_string_into_individual_characters()
+    public function it_can_become_an_array_of_characters()
     {
         $this->beConstructedWith('fooæøåπ');
 
@@ -485,7 +488,7 @@ EOT;
         }
     }
 
-    public function it_can_append_two_strings()
+    public function it_can_append_a_substring()
     {
         $this->beConstructedWith('foo');
 
@@ -494,7 +497,7 @@ EOT;
         $this->append(' ')->append(Stringy::create('bar'))->string()->shouldBe('foo bar');
     }
 
-    public function it_can_prepend_string_to_another()
+    public function it_can_prepend_a_substring()
     {
         $this->beConstructedWith('foo');
 
@@ -503,7 +506,7 @@ EOT;
         $this->prepend(' ')->prepend(Stringy::create('bar'))->string()->shouldBe('bar foo');
     }
 
-    public function it_can_surround_a_string_with_another()
+    public function it_can_be_surrounded_by_two_other_strings()
     {
         $this->beConstructedWith('bar');
 
