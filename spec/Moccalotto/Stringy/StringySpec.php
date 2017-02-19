@@ -423,7 +423,7 @@ EOT;
         $this->upper()->string()->shouldBe('FOO');
 
         // don't uppercase an already uppercased string.
-        $this->replace('foo', 'FOO')->upper()->string()->shouldBe('FOO');
+        $this->upper()->upper()->string()->shouldBe($this->upper()->string());
 
         // handle a more complex string.
         $this->replace('foo', 'æøåü€$ÿ123fƒç')->upper()->string()->shouldBe('ÆØÅÜ€$Ÿ123FƑÇ');
