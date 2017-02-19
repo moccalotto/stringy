@@ -626,7 +626,6 @@ EOT;
 
     /**
      * TODO:
-     * replaceMany
      * entityEncoded
      * __toString
      * [array access]
