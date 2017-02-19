@@ -596,9 +596,22 @@ EOT;
         $this->remove(' ')->string()->shouldBe('foobarbingbaz');
     }
 
+    public function it_can_make_a_string_safe_for_ascii()
+    {
+        $this->beConstructedWith('foo');
+
+        $this->asciiSafe()->string()->shouldBe('foo');
+
+        $this->replace('foo', '金正日的冷静和冷静')->asciiSafe()->string()->shouldBe('');
+
+        $this->replace('foo', 'æ')->asciiSafe()->string()->shouldBe('ae');
+        $this->replace('foo', 'ø')->asciiSafe()->string()->shouldBe('o');
+        $this->replace('foo', '€')->asciiSafe()->string()->shouldBe('EUR');
+    }
+
+
     /**
      * TODO:
-     * asciiSafe
      * remove
      * removeMany
      * replaceMany
