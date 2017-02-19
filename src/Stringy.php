@@ -759,6 +759,8 @@ class Stringy implements ArrayAccess, Countable, Serializable, JsonSerializable
     /**
      * Surround the content string with two other strings.
      *
+     * Essentially the same as calling prepend and append in one single operation.
+     *
      * @param Stringy|string      $left  the string to be prepended to the content string
      * @param Stringy|string|null $right The string to be appended to the content string.
      *                                   if NULL, the $left string will be used.
