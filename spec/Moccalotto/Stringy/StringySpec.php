@@ -415,6 +415,17 @@ EOT;
         $this->beConstructedWith('foo bar baz');
 
         $this->replace('bar', 'bing')->string()->shouldBe('foo bing baz');
+
+        $this->replaceMany([
+            'foo' => 'food',
+            'baz' => 'with booze',
+        ])->string()->shouldBe('food bar with booze');
+
+        $this->replaceMany([
+            'o' => 'x',
+            'x' => '',
+            ' ' => 'o',
+        ])->string()->shouldBe('fxxobarobaz');
     }
 
 
@@ -615,7 +626,6 @@ EOT;
 
     /**
      * TODO:
-     * removeMany
      * replaceMany
      * entityEncoded
      * __toString
