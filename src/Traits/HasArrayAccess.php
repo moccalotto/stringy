@@ -20,13 +20,12 @@ trait HasArrayAccess
      * @param int $offset
      *
      * @throws InvalidArgumentException if $offset is not an integer
-     * @throws OutOfRangeException      if $offset is < 0
-     * @throws InvalidArgumentException if $offset is larget than the length of the string
+     * @throws OutOfRangeException      if $offset is larget than the length of the string
      */
     protected function ensureOffsetOk($offset)
     {
-        if ($offset != intval($offset)) {
-            throw new InvalidArgumentException('Invalid non-integer offset');
+        if (filter_var($offset, FILTER_VALIDATE_INT) === false) {
+            throw new InvalidArgumentException('Array offset must be an integer');
         }
 
         if (abs($offset) >= $this->length()) {
@@ -104,14 +103,13 @@ trait HasArrayAccess
      * @return Stringy The character encoded as a Stringy
      *
      * @throws InvalidArgumentException if $offset is not an integer
-     * @throws OutOfRangeException      if $offset is < 0
-     * @throws InvalidArgumentException if $offset is larget than the length of the string
+     * @throws OutOfRangeException      if $offset is larget than the length of the string
      */
     public function offsetGet($offset)
     {
         $this->ensureOffsetOk($offset);
 
-        return $this->substring($offset, 1);
+        return $this->substring((int) $offset, 1);
     }
 
     /**
