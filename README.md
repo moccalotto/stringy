@@ -81,6 +81,9 @@ public static function random($length)
 public function string($encodedAs = null) : string
 ```
 
+### String comparison
+
+```php
 /**
  * Compare this string to another.
  *
@@ -89,6 +92,7 @@ public function string($encodedAs = null) : string
  * @return bool only true if the two strings are equal using strict (===) comparison.
  */
 public function is($string) : bool
+```
 
 /**
  * Get the length (in characters) of the content string.
