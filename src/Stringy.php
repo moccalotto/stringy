@@ -25,8 +25,10 @@ use Behat\Transliterator\Transliterator;
  */
 class Stringy implements ArrayAccess, Countable, Serializable, JsonSerializable
 {
+    use Traits\HasDebugInfo;
     use Traits\HasArrayAccess;
     use Traits\CanBeSerialized;
+    use Traits\HasToStringMethod;
 
     /**
      * UTF-8 encoded contents of this object.
@@ -1226,29 +1228,4 @@ class Stringy implements ArrayAccess, Countable, Serializable, JsonSerializable
         return static::createMany(preg_split('//u', $this->string, -1, PREG_SPLIT_NO_EMPTY));
     }
 
-    /**
-     * Get the content string encoded as the system's default encoding.
-     *
-     * @return string
-     */
-    public function __toString()
-    {
-        return $this->string();
-    }
-
-    /**
-     * Get the debug info of the string.
-     *
-     * Useful for PSY shell debugging, var_dump, etc
-     *
-     * @return array
-     */
-    public function __debugInfo()
-    {
-        return [
-            'string' => $this->string(),
-            'length' => $this->length(),
-            'size' => $this->size(),
-        ];
-    }
 }
