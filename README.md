@@ -8,8 +8,6 @@ Easy, powerful and fluent string handling
 
 ## Documentation
 
-{:toc}
-
 ### Constructors
 
 Normal constructor.
