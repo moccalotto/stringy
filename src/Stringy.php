@@ -48,6 +48,10 @@ class Stringy implements ArrayAccess, Countable, Serializable, JsonSerializable
      * @param string $encoding
      *
      * @return string
+     *
+     * @throws EncodingException in case $encoding is not recognized via mb_list_encodings()
+     * @throws EncodingException if it appears that $string contians an encoding attack.
+     *                            i.e. if it cannot be validated via mb_check_encoding()
      */
     protected static function toUtf8(string $string, string $encoding) : string
     {
