@@ -36,6 +36,17 @@ class Stringy implements ArrayAccess, Countable, Serializable, JsonSerializable
     protected $string;
 
     /**
+     * Constructor.
+     *
+     * @param string      $string          the string contents of the Stringy object
+     * @param string|null $currentEncoding the current encoding of $string
+     */
+    public function __construct(string $string = '', string $currentEncoding = null)
+    {
+        $this->string = static::toUtf8($string, $currentEncoding ?? mb_internal_encoding());
+    }
+
+    /**
      * Factory.
      *
      * @param Stringy|string $string   The string to be Stringyfied.
@@ -116,17 +127,6 @@ class Stringy implements ArrayAccess, Countable, Serializable, JsonSerializable
         $string = mb_convert_encoding($string, 'UTF-8', $encoding);
 
         return $string;
-    }
-
-    /**
-     * Constructor.
-     *
-     * @param string      $string          the string contents of the Stringy object
-     * @param string|null $currentEncoding the current encoding of $string
-     */
-    public function __construct(string $string = '', string $currentEncoding = null)
-    {
-        $this->string = static::toUtf8($string, $currentEncoding ?? mb_internal_encoding());
     }
 
     /**
