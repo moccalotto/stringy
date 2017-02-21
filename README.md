@@ -180,6 +180,9 @@ public function size() : int
 ```
 
 
+### Position of substring
+
+```php
 /**
  * Find a the position of the first character of $needle within this string.
  *
@@ -191,9 +194,49 @@ public function size() : int
  * @return int|null The position of the first character of the $needle found.
  *                  NULL if $needle with the given $index could not be found
  *                  NOTE: that this behavior deviates from strpos in that strpos returns FALSE
- *                  in case $needle was not found
+ *                  in case $needle was not found.
  */
 public function positionOf($needle, int $index = 0)
+```
+
+### Getting words and characters from the string.
+
+You can get individual characters via the php array accessor language construct like si:
+
+```php
+$str = str('foo bar baz');
+
+$str[0]->string() === 'f'; // true
+$str[1]->string() === 'o'; // true
+$str[2]->string() === 'o'; // true
+
+$str[-3]->string() === 'b' // true
+$str[-2]->string() === 'a' // true
+$str[-1]->string() === 'z' // true
+
+$x = $str[30]; // OutOfRangeException
+```
+
+```php
+/**
+ * Convert the content string into an array of words.
+ *
+ * Note that this method will not correctly split kanji, thai, braille, and
+ * other scripts where words are not necessarily clearly bounded.
+ *
+ * @return Stringy[]
+ */
+public function words() : array
+```
+
+```php
+/**
+ * Get an array of characters in the content string.
+ *
+ * @return Stringy[]
+ */
+public function characters() : array
+```
 
 /**
  * Transform the string.
@@ -554,16 +597,6 @@ public function glue(array $strings)
 public function limit(int $length)
 
 /**
- * Convert the content string into an array of words.
- *
- * Note that this method will not correctly split kanji, thai, braille, and
- * other scripts where words are not necessarily clearly bounded.
- *
- * @return Stringy[]
- */
-public function words() : array
-
-/**
  * Turn the normally worded (or snakeCased) string into a StudlyCasedVersionOfItself.
  *
  * @return Stringy
@@ -691,13 +724,6 @@ public function cycle(int $minChars = 1, int $minCycles = 2)
  * @return Stringy
  */
 public function randomChar()
-
-/**
- * Get an array of characters in the content string.
- *
- * @return Stringy[]
- */
-public function characters() : array
 
 /**
  * Get the content string encoded as the system's default encoding.
