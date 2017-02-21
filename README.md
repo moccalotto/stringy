@@ -56,13 +56,21 @@ function str($string = '', string $encoding = null) : Stringy
 ```
 
 
+Create a random string.
+
+```php
 /**
  * Factory for a random string of a given length.
  *
  * @return Stringy
  */
 public static function random($length)
+```
 
+
+### Get the content string.
+
+```php
 /**
  * Get the content string of this object encoded as $encoding.
  *
@@ -71,6 +79,7 @@ public static function random($length)
  * @return string
  */
 public function string($encodedAs = null) : string
+```
 
 /**
  * Compare this string to another.
