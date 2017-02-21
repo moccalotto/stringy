@@ -49,7 +49,7 @@ class Stringy implements ArrayAccess, Countable, Serializable, JsonSerializable
      *
      * @return string
      */
-    protected static function toUtf8(string $string, string $encoding)
+    protected static function toUtf8(string $string, string $encoding) : string
     {
         if (!in_array($encoding, mb_list_encodings())) {
             throw new EncodingException('Encoding not supported', $string, $encoding);
