@@ -842,6 +842,13 @@ class Stringy implements ArrayAccess, Countable, Serializable, JsonSerializable
         return static::create($result);
     }
 
+    /**
+     * Remove all occurances of $strings from the beginning of the content string.
+     *
+     * @param array $strings An array of strings or Stringy objects.
+     *
+     * @return Stringy
+     */
     public function leftTrimAll(array $strings)
     {
         $regex = static::create('|')->glue(static::mapMany($strings, function ($string) {
@@ -851,6 +858,13 @@ class Stringy implements ArrayAccess, Countable, Serializable, JsonSerializable
         return static::create(preg_replace($regex->string, '', $this->string), 'UTF-8');
     }
 
+    /**
+     * Remove all occurances of $strings from the end of the content string.
+     *
+     * @param array $strings An array of strings or Stringy objects.
+     *
+     * @return Stringy
+     */
     public function rightTrimAll(array $strings)
     {
         $regex = static::create('|')->glue(static::mapMany($strings, function ($string) {
@@ -860,6 +874,13 @@ class Stringy implements ArrayAccess, Countable, Serializable, JsonSerializable
         return static::create(preg_replace($regex->string, '', $this->string), 'UTF-8');
     }
 
+    /**
+     * Does the string start with $needle ?
+     *
+     * @param Stringy|string $needle.
+     *
+     * @return bool
+     */
     public function startsWith($needle) : bool
     {
         $needleStringy = static::create($needle);
@@ -867,6 +888,13 @@ class Stringy implements ArrayAccess, Countable, Serializable, JsonSerializable
         return $this->substring(0, $needleStringy->length())->string == $needleStringy->string;
     }
 
+    /**
+     * Does the string end with $needle ?
+     *
+     * @param Stringy|string $needle.
+     *
+     * @return bool
+     */
     public function endsWith($needle) : bool
     {
         $needleStringy = static::create($needle);
@@ -874,11 +902,27 @@ class Stringy implements ArrayAccess, Countable, Serializable, JsonSerializable
         return $this->substring(-$needleStringy->length())->string == $needleStringy->string;
     }
 
+    /**
+     * Reverse the string.
+     *
+     * For instance "Hello, world!" becomes "dlroW ,olleH"
+     *
+     * @return Stringy
+     */
     public function reverse()
     {
         return static::create('')->glue(array_reverse($this->characters()));
     }
 
+    /**
+     * Use the content string as glue to implode an array of strings.
+     *
+     * For instance: str(' + ')->glue(['this', 'that']) would yield the result "this + that".
+     *
+     * @param array $strings An array of strings or Stringy objects that will be glued together.
+     *
+     * @return Stringy
+     */
     public function glue(array $strings)
     {
         return static::create(implode(
