@@ -8,6 +8,35 @@ Easy, powerful and fluent string handling
 
 ## Documentation
 
+The `Stringy` object is immutable. This means that all operations that return a `Stringy` instance
+will return a *new* instnace and not a modified version of the current instance. This means that
+you will not have to `clone` the object if you need to do two different, branching operations 
+on a given string. 
+
+On the other hand, it is quite likely that you cannot identity-compare two stringy objects because
+they are very short-lived. In cases where you need to check if two stringy objects contain the same
+string, we suggest using the `is()` method. See the example below:
+
+```php
+$s0 = str('Foo');
+
+$s1 = $s0->lower(),
+$s2 = $s0->lower();
+
+if ($s1 === $s2) {
+    echo 'this code will not be executed';
+}
+
+if ($s1->is($s2)) {
+    echo 'this will work just fine';
+}
+
+if (strval($s1) === strval($s2)) {
+    echo 'this will also work';
+}
+```
+
+
 ### Constructors
 
 Normal constructor.
@@ -93,20 +122,7 @@ public function string($encodedAs = null) : string
 public function is($string) : bool
 ```
 
-/**
- * Get the length (in characters) of the content string.
- *
- * @return int
- */
-public function length() : int
-
-/**
- * Get the size (in bytes) of the content string.
- *
- * @return int
- */
-public function size() : int
-
+```php
 /**
  * Does the string contain $needle.
  *
@@ -116,6 +132,53 @@ public function size() : int
  * @return bool
  */
 public function contains($needle, int $index = 0) : bool
+```
+
+```php
+/**
+ * Does the string start with $needle ?
+ *
+ * @param Stringy|string $needle.
+ *
+ * @return bool
+ */
+public function startsWith($needle) : bool
+```
+
+```php
+/**
+ * Does the string end with $needle ?
+ *
+ * @param Stringy|string $needle.
+ *
+ * @return bool
+ */
+public function endsWith($needle) : bool
+```
+
+
+### Length (characters)
+
+```php
+/**
+ * Get the length (in characters) of the content string.
+ *
+ * @return int
+ */
+public function length() : int
+```
+
+### Size (bytes)
+
+```php
+/**
+ * Get the size (in bytes) of the content string.
+ *
+ * @return int
+ */
+public function size() : int
+```
+
 
 /**
  * Find a the position of the first character of $needle within this string.
@@ -476,10 +539,6 @@ public function format(array $args)
 public function leftTrimAll(array $strings)
 
 public function rightTrimAll(array $strings)
-
-public function startsWith($needle) : bool
-
-public function endsWith($needle) : bool
 
 public function reverse()
 
