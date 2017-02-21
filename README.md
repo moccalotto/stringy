@@ -62,35 +62,6 @@ function str($string = '', string $encoding = null) : Stringy
  * @return Stringy
  */
 public static function random($length)
-{
-    $res = static::create(base64_encode(random_bytes($length)), 'UTF-8')
-        ->replace('/', '')
-        ->replace('+', '')
-        ->replace('=', '');
-
-    $remainder = $length - $res->length();
-
-    if ($remainder > 0) {
-        return $res->append(static::random($remainder));
-    }
-
-    return $res->substring(0, $length);
-}
-
-protected static function toUtf8(string $string, string $encoding)
-{
-    if (!in_array($encoding, mb_list_encodings())) {
-        throw new EncodingException('Encoding not supported', $string, $encoding);
-    }
-
-    if (!($encoding === 'pass' || mb_check_encoding($string, $encoding))) {
-        throw new EncodingException('Invalid string', $string, $encoding);
-    }
-
-    $string = mb_convert_encoding($string, 'UTF-8', $encoding);
-
-    return $string;
-}
 
 /**
  * Get the content string of this object encoded as $encoding.
@@ -100,22 +71,6 @@ protected static function toUtf8(string $string, string $encoding)
  * @return string
  */
 public function string($encodedAs = null) : string
-{
-    if ($encodedAs === null) {
-        $encodedAs = mb_internal_encoding();
-    }
-    if (!in_array($encodedAs, mb_list_encodings())) {
-        throw new EncodingException('Encoding not supported', $this->string, $encodedAs);
-    }
-
-    $string = mb_convert_encoding($this->string, $encodedAs, 'UTF-8');
-
-    if (!mb_check_encoding($string, $encodedAs)) {
-        throw new EncodingException('Invalid string', $string, $encodedAs);
-    }
-
-    return $string;
-}
 
 /**
  * Compare this string to another.
@@ -125,9 +80,6 @@ public function string($encodedAs = null) : string
  * @return bool only true if the two strings are equal using strict (===) comparison.
  */
 public function is($string) : bool
-{
-    return static::create($string)->string === $this->string;
-}
 
 /**
  * Get the length (in characters) of the content string.
@@ -135,9 +87,6 @@ public function is($string) : bool
  * @return int
  */
 public function length() : int
-{
-    return mb_strlen($this->string, 'UTF-8');
-}
 
 /**
  * Get the size (in bytes) of the content string.
@@ -145,9 +94,6 @@ public function length() : int
  * @return int
  */
 public function size() : int
-{
-    return mb_strlen($this->string, '8bit');
-}
 
 /**
  * Does the string contain $needle.
@@ -158,9 +104,6 @@ public function size() : int
  * @return bool
  */
 public function contains($needle, int $index = 0) : bool
-{
-    return $this->positionOf($needle, $index) !== null;
-}
 
 /**
  * Find a the position of the first character of $needle within this string.
@@ -176,35 +119,6 @@ public function contains($needle, int $index = 0) : bool
  *                  in case $needle was not found
  */
 public function positionOf($needle, int $index = 0)
-{
-    if (!preg_match_all(
-        static::create($needle)->escapeForRegex('/')->prepend('/')->append('/u')->string,
-        $this->string,
-        $matches,
-        PREG_OFFSET_CAPTURE
-    )) {
-        return;
-    }
-
-    $matchCount = count($matches[0]);
-
-    // index is too high
-    if ($index >= $matchCount) {
-        return;
-    }
-
-    // index is negative, correct it into a positive index
-    if ($index < 0) {
-        $index = $matchCount + $index;
-    }
-
-    // index was so low it could not be correct (i.e. too few matches)
-    if ($index < 0) {
-        return;
-    }
-
-    return $matches[0][$index][1];
-}
 
 /**
  * Transform the string.
@@ -214,9 +128,6 @@ public function positionOf($needle, int $index = 0)
  * @return Stringy
  */
 public function transform(callable $callable)
-{
-    return static::create($callable(clone $this));
-}
 
 /**
  * Get the part of the string that comes after $needle.
@@ -233,21 +144,6 @@ public function transform(callable $callable)
  *                 found, an empty Stringy is returned
  */
 public function after($needle, int $index = 0)
-{
-    $other = static::create($needle);
-
-    if ($other->length() === 0) {
-        return clone $this;
-    }
-
-    $pos = $this->positionOf($needle, $index);
-
-    if ($pos === null) {
-        return static::create('');
-    }
-
-    return $this->substring($pos + $other->length());
-}
 
 /**
  * Get the part of the string before the first character of $needle.
@@ -264,21 +160,6 @@ public function after($needle, int $index = 0)
  *                 found, an empty Stringy is returned
  */
 public function before($needle, int $index = 0)
-{
-    $other = static::create($needle);
-
-    if ($other->length() === 0) {
-        return clone $this;
-    }
-
-    $pos = $this->positionOf($needle, $index);
-
-    if ($pos === null) {
-        return static::create('');
-    }
-
-    return $this->substring(0, $pos);
-}
 
 /**
  * Remove the substring that comes after the nth $needle.
@@ -289,13 +170,6 @@ public function before($needle, int $index = 0)
  * @return Stringy
  */
 public function removeAfter($needle, int $index = 0)
-{
-    if (!$this->contains($needle, $index)) {
-        return clone $this;
-    }
-
-    return $this->before($needle, $index);
-}
 
 /**
  * Remove the substring that comes before the nth $needle.
@@ -306,13 +180,6 @@ public function removeAfter($needle, int $index = 0)
  * @return Stringy
  */
 public function removeBefore($needle, int $index = 0)
-{
-    if (!$this->contains($needle, $index)) {
-        return clone $this;
-    }
-
-    return $this->after($needle, $index);
-}
 
 /**
  * Return the text that comes after $start and before $stop.
@@ -325,23 +192,6 @@ public function removeBefore($needle, int $index = 0)
  * @return Stringy the string between $start and $stop
  */
 public function between($start, $stop, int $pairIndex = 0)
-{
-    $idxStart = $this->positionOf($start, $pairIndex);
-    $idxStop = $this->positionOf($stop, $pairIndex);
-
-    if ($idxStart === null || $idxStop === null) {
-        return static::create('');
-    }
-
-    $pos = $idxStart + static::create($start)->length();
-    $length = $idxStop - $pos;
-
-    if ($length <= 0) {
-        return static::create('');
-    }
-
-    return $this->substring($pos, $length);
-}
 
 /**
  * Get a substring.
@@ -361,9 +211,6 @@ public function between($start, $stop, int $pairIndex = 0)
  * @return Stringy
  */
 public function substring(int $start, int $length = null)
-{
-    return static::create(mb_substr($this->string, $start, $length, 'UTF-8'), 'UTF-8');
-}
 
 /**
  * Repeat this string a number of times.
@@ -373,17 +220,6 @@ public function substring(int $start, int $length = null)
  * @return Stringy a string repeated $times times
  */
 public function repeat(int $times)
-{
-    if ($times == 0) {
-        return static::create('');
-    }
-
-    if ($times < 0) {
-        throw new StringyException('Cannot repeat a string a negative number of times', $this->string);
-    }
-
-    return static::create(str_repeat($this->string, $times));
-}
 
 /**
  * If a substring is repeated 2 or more times in a rowwithin the content string, reduce it to being there only once.
@@ -396,17 +232,6 @@ public function repeat(int $times)
  * @return Stringy
  */
 public function unrepeat($substring)
-{
-    $regex = static::create($substring)
-        ->escapeForRegex('/')
-        ->includeIn('/(%s)+/u');
-
-    return static::create(preg_replace(
-        $regex->string,
-        '$1',
-        $this->string
-    ), 'UTF-8');
-}
 
 /**
  * Append padding to the right hand side of the string.
@@ -417,17 +242,6 @@ public function unrepeat($substring)
  * @return Stringy
  */
 public function rightPadded(int $totalLengthOfResult, $padding = ' ')
-{
-    $padding = static::create($padding)[0];
-
-    $paddingLength = $totalLengthOfResult - $this->length();
-
-    if ($paddingLength <= 0) {
-        return clone $this;
-    }
-
-    return $this->append($padding->repeat($paddingLength));
-}
 
 /**
  * Prepend padding to the left hand side of the string.
@@ -438,17 +252,6 @@ public function rightPadded(int $totalLengthOfResult, $padding = ' ')
  * @return Stringy
  */
 public function leftPadded(int $totalLengthOfResult, $padding = ' ')
-{
-    $padding = static::create($padding)[0];
-
-    $paddingLength = $totalLengthOfResult - $this->length();
-
-    if ($paddingLength <= 0) {
-        return clone $this;
-    }
-
-    return $this->prepend($padding->repeat($paddingLength));
-}
 
 /**
  * Add padding to both sides of the content string such that it becomes centered.
@@ -464,31 +267,6 @@ public function leftPadded(int $totalLengthOfResult, $padding = ' ')
  * @return Stringy
  */
 public function centered(int $totalLengthOfResult, $padding = ' ', $tieBreak = 'left')
-{
-    $methodMap = [
-        'left' => 'floor',
-        'right' => 'ceil',
-    ];
-
-    if (!isset($methodMap[$tieBreak])) {
-        throw new UnexpectedValueException(sprintf(
-            'tieBreak must be one [%s]',
-            implode(', ', array_keys($methodMap))
-        ));
-    }
-
-    $tieBreakerMethod = $methodMap[$tieBreak];
-
-    $leftLength = (int) $tieBreakerMethod(($totalLengthOfResult + $this->length()) / 2);
-
-    return $this->leftPadded(
-        $leftLength,
-        $padding
-    )->rightPadded(
-        $totalLengthOfResult,
-        $padding
-    );
-}
 
 /**
  * Convert the content string to uppercase.
@@ -496,9 +274,6 @@ public function centered(int $totalLengthOfResult, $padding = ' ', $tieBreak = '
  * @return Stringy
  */
 public function upper()
-{
-    return static::create(mb_strtoupper($this->string, 'UTF-8'), 'UTF-8');
-}
 
 /**
  * Convert the content string to lowercase.
@@ -506,9 +281,6 @@ public function upper()
  * @return Stringy
  */
 public function lower()
-{
-    return static::create(mb_strtolower($this->string, 'UTF-8'), 'UTF-8');
-}
 
 /**
  * Turn the first letter of every word uppercase.
@@ -519,18 +291,6 @@ public function lower()
  * @return Stringy
  */
 public function ucwords()
-{
-    return $this->transform(function ($stringy) {
-        return preg_replace_callback('/\b\w+/u', function ($matches) {
-            $match = static::create($matches[0], 'UTF-8');
-
-            return $match
-                ->limit(1)
-                ->upper()
-                ->append($match->substring(1));
-        }, $stringy->string);
-    });
-}
 
 /**
  * Turn the first letter of every word lowercase.
@@ -541,18 +301,6 @@ public function ucwords()
  * @return Stringy
  */
 public function lcwords()
-{
-    return $this->transform(function ($stringy) {
-        return preg_replace_callback('/\b\w+/u', function ($matches) {
-            $match = static::create($matches[0], 'UTF-8');
-
-            return $match
-                ->limit(1)
-                ->lower()
-                ->append($match->substring(1));
-        }, $stringy->string);
-    });
-}
 
 /**
  * Turn first letter lowercased.
@@ -560,15 +308,6 @@ public function lcwords()
  * Do not change the casing of the rest of the letters.
  */
 public function lcfirst()
-{
-    if ($this->length() === 0) {
-        return clone $this;
-    }
-
-    $first = $this->limit(1)->lower();
-
-    return $first->append($this->substring(1));
-}
 
 /**
  * Turn first letter uppercased.
@@ -576,15 +315,6 @@ public function lcfirst()
  * Do not change the casing of the rest of the letters.
  */
 public function ucfirst()
-{
-    if ($this->length() === 0) {
-        return clone $this;
-    }
-
-    $first = $this->limit(1)->upper();
-
-    return $first->append($this->substring(1));
-}
 
 /**
  * Split the string into segments.
@@ -597,13 +327,6 @@ public function ucfirst()
  * @return Stringy[] array of strings as Stringy instances
  */
 public function explode($pattern, int $limit = PHP_INT_MAX) : array
-{
-    return static::createMany(explode(
-        static::create($pattern)->string,
-        $this->string,
-        $limit
-    ));
-}
 
 /**
  * Replace all occurrences of the $search string with the $replacement string.
@@ -616,13 +339,6 @@ public function explode($pattern, int $limit = PHP_INT_MAX) : array
  * @return Stringy
  */
 public function replace($search, $replace)
-{
-    return static::create(str_replace(
-        static::create($search),
-        static::create($replace),
-        $this->string
-    ), 'UTF-8');
-}
 
 /**
  * Perform to => from translation.
@@ -638,11 +354,6 @@ public function replace($search, $replace)
  *                 its new value will not be searched again.
  */
 public function replaceMany(array $replacePairs)
-{
-    return $this->transform(function ($stringy) use ($replacePairs) {
-        return strtr((string) $stringy, $replacePairs);
-    });
-}
 
 /**
  * Remove a substring. (I.e. replace $search with an empty string).
@@ -652,9 +363,6 @@ public function replaceMany(array $replacePairs)
  * @return Stringy
  */
 public function remove($search)
-{
-    return $this->replace($search, '');
-}
 
 /**
  * Remove a number of substrings.
@@ -665,12 +373,6 @@ public function remove($search)
  * @return Stringy
  */
 public function removeMany(array $searches)
-{
-    return $this->replaceMany(array_combine(
-        $searches,
-        array_fill(0, count($searches), '')
-    ));
-}
 
 /**
  * Escape a string so it can be used in a regular expression.
@@ -683,12 +385,6 @@ public function removeMany(array $searches)
  * @return Stringy|string
  */
 public function escapeForRegex($delimiter)
-{
-    return static::create(preg_quote(
-        $this->string,
-        static::create($delimiter)->string
-    ), 'UTF-8');
-}
 
 /**
  * Append a string to $this.
@@ -698,12 +394,6 @@ public function escapeForRegex($delimiter)
  * @return Stringy a clone of $this where contents of $other is prepended
  */
 public function append($other)
-{
-    return static::create(
-        $this->string . static::create($other)->string,
-        'UTF-8'
-    );
-}
 
 /**
  * Prepend a string to $this.
@@ -713,12 +403,6 @@ public function append($other)
  * @return Stringy a clone of $this where contents of $other is prepended
  */
 public function prepend($other)
-{
-    return static::create(
-        static::create($other)->string . $this->string,
-        'UTF-8'
-    );
-}
 
 /**
  * Surround the content string with two other strings.
@@ -732,9 +416,6 @@ public function prepend($other)
  * @return Stringy
  */
 public function surroundWith($left, $right = null)
-{
-    return $this->prepend($left)->append($right ?? $left);
-}
 
 /**
  * Remove all instances of $needle from the beginning of the content string.
@@ -745,9 +426,6 @@ public function surroundWith($left, $right = null)
  * @return Stringy
  */
 public function leftTrim($needle)
-{
-    return $this->leftTrimAll([$needle]);
-}
 
 /**
  * Remove all instances of $needle from the end of the content string.
@@ -758,9 +436,6 @@ public function leftTrim($needle)
  * @return Stringy
  */
 public function rightTrim($needle)
-{
-    return $this->rightTrimAll([$needle]);
-}
 
 /**
  * Include the content string in another, using sprintf syntax.
@@ -774,12 +449,6 @@ public function rightTrim($needle)
  * @return Stringy
  */
 public function includeIn($string, array $extraParams = [])
-{
-    return static::create($string)->format(array_merge(
-        [$this],
-        $extraParams
-    ));
-}
 
 /**
  * Use the content string as a sprintf-template string.
@@ -791,66 +460,18 @@ public function includeIn($string, array $extraParams = [])
  * @return Stringy
  */
 public function format(array $args)
-{
-    $result = @vsprintf($this->string, $args);
-
-    if ($result === false) {
-        $error = error_get_last()['message'];
-        throw new StringyException(
-            sprintf('Could not format string: %s', $error),
-            $this->string
-        );
-    }
-
-    return static::create($result);
-}
 
 public function leftTrimAll(array $strings)
-{
-    $regex = static::create('|')->glue(static::mapMany($strings, function ($string) {
-        return $string->escapeForRegex('/');
-    }, $strings))->includeIn('/^(%s)+/u');
-
-    return static::create(preg_replace($regex->string, '', $this->string), 'UTF-8');
-}
 
 public function rightTrimAll(array $strings)
-{
-    $regex = static::create('|')->glue(static::mapMany($strings, function ($string) {
-        return $string->escapeForRegex('/');
-    }))->includeIn('/(%s)+$/u');
-
-    return static::create(preg_replace($regex->string, '', $this->string), 'UTF-8');
-}
 
 public function startsWith($needle) : bool
-{
-    $needleStringy = static::create($needle);
-
-    return $this->substring(0, $needleStringy->length())->string == $needleStringy->string;
-}
 
 public function endsWith($needle) : bool
-{
-    $needleStringy = static::create($needle);
-
-    return $this->substring(-$needleStringy->length())->string == $needleStringy->string;
-}
 
 public function reverse()
-{
-    return static::create('')->glue(array_reverse($this->characters()));
-}
 
 public function glue(array $strings)
-{
-    return static::create(implode(
-        $this->string,
-        static::mapMany($strings, function ($string) {
-            return $string->string;
-        })
-    ));
-}
 
 /**
  * Limit the length of the content string by truncating it.
@@ -860,9 +481,6 @@ public function glue(array $strings)
  * @return Stringy
  */
 public function limit(int $length)
-{
-    return $this->substring(0, $length);
-}
 
 /**
  * Convert the content string into an array of words.
@@ -873,11 +491,6 @@ public function limit(int $length)
  * @return Stringy[]
  */
 public function words() : array
-{
-    preg_match_all('/\w+/u', $this->string, $matches);
-
-    return static::createMany($matches[0], 'UTF-8');
-}
 
 /**
  * Turn the normally worded (or snakeCased) string into a StudlyCasedVersionOfItself.
@@ -885,13 +498,6 @@ public function words() : array
  * @return Stringy
  */
 public function studlyCase()
-{
-    return $this->replace('-', ' ')
-        ->replace('_', ' ')
-        ->unrepeat(' ')
-        ->ucwords()
-        ->replace(' ', '');
-}
 
 /**
  * Turn the normally worded (or snakeCased) string into a camelCasedVersionOfItself.
@@ -899,9 +505,6 @@ public function studlyCase()
  * @return Stringy
  */
 public function camelCase()
-{
-    return $this->studlyCase()->lcfirst();
-}
 
 /**
  * Convert a normally worded, studly cased, and/or camel cased string into a snake_cased_version_of_itself.
@@ -909,16 +512,6 @@ public function camelCase()
  * @param Stringy|string $delimiter
  */
 public function snakeCase($delimiter = '_')
-{
-    return static::create(
-        preg_replace(
-            '/(.)(?=\p{Lu})/u',
-            static::create($delimiter)->prepend('$1'),
-            $this->string
-        ),
-        'UTF-8'
-    )->lower();
-}
 
 /**
  * Turn a studly-, snake- and/or camel cased word into a string of space-separated lowercase words.
@@ -929,9 +522,6 @@ public function snakeCase($delimiter = '_')
  * @return Stringy
  */
 public function uncase($snakeCaseDelimiter = '_')
-{
-    return $this->snakeCase(' ')->replace($snakeCaseDelimiter, ' ')->unrepeat(' ');
-}
 
 /**
  * Convert a studly- or snake cased string into a Title Cased Version Of Itself:.
@@ -939,9 +529,6 @@ public function uncase($snakeCaseDelimiter = '_')
  * @return Stringy
  */
 public function titleCase()
-{
-    return static::create(mb_convert_case($this->string, MB_CASE_TITLE, 'UTF-8'), 'UTF-8');
-}
 
 /**
  * Turn this string into a url-encoed version of itself.
@@ -951,9 +538,6 @@ public function titleCase()
  * @return Stringy
  */
 public function urlencode()
-{
-    return static::create($this->string());
-}
 
 /**
  * Turn this string into a url-friendly "slug".
@@ -967,31 +551,6 @@ public function urlencode()
  * @return Stringy
  */
 public function slug($separator = '-', string $replaceBadCharWith = '')
-{
-    return $this
-        ->snakeCase()
-        ->asciiSafe()
-        ->transform(function ($stringy) use ($replaceBadCharWith, $separator) {
-            return preg_replace_callback('/[^a-z0-9]/u', function ($matches) use ($replaceBadCharWith, $separator) {
-                if ($matches[0] == $separator) {
-                    return $separator;
-                }
-
-                if (preg_match('/\s|-|_|:/', $matches[0])) {
-                    return $separator;
-                }
-
-                return $replaceBadCharWith;
-            }, $stringy->string);
-        })
-        ->transform(function ($stringy) use ($separator) {
-            return preg_replace(
-                static::create($separator)->escapeForRegex('/')->includeIn('/%s+/u'),
-                $separator,
-                $stringy->string
-            );
-        });
-}
 
 /**
  * Ensure that all characters are ASCII.
@@ -1002,12 +561,6 @@ public function slug($separator = '-', string $replaceBadCharWith = '')
  * @return Stringy
  */
 public function asciiSafe()
-{
-    return static::create(
-        Transliterator::utf8ToAscii($this->replace('€', 'EUR')->string),
-        'ASCII'
-    );
-}
 
 /**
  * Convert all non-ASCII  characters into html entities.
@@ -1019,15 +572,6 @@ public function asciiSafe()
  * @return Stringy
  */
 public function entityEncoded(int $flags = ENT_QUOTES | ENT_HTML5)
-{
-    return $this->transform(function ($stringy) use ($flags) {
-        return htmlentities(
-            $stringy->string,
-            $flags,
-            'UTF-8'
-        );
-    });
-}
 
 /**
  * Escape this string for use as html text.
@@ -1039,15 +583,6 @@ public function entityEncoded(int $flags = ENT_QUOTES | ENT_HTML5)
  * @return Stringy
  */
 public function escapeForHtml(int $flags = ENT_QUOTES | ENT_HTML5)
-{
-    return $this->transform(function ($stringy) use ($flags) {
-        return htmlspecialchars(
-            $stringy->string,
-            $flags,
-            'UTF-8'
-        );
-    });
-}
 
 /**
  * Truncate a string in a pretty way.
@@ -1060,17 +595,6 @@ public function escapeForHtml(int $flags = ENT_QUOTES | ENT_HTML5)
  * @return Stringy|string the truncated string'
  */
 public function shorten($maxLength, $breakPoint = '', $padding = '…')
-{
-    if ($this->length() <= $maxLength) {
-        return clone $this;
-    }
-
-    $padding = self::create($padding);
-
-    return $this->substring(0, $maxLength - $padding->length())
-        ->removeAfter($breakPoint, -1)
-        ->append($padding);
-}
 
 /**
  * Detect if the string ends with a repeating pattern.
@@ -1089,39 +613,6 @@ public function shorten($maxLength, $breakPoint = '', $padding = '…')
  * @return Stringy
  */
 public function cycle(int $minChars = 1, int $minCycles = 2)
-{
-    $length = $this->length();
-
-    if ($minChars < 1) {
-        throw new UnexpectedValueException('minChars must be > 0');
-    }
-
-    if ($minCycles < 1) {
-        throw new UnexpectedValueException('minCycles must be > 0');
-    }
-
-    for ($subLength = $length; $subLength >= $minChars; --$subLength) {
-        for ($offset = 0; $offset + $subLength < $length; ++$offset) {
-            $substring = $this->substring($offset, $subLength);
-            $restLength = $length - $offset;
-            $possibleCycles = (int) ($restLength / $subLength);
-            for ($cycles = $possibleCycles; $cycles >= $minCycles; --$cycles) {
-                $needle = $substring->repeat($cycles);
-                $rest = $this->substring($offset + $needle->length());
-
-                if (!$substring->startsWith($rest)) {
-                    break;
-                }
-
-                if ($this->endsWith($needle->append($rest))) {
-                    return $substring;
-                }
-            }
-        }
-    }
-
-    return static::create('', 'UTF-8');
-}
 
 /**
  * Get a random character from the content string.
@@ -1129,11 +620,6 @@ public function cycle(int $minChars = 1, int $minCycles = 2)
  * @return Stringy
  */
 public function randomChar()
-{
-    $index = mt_rand(0, $this->length() - 1);
-
-    return $this[$index];
-}
 
 /**
  * Get an array of characters in the content string.
@@ -1141,9 +627,6 @@ public function randomChar()
  * @return Stringy[]
  */
 public function characters() : array
-{
-    return static::createMany(preg_split('//u', $this->string, -1, PREG_SPLIT_NO_EMPTY));
-}
 
 /**
  * Get the content string encoded as the system's default encoding.
@@ -1151,9 +634,6 @@ public function characters() : array
  * @return string
  */
 public function __toString()
-{
-    return $this->string();
-}
 
 /**
  * Get the debug info of the string.
@@ -1163,10 +643,3 @@ public function __toString()
  * @return array
  */
 public function __debugInfo()
-{
-    return [
-        'string' => $this->string(),
-        'length' => $this->length(),
-        'size' => $this->size(),
-    ];
-}
