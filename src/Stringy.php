@@ -38,6 +38,34 @@ class Stringy implements ArrayAccess, Countable, Serializable, JsonSerializable
     protected $string;
 
     /**
+     * Convert a string to UTF-8.
+     *
+     * Helper to turn a string into UTF-8, ensuring that
+     * we get exceptions in case the string currently has
+     * an invalid encoding.
+     *
+     * @param string $string
+     * @param string $encoding
+     *
+     * @return string
+     */
+    protected static function toUtf8(string $string, string $encoding)
+    {
+        if (!in_array($encoding, mb_list_encodings())) {
+            throw new EncodingException('Encoding not supported', $string, $encoding);
+        }
+
+        if (!($encoding === 'pass' || mb_check_encoding($string, $encoding))) {
+            throw new EncodingException('Invalid string', $string, $encoding);
+        }
+
+        $string = mb_convert_encoding($string, 'UTF-8', $encoding);
+
+        return $string;
+    }
+
+
+    /**
      * Constructor.
      *
      * @param string      $string          the string contents of the Stringy object
@@ -114,21 +142,6 @@ class Stringy implements ArrayAccess, Countable, Serializable, JsonSerializable
         }
 
         return $res->substring(0, $length);
-    }
-
-    protected static function toUtf8(string $string, string $encoding)
-    {
-        if (!in_array($encoding, mb_list_encodings())) {
-            throw new EncodingException('Encoding not supported', $string, $encoding);
-        }
-
-        if (!($encoding === 'pass' || mb_check_encoding($string, $encoding))) {
-            throw new EncodingException('Invalid string', $string, $encoding);
-        }
-
-        $string = mb_convert_encoding($string, 'UTF-8', $encoding);
-
-        return $string;
     }
 
     /**
