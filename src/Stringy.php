@@ -167,6 +167,47 @@ class Stringy implements ArrayAccess, Countable, Serializable, JsonSerializable
     }
 
     /**
+     * Does the string contain $needle.
+     *
+     * @param Stringy|string $needle
+     * @param int            $index
+     *
+     * @return bool
+     */
+    public function contains($needle, int $index = 0) : bool
+    {
+        return $this->positionOf($needle, $index) !== null;
+    }
+
+    /**
+     * Does the string start with $needle ?
+     *
+     * @param Stringy|string $needle.
+     *
+     * @return bool
+     */
+    public function startsWith($needle) : bool
+    {
+        $needleStringy = static::create($needle);
+
+        return $this->substring(0, $needleStringy->length())->string == $needleStringy->string;
+    }
+
+    /**
+     * Does the string end with $needle ?
+     *
+     * @param Stringy|string $needle.
+     *
+     * @return bool
+     */
+    public function endsWith($needle) : bool
+    {
+        $needleStringy = static::create($needle);
+
+        return $this->substring(-$needleStringy->length())->string == $needleStringy->string;
+    }
+
+    /**
      * Get the length (in characters) of the content string.
      *
      * @return int
@@ -184,19 +225,6 @@ class Stringy implements ArrayAccess, Countable, Serializable, JsonSerializable
     public function size() : int
     {
         return mb_strlen($this->string, '8bit');
-    }
-
-    /**
-     * Does the string contain $needle.
-     *
-     * @param Stringy|string $needle
-     * @param int            $index
-     *
-     * @return bool
-     */
-    public function contains($needle, int $index = 0) : bool
-    {
-        return $this->positionOf($needle, $index) !== null;
     }
 
     /**
@@ -872,34 +900,6 @@ class Stringy implements ArrayAccess, Countable, Serializable, JsonSerializable
         }))->includeIn('/(%s)+$/u');
 
         return static::create(preg_replace($regex->string, '', $this->string), 'UTF-8');
-    }
-
-    /**
-     * Does the string start with $needle ?
-     *
-     * @param Stringy|string $needle.
-     *
-     * @return bool
-     */
-    public function startsWith($needle) : bool
-    {
-        $needleStringy = static::create($needle);
-
-        return $this->substring(0, $needleStringy->length())->string == $needleStringy->string;
-    }
-
-    /**
-     * Does the string end with $needle ?
-     *
-     * @param Stringy|string $needle.
-     *
-     * @return bool
-     */
-    public function endsWith($needle) : bool
-    {
-        $needleStringy = static::create($needle);
-
-        return $this->substring(-$needleStringy->length())->string == $needleStringy->string;
     }
 
     /**
