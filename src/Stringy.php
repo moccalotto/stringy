@@ -291,6 +291,31 @@ class Stringy implements ArrayAccess, Countable, Serializable, JsonSerializable
     }
 
     /**
+     * Get an array of characters in the content string.
+     *
+     * @return Stringy[]
+     */
+    public function characters() : array
+    {
+        return static::createMany(preg_split('//u', $this->string, -1, PREG_SPLIT_NO_EMPTY));
+    }
+
+    /**
+     * Convert the content string into an array of words.
+     *
+     * Note that this method will not correctly split kanji, thai, braille, and
+     * other scripts where words are not necessarily clearly bounded.
+     *
+     * @return Stringy[]
+     */
+    public function words() : array
+    {
+        preg_match_all('/\w+/u', $this->string, $matches);
+
+        return static::createMany($matches[0], 'UTF-8');
+    }
+
+    /**
      * Transform the string.
      *
      * @param callable $callable a function with the signature (Stringy $string) : Stringy|string
@@ -965,21 +990,6 @@ class Stringy implements ArrayAccess, Countable, Serializable, JsonSerializable
     }
 
     /**
-     * Convert the content string into an array of words.
-     *
-     * Note that this method will not correctly split kanji, thai, braille, and
-     * other scripts where words are not necessarily clearly bounded.
-     *
-     * @return Stringy[]
-     */
-    public function words() : array
-    {
-        preg_match_all('/\w+/u', $this->string, $matches);
-
-        return static::createMany($matches[0], 'UTF-8');
-    }
-
-    /**
      * Turn the normally worded (or snakeCased) string into a StudlyCasedVersionOfItself.
      *
      * @return Stringy
@@ -1234,15 +1244,4 @@ class Stringy implements ArrayAccess, Countable, Serializable, JsonSerializable
 
         return $this[$index];
     }
-
-    /**
-     * Get an array of characters in the content string.
-     *
-     * @return Stringy[]
-     */
-    public function characters() : array
-    {
-        return static::createMany(preg_split('//u', $this->string, -1, PREG_SPLIT_NO_EMPTY));
-    }
-
 }
