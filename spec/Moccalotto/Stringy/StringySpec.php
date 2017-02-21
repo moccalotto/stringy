@@ -408,6 +408,9 @@ EOT;
         $this[-3]->string()->shouldBe('b');
         $this[-2]->string()->shouldBe('a');
         $this[-1]->string()->shouldBe('z');
+
+        $this->shouldThrow('OutOfRangeException')->during('offsetGet', [100]);
+        $this->shouldThrow('InvalidArgumentException')->during('offsetGet', ['one hundred']);
     }
 
     public function it_can_replace_substring()
@@ -623,11 +626,17 @@ EOT;
         $this->replace('foo', '€')->asciiSafe()->string()->shouldBe('EUR');
     }
 
+    public function it_can_be_encoded_into_html_entities()
+    {
+        $this->beConstructedWith('foo & bar & baz');
 
-    /**
-     * TODO:
-     * entityEncoded
-     * __toString
-     * [array access]
-     */
+        $this->entityEncoded()->string()->shouldBe('foo &amp; bar &amp; baz');
+    }
+
+    public function it_has_a_toString_method()
+    {
+        $this->beConstructedWith('foo');
+
+        $this->__toString()->shouldBe($this->string());
+    }
 }
