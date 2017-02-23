@@ -201,7 +201,7 @@ public function positionOf($needle, int $index = 0)
 
 ### Getting words and characters from the string.
 
-You can get individual characters via the php array accessor language construct like si:
+You can get individual characters via the php array accessor language construct like so:
 
 ```php
 $str = str('foo bar baz');
