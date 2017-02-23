@@ -511,6 +511,45 @@ public function leftTrimAll(array $strings)
 public function rightTrimAll(array $strings)
 ```
 
+### Appending and prepending
+
+```php
+/**
+ * Append a string to $this.
+ *
+ * @param Stringy|string $other
+ *
+ * @return Stringy a clone of $this where contents of $other is prepended
+ */
+public function append($other)
+```
+
+```php
+/**
+ * Prepend a string to $this.
+ *
+ * @param Stringy|string $other
+ *
+ * @return Stringy a clone of $this where contents of $other is prepended
+ */
+public function prepend($other)
+```
+
+```php
+/**
+ * Surround the content string with two other strings.
+ *
+ * Essentially the same as calling prepend and append in one single operation.
+ *
+ * @param Stringy|string      $left  the string to be prepended to the content string
+ * @param Stringy|string|null $right The string to be appended to the content string.
+ *                                   if NULL, the $left string will be used.
+ *
+ * @return Stringy
+ */
+public function surroundWith($left, $right = null)
+```
+
 ### Adjust Casing
 
 ```php
@@ -712,4 +751,41 @@ public function escapeForHtml(int $flags = ENT_QUOTES | ENT_HTML5)
  * @return Stringy|string
  */
 public function escapeForRegex($delimiter)
+```
+
+
+### Formatting
+
+```php
+/**
+ * Include the content string in another, using sprintf syntax.
+ *
+ * @see http://php.net/manual/function.sprintf.php
+ *
+ * @param Stringy|string $string      The sprintf-template string to use.
+ *                                    Must include at least one "%s"
+ * @param array          $extraParams extra params to use in the sprintf operation
+ *
+ * @return Stringy
+ */
+public function includeIn($string, array $extraParams = [])
+
+// example:
+
+str('bar')->includeIn('foo %s baz')->is('foo bar baz'); // true
+
+str('bar')->includeIn('foo %s %s', ['baz'])->is('foo bar baz'); // true
+```
+
+```php
+/**
+ * Use the content string as a sprintf-template string.
+ *
+ * @see http://php.net/manual/function.vsprintf.php
+ *
+ * @param array $args an array of args to use á la vsprintf
+ *
+ * @return Stringy
+ */
+public function format(array $args)
 ```
