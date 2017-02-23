@@ -495,7 +495,10 @@ class Stringy implements ArrayAccess, Countable, Serializable, JsonSerializable
     }
 
     /**
-     * If a substring is repeated 2 or more times in a rowwithin the content string, reduce it to being there only once.
+     * Remove repititions of substrings.
+     *
+     * If a substring is repeated 2 or more times in a row within the
+     * content string,reduce it to being there only once.
      *
      * str('hello    world')->unrepeat(' ') would be turned into 'hello world'
      * str('foo    bar    baz')->unrepeat(' ') would be turned into 'foo bar baz'
@@ -597,6 +600,68 @@ class Stringy implements ArrayAccess, Countable, Serializable, JsonSerializable
             $totalLengthOfResult,
             $padding
         );
+    }
+
+    /**
+     * Remove left-padding.
+     *
+     * Remove all instances of $needle from the beginning of the content string.
+     *
+     * @param Stringy|string $needle the substring to remove from the
+     *                               beginning of the content string
+     *
+     * @return Stringy
+     */
+    public function leftTrim($needle)
+    {
+        return $this->leftTrimAll([$needle]);
+    }
+
+    /**
+     * Remove right-padding.
+     *
+     * Remove all instances of $needle from the end of the content string.
+     *
+     * @param Stringy|string $needle the substring to remove from the
+     *                               end of the content string
+     *
+     * @return Stringy
+     */
+    public function rightTrim($needle)
+    {
+        return $this->rightTrimAll([$needle]);
+    }
+
+    /**
+     * Remove all occurances of $strings from the beginning of the content string.
+     *
+     * @param array $strings An array of strings or Stringy objects.
+     *
+     * @return Stringy
+     */
+    public function leftTrimAll(array $strings)
+    {
+        $regex = static::create('|')->glue(static::mapMany($strings, function ($string) {
+            return $string->escapeForRegex('/');
+        }, $strings))->includeIn('/^(%s)+/u');
+
+        return static::create(preg_replace($regex->string, '', $this->string), 'UTF-8');
+    }
+
+    /**
+     * Remove all occurances of $strings from the end of the content string.
+     *
+     * @param array $strings An array of strings or Stringy objects.
+     *
+     * @return Stringy
+     */
+    public function rightTrimAll(array $strings)
+    {
+        $regex = static::create('|')->glue(static::mapMany($strings, function ($string) {
+            return $string->escapeForRegex('/');
+        }))->includeIn('/(%s)+$/u');
+
+        return static::create(preg_replace($regex->string, '', $this->string), 'UTF-8');
     }
 
     /**
@@ -846,32 +911,6 @@ class Stringy implements ArrayAccess, Countable, Serializable, JsonSerializable
     }
 
     /**
-     * Remove all instances of $needle from the beginning of the content string.
-     *
-     * @param Stringy|string $needle the substring to remove from the
-     *                               beginning of the content string
-     *
-     * @return Stringy
-     */
-    public function leftTrim($needle)
-    {
-        return $this->leftTrimAll([$needle]);
-    }
-
-    /**
-     * Remove all instances of $needle from the end of the content string.
-     *
-     * @param Stringy|string $needle the substring to remove from the
-     *                               end of the content string
-     *
-     * @return Stringy
-     */
-    public function rightTrim($needle)
-    {
-        return $this->rightTrimAll([$needle]);
-    }
-
-    /**
      * Include the content string in another, using sprintf syntax.
      *
      * @see http://php.net/manual/function.sprintf.php
@@ -912,38 +951,6 @@ class Stringy implements ArrayAccess, Countable, Serializable, JsonSerializable
         }
 
         return static::create($result);
-    }
-
-    /**
-     * Remove all occurances of $strings from the beginning of the content string.
-     *
-     * @param array $strings An array of strings or Stringy objects.
-     *
-     * @return Stringy
-     */
-    public function leftTrimAll(array $strings)
-    {
-        $regex = static::create('|')->glue(static::mapMany($strings, function ($string) {
-            return $string->escapeForRegex('/');
-        }, $strings))->includeIn('/^(%s)+/u');
-
-        return static::create(preg_replace($regex->string, '', $this->string), 'UTF-8');
-    }
-
-    /**
-     * Remove all occurances of $strings from the end of the content string.
-     *
-     * @param array $strings An array of strings or Stringy objects.
-     *
-     * @return Stringy
-     */
-    public function rightTrimAll(array $strings)
-    {
-        $regex = static::create('|')->glue(static::mapMany($strings, function ($string) {
-            return $string->escapeForRegex('/');
-        }))->includeIn('/(%s)+$/u');
-
-        return static::create(preg_replace($regex->string, '', $this->string), 'UTF-8');
     }
 
     /**
