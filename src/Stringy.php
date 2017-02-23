@@ -784,6 +784,8 @@ class Stringy implements ArrayAccess, Countable, Serializable, JsonSerializable
      *
      * For instance: str(' + ')->glue(['this', 'that']) would yield the result "this + that".
      *
+     * @see http://php.net/manual/function.implode.php
+     *
      * @param array $strings An array of strings or Stringy objects that will be glued together.
      *
      * @return Stringy
