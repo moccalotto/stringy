@@ -1,10 +1,19 @@
-# stringy
+# Stringy
 
 [![Build Status](https://travis-ci.org/moccalotto/stringy.svg)](https://travis-ci.org/moccalotto/stringy)
 
 Easy, powerful and fluent string handling
 
 ## Installation
+
+To add this package as a local, per-project dependency to your project, simply add a dependency on
+ `moccalotto/stringy` to your project's `composer.json` file.
+
+This can be done via composer:
+
+```bash
+composer require moccalotto/stringy
+```
 
 ## Documentation
 
