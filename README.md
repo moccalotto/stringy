@@ -498,20 +498,27 @@ public function leftTrimAll(array $strings)
 public function rightTrimAll(array $strings)
 ```
 
+### Adjust Casing
+
+```php
 /**
  * Convert the content string to uppercase.
  *
  * @return Stringy
  */
 public function upper()
+```
 
+```php
 /**
  * Convert the content string to lowercase.
  *
  * @return Stringy
  */
 public function lower()
+```
 
+```php
 /**
  * Turn the first letter of every word uppercase.
  *
@@ -521,7 +528,9 @@ public function lower()
  * @return Stringy
  */
 public function ucwords()
+```
 
+```php
 /**
  * Turn the first letter of every word lowercase.
  *
@@ -531,300 +540,22 @@ public function ucwords()
  * @return Stringy
  */
 public function lcwords()
+```
 
-/**
- * Turn first letter lowercased.
- *
- * Do not change the casing of the rest of the letters.
- */
-public function lcfirst()
-
+```php
 /**
  * Turn first letter uppercased.
  *
  * Do not change the casing of the rest of the letters.
  */
 public function ucfirst()
+```
 
+```php
 /**
- * Split the string into segments.
+ * Turn first letter lowercased.
  *
- * @see http://php.net/manual/function.explode.php
- *
- * @param Stringy|string $pattern
- * @param int            $limit
- *
- * @return Stringy[] array of strings as Stringy instances
+ * Do not change the casing of the rest of the letters.
  */
-public function explode($pattern, int $limit = PHP_INT_MAX) : array
-
-/**
- * Replace all occurrences of the $search string with the $replacement string.
- *
- * @see http://php.net/manual/function.str-replace.php
- *
- * @param Stringy|string $search
- * @param Stringy|string $replace
- *
- * @return Stringy
- */
-public function replace($search, $replace)
-
-/**
- * Perform to => from translation.
- *
- * @see http://php.net/manual/function.strtr.php
- *
- * @param array $replacePairs an array in the form array('from' => 'to', ...).
- *
- * @return Stringy a Stringy where all the occurrences
- *                 of the array keys have been replaced by the corresponding values.
- *                 The longest keys will be tried first.
- *                 Once a substring has been replaced,
- *                 its new value will not be searched again.
- */
-public function replaceMany(array $replacePairs)
-
-/**
- * Remove a substring. (I.e. replace $search with an empty string).
- *
- * @param Stringy|string $search the substring to be removed
- *
- * @return Stringy
- */
-public function remove($search)
-
-/**
- * Remove a number of substrings.
- *
- * @param array $searches an array of strings (or Stringy objects)
- *                        to be removed
- *
- * @return Stringy
- */
-public function removeMany(array $searches)
-
-/**
- * Escape a string so it can be used in a regular expression.
- *
- * @param Stringy|string $delimiter the delimiter used to start and
- *                                  terminate the regular expression.
- *                                  Usually the forward slash will be
- *                                  used to encluse regular expression.
- *
- * @return Stringy|string
- */
-public function escapeForRegex($delimiter)
-
-/**
- * Append a string to $this.
- *
- * @param Stringy|string $other
- *
- * @return Stringy a clone of $this where contents of $other is prepended
- */
-public function append($other)
-
-/**
- * Prepend a string to $this.
- *
- * @param Stringy|string $other
- *
- * @return Stringy a clone of $this where contents of $other is prepended
- */
-public function prepend($other)
-
-/**
- * Surround the content string with two other strings.
- *
- * Essentially the same as calling prepend and append in one single operation.
- *
- * @param Stringy|string      $left  the string to be prepended to the content string
- * @param Stringy|string|null $right The string to be appended to the content string.
- *                                   if NULL, the $left string will be used.
- *
- * @return Stringy
- */
-public function surroundWith($left, $right = null)
-
-/**
- * Include the content string in another, using sprintf syntax.
- *
- * @see http://php.net/manual/function.sprintf.php
- *
- * @param Stringy|string $string      The sprintf-template string to use.
- *                                    Must include at least one "%s"
- * @param array          $extraParams extra params to use in the sprintf operation
- *
- * @return Stringy
- */
-public function includeIn($string, array $extraParams = [])
-
-/**
- * Use the content string as a sprintf-template string.
- *
- * @see http://php.net/manual/function.vsprintf.php
- *
- * @param array $args an array of args to use á la vsprintf
- *
- * @return Stringy
- */
-public function format(array $args)
-
-public function reverse()
-
-public function glue(array $strings)
-
-/**
- * Limit the length of the content string by truncating it.
- *
- * @param int $length the maximum length (in characters) of the content string
- *
- * @return Stringy
- */
-public function limit(int $length)
-
-/**
- * Turn the normally worded (or snakeCased) string into a StudlyCasedVersionOfItself.
- *
- * @return Stringy
- */
-public function studlyCase()
-
-/**
- * Turn the normally worded (or snakeCased) string into a camelCasedVersionOfItself.
- *
- * @return Stringy
- */
-public function camelCase()
-
-/**
- * Convert a normally worded, studly cased, and/or camel cased string into a snake_cased_version_of_itself.
- *
- * @param Stringy|string $delimiter
- */
-public function snakeCase($delimiter = '_')
-
-/**
- * Turn a studly-, snake- and/or camel cased word into a string of space-separated lowercase words.
- *
- * @param Stringy|string $snakeCaseDelimiter the delimiter used to separate snake-cased words in the
- *                                           content string
- *
- * @return Stringy
- */
-public function uncase($snakeCaseDelimiter = '_')
-
-/**
- * Convert a studly- or snake cased string into a Title Cased Version Of Itself:.
- *
- * @return Stringy
- */
-public function titleCase()
-
-/**
- * Turn this string into a url-encoed version of itself.
- *
- * The url-encoding is performed while the string is encoed as mb_internal_encoding.
- *
- * @return Stringy
- */
-public function urlencode()
-
-/**
- * Turn this string into a url-friendly "slug".
- *
- * @see https://en.wikipedia.org/wiki/Semantic_URL#Slug
- *
- * @param Stringy|string $separator          seperator used to separate words
- * @param Stringy|string $replaceBadCharWith if a non-translatable character is found,
- *                                           replace it with this character
- *
- * @return Stringy
- */
-public function slug($separator = '-', string $replaceBadCharWith = '')
-
-/**
- * Ensure that all characters are ASCII.
- *
- * Convert non-ascii characters to ASCII if possible (i.e. 'ü' is converted to 'u' and 'æ' to 'ae').
- * Remove any characters that cannot be converted (i.e. most characters that are not based on the latin script).
- *
- * @return Stringy
- */
-public function asciiSafe()
-
-/**
- * Convert all non-ASCII  characters into html entities.
- *
- * @see http://php.net/manual/function.htmlentities.php
- *
- * @param int $flags See php documentation for htmlentities
- *
- * @return Stringy
- */
-public function entityEncoded(int $flags = ENT_QUOTES | ENT_HTML5)
-
-/**
- * Escape this string for use as html text.
- *
- * @see http://php.net/manual/function.htmlspecialchars.php
- *
- * @param int $flags See php documentation for htmlspecialchars
- *
- * @return Stringy
- */
-public function escapeForHtml(int $flags = ENT_QUOTES | ENT_HTML5)
-
-/**
- * Truncate a string in a pretty way.
- *
- * @param int            $maxLength  The maximum length of the string
- * @param Stringy|string $breakPoint The "signature" of the point where the string is to be "cut off".
- *                                   Default value is "" which means that we allow a cut-off anywhere.
- * @param Stringy|string $padding    The padding to add to the end of the string, to indicate it has been truncated
- *
- * @return Stringy|string the truncated string'
- */
-public function shorten($maxLength, $breakPoint = '', $padding = '…')
-
-/**
- * Detect if the string ends with a repeating pattern.
- *
- * The pattern MUST appear at least $minCycles number of times in a row.
- * The pattern MUST be at least $minChars characters long.
- * The string must end with part of the pattern.
- *
- * In the string: "Start Foo Bar Baz Foo Bar Baz Foo", the pattern would be " Foo Bar Baz"
- * In the string: "Start Foo Bar Baz Foo Bar Baz End", there would be no pattern because the string
- * does not end with the part of the pattern.
- *
- * @param int $minChars  The minimum length (in characters) of the pattern.
- * @param int $minCycles The minimum number of full cycles the pattern must appear in.
- *
- * @return Stringy
- */
-public function cycle(int $minChars = 1, int $minCycles = 2)
-
-/**
- * Get a random character from the content string.
- *
- * @return Stringy
- */
-public function randomChar()
-
-/**
- * Get the content string encoded as the system's default encoding.
- *
- * @return string
- */
-public function __toString()
-
-/**
- * Get the debug info of the string.
- *
- * Useful for PSY shell debugging, var_dump, etc
- *
- * @return array
- */
-public function __debugInfo()
+public function lcfirst()
+```
