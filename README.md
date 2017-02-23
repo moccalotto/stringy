@@ -251,12 +251,16 @@ public function characters() : array
 public function transform(callable $callable)
 ```
 
-Examples:
+Example:
 
 ```php
 $str = str('foo bar baz');
 
 $formatted = $str->transform(function (Stringy $stringy) {
+    // the output of str_rot13() is a string
+    // but it will automatically be converted to a
+    // Stringy instance using the default character set.
+    // If you return your own Stringy object, it will not be converted in any way.
     return str_rot13($stringy->asciiSafe());
 });
 
