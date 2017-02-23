@@ -328,6 +328,28 @@ class Stringy implements ArrayAccess, Countable, Serializable, JsonSerializable
     }
 
     /**
+     * Get a substring.
+     *
+     * @see http://php.net/manual/function.mb-substr.php
+     *      for details about the $start and $length paramteers
+     *
+     * @param int      $start  The offset of the substring.
+     *                         If negative, it counts backwards
+     *                         from the end of the content string.
+     * @param int|null $length The length of the substring to extract.
+     *                         If negative, it counts backwards from
+     *                         the end of the content string.
+     *                         If NULL, the entire string after $start
+     *                         is extracted.
+     *
+     * @return Stringy
+     */
+    public function substring(int $start, int $length = null)
+    {
+        return static::create(mb_substr($this->string, $start, $length, 'UTF-8'), 'UTF-8');
+    }
+
+    /**
      * Get the part of the string that comes after $needle.
      *
      * @example: str('foo bar baz')->after('foo ') == 'bar baz'
@@ -450,28 +472,6 @@ class Stringy implements ArrayAccess, Countable, Serializable, JsonSerializable
         }
 
         return $this->after($needle, $index);
-    }
-
-    /**
-     * Get a substring.
-     *
-     * @see http://php.net/manual/function.mb-substr.php
-     *      for details about the $start and $length paramteers
-     *
-     * @param int      $start  The offset of the substring.
-     *                         If negative, it counts backwards
-     *                         from the end of the content string.
-     * @param int|null $length The length of the substring to extract.
-     *                         If negative, it counts backwards from
-     *                         the end of the content string.
-     *                         If NULL, the entire string after $start
-     *                         is extracted.
-     *
-     * @return Stringy
-     */
-    public function substring(int $start, int $length = null)
-    {
-        return static::create(mb_substr($this->string, $start, $length, 'UTF-8'), 'UTF-8');
     }
 
     /**
