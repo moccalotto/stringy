@@ -780,6 +780,25 @@ class Stringy implements ArrayAccess, Countable, Serializable, JsonSerializable
     }
 
     /**
+     * Use the content string as glue to implode an array of strings.
+     *
+     * For instance: str(' + ')->glue(['this', 'that']) would yield the result "this + that".
+     *
+     * @param array $strings An array of strings or Stringy objects that will be glued together.
+     *
+     * @return Stringy
+     */
+    public function glue(array $strings)
+    {
+        return static::create(implode(
+            $this->string,
+            static::mapMany($strings, function ($string) {
+                return $string->string;
+            })
+        ));
+    }
+
+    /**
      * Replace all occurrences of the $search string with the $replacement string.
      *
      * @see http://php.net/manual/function.str-replace.php
@@ -963,25 +982,6 @@ class Stringy implements ArrayAccess, Countable, Serializable, JsonSerializable
     public function reverse()
     {
         return static::create('')->glue(array_reverse($this->characters()));
-    }
-
-    /**
-     * Use the content string as glue to implode an array of strings.
-     *
-     * For instance: str(' + ')->glue(['this', 'that']) would yield the result "this + that".
-     *
-     * @param array $strings An array of strings or Stringy objects that will be glued together.
-     *
-     * @return Stringy
-     */
-    public function glue(array $strings)
-    {
-        return static::create(implode(
-            $this->string,
-            static::mapMany($strings, function ($string) {
-                return $string->string;
-            })
-        ));
     }
 
     /**
