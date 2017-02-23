@@ -603,3 +603,113 @@ public function explode($pattern, int $limit = PHP_INT_MAX) : array
  */
 public function glue(array $strings)
 ```
+
+### Replace and remove
+
+```php
+/**
+ * Replace all occurrences of the $search string with the $replacement string.
+ *
+ * @see http://php.net/manual/function.str-replace.php
+ *
+ * @param Stringy|string $search
+ * @param Stringy|string $replace
+ *
+ * @return Stringy
+ */
+public function replace($search, $replace)
+```
+
+```php
+/**
+ * Perform to => from translation.
+ *
+ * @see http://php.net/manual/function.strtr.php
+ *
+ * @param array $replacePairs an array in the form array('from' => 'to', ...).
+ *
+ * @return Stringy a Stringy where all the occurrences
+ *                 of the array keys have been replaced by the corresponding values.
+ *                 The longest keys will be tried first.
+ *                 Once a substring has been replaced,
+ *                 its new value will not be searched again.
+ */
+public function replaceMany(array $replacePairs)
+```
+
+```php
+/**
+ * Remove a substring. (I.e. replace $search with an empty string).
+ *
+ * @param Stringy|string $search the substring to be removed
+ *
+ * @return Stringy
+ */
+public function remove($search)
+```
+
+```php
+**
+ * Remove a number of substrings.
+ *
+ * @param array $searches an array of strings (or Stringy objects)
+ *                        to be removed
+ *
+ * @return Stringy
+ */
+public function removeMany(array $searches)
+```
+
+### Escaping
+
+```php
+/**
+ * Ensure that all characters are ASCII.
+ *
+ * Convert non-ascii characters to ASCII if possible (i.e. 'ü' is converted to 'u' and 'æ' to 'ae').
+ * Remove any characters that cannot be converted (i.e. most characters that are not based on the latin script).
+ *
+ * @return Stringy
+ */
+public function asciiSafe()
+```
+
+```php
+/**
+ * Convert all non-ASCII  characters into html entities.
+ *
+ * @see http://php.net/manual/function.htmlentities.php
+ *
+ * @param int $flags See php documentation for htmlentities
+ *
+ * @return Stringy
+ */
+public function entityEncoded(int $flags = ENT_QUOTES | ENT_HTML5)
+```
+
+```php
+/**
+ * Escape this string for use as html text.
+ *
+ * @see http://php.net/manual/function.htmlspecialchars.php
+ *
+ * @param int $flags See php documentation for htmlspecialchars
+ *
+ * @return Stringy
+ */
+public function escapeForHtml(int $flags = ENT_QUOTES | ENT_HTML5)
+```
+
+```php
+/**
+ * Escape a string so it can be used in a regular expression.
+ *
+ * @param Stringy|string $delimiter the delimiter used to start and
+ *                                  terminate the regular expression.
+ *                                  Usually the forward slash will be
+ *                                  used to encluse regular expression.
+ *
+ * @return Stringy|string
+ */
+public function escapeForRegex($delimiter)
+```
