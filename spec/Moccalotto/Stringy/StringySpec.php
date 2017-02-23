@@ -639,4 +639,13 @@ EOT;
 
         $this->__toString()->shouldBe($this->string());
     }
+
+    public function it_has_the_set_state_constructor()
+    {
+        $this->beConstructedThrough('__set_state', [
+            ['string' => $this->testString()]
+        ]);
+
+        $this->string()->shouldBe($this->testString());
+    }
 }

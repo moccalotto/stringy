@@ -50,4 +50,17 @@ trait CanBeSerialized
         $this->string = $data;
     }
 
+    /**
+     * Support for unserialization of Stirngies exported via var_export
+     *
+     * @see http://php.net/manual/language.oop5.magic.php#object.set-state
+     *
+     * @param array $state
+     *
+     * @return Stringy
+     */
+    public static function __set_state(array $state)
+    {
+        return new static($state['string'], 'UTF-8');
+    }
 }
