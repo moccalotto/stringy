@@ -563,3 +563,34 @@ public function ucfirst()
  */
 public function lcfirst()
 ```
+
+### Exploding and imploding
+
+```php
+/**
+ * Split the string into segments.
+ *
+ * @see http://php.net/manual/function.explode.php
+ *
+ * @param Stringy|string $pattern
+ * @param int            $limit
+ *
+ * @return Stringy[] array of strings as Stringy instances
+ */
+public function explode($pattern, int $limit = PHP_INT_MAX) : array
+```
+
+```php
+/**
+ * Use the content string as glue to implode an array of strings.
+ *
+ * For instance: str(' + ')->glue(['this', 'that']) would yield the result "this + that".
+ *
+ * @see http://php.net/manual/function.implode.php
+ *
+ * @param array $strings An array of strings or Stringy objects that will be glued together.
+ *
+ * @return Stringy
+ */
+public function glue(array $strings)
+```
