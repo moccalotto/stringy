@@ -83,7 +83,7 @@ class Dumper
         }
 
         if (is_object($callable)) {
-            return Stringy::create(get_class($callable))->includeIn('Callable(%s->__invoke)');
+            return Stringy::create('Callable(%s->__invoke)')->format([get_class($callable)]);
         }
 
         if (is_array($callable)) {
