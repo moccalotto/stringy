@@ -665,6 +665,52 @@ class Stringy implements ArrayAccess, Countable, Serializable, JsonSerializable
     }
 
     /**
+     * Append a string to $this.
+     *
+     * @param Stringy|string $other
+     *
+     * @return Stringy a clone of $this where contents of $other is prepended
+     */
+    public function append($other)
+    {
+        return static::create(
+            $this->string . static::create($other)->string,
+            'UTF-8'
+        );
+    }
+
+    /**
+     * Prepend a string to $this.
+     *
+     * @param Stringy|string $other
+     *
+     * @return Stringy a clone of $this where contents of $other is prepended
+     */
+    public function prepend($other)
+    {
+        return static::create(
+            static::create($other)->string . $this->string,
+            'UTF-8'
+        );
+    }
+
+    /**
+     * Surround the content string with two other strings.
+     *
+     * Essentially the same as calling prepend and append in one single operation.
+     *
+     * @param Stringy|string      $left  the string to be prepended to the content string
+     * @param Stringy|string|null $right The string to be appended to the content string.
+     *                                   if NULL, the $left string will be used.
+     *
+     * @return Stringy
+     */
+    public function surroundWith($left, $right = null)
+    {
+        return $this->prepend($left)->append($right ?? $left);
+    }
+
+    /**
      * Convert the content string to uppercase.
      *
      * @return Stringy
@@ -939,52 +985,6 @@ class Stringy implements ArrayAccess, Countable, Serializable, JsonSerializable
             $this->string,
             static::create($delimiter)->string
         ), 'UTF-8');
-    }
-
-    /**
-     * Append a string to $this.
-     *
-     * @param Stringy|string $other
-     *
-     * @return Stringy a clone of $this where contents of $other is prepended
-     */
-    public function append($other)
-    {
-        return static::create(
-            $this->string . static::create($other)->string,
-            'UTF-8'
-        );
-    }
-
-    /**
-     * Prepend a string to $this.
-     *
-     * @param Stringy|string $other
-     *
-     * @return Stringy a clone of $this where contents of $other is prepended
-     */
-    public function prepend($other)
-    {
-        return static::create(
-            static::create($other)->string . $this->string,
-            'UTF-8'
-        );
-    }
-
-    /**
-     * Surround the content string with two other strings.
-     *
-     * Essentially the same as calling prepend and append in one single operation.
-     *
-     * @param Stringy|string      $left  the string to be prepended to the content string
-     * @param Stringy|string|null $right The string to be appended to the content string.
-     *                                   if NULL, the $left string will be used.
-     *
-     * @return Stringy
-     */
-    public function surroundWith($left, $right = null)
-    {
-        return $this->prepend($left)->append($right ?? $left);
     }
 
     /**
