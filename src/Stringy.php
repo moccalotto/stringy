@@ -868,6 +868,62 @@ class Stringy implements ArrayAccess, Countable, Serializable, JsonSerializable
     }
 
     /**
+     * Ensure that all characters are ASCII.
+     *
+     * Convert non-ascii characters to ASCII if possible (i.e. 'ü' is converted to 'u' and 'æ' to 'ae').
+     * Remove any characters that cannot be converted (i.e. most characters that are not based on the latin script).
+     *
+     * @return Stringy
+     */
+    public function asciiSafe()
+    {
+        return static::create(
+            Transliterator::utf8ToAscii($this->replace('€', 'EUR')->string),
+            'ASCII'
+        );
+    }
+
+    /**
+     * Convert all non-ASCII  characters into html entities.
+     *
+     * @see http://php.net/manual/function.htmlentities.php
+     *
+     * @param int $flags See php documentation for htmlentities
+     *
+     * @return Stringy
+     */
+    public function entityEncoded(int $flags = ENT_QUOTES | ENT_HTML5)
+    {
+        return $this->transform(function ($stringy) use ($flags) {
+            return htmlentities(
+                $stringy->string,
+                $flags,
+                'UTF-8'
+            );
+        });
+    }
+
+    /**
+     * Escape this string for use as html text.
+     *
+     * @see http://php.net/manual/function.htmlspecialchars.php
+     *
+     * @param int $flags See php documentation for htmlspecialchars
+     *
+     * @return Stringy
+     */
+    public function escapeForHtml(int $flags = ENT_QUOTES | ENT_HTML5)
+    {
+        return $this->transform(function ($stringy) use ($flags) {
+            return htmlspecialchars(
+                $stringy->string,
+                $flags,
+                'UTF-8'
+            );
+        });
+    }
+
+    /**
      * Escape a string so it can be used in a regular expression.
      *
      * @param Stringy|string $delimiter the delimiter used to start and
@@ -1133,62 +1189,6 @@ class Stringy implements ArrayAccess, Countable, Serializable, JsonSerializable
                     $stringy->string
                 );
             });
-    }
-
-    /**
-     * Ensure that all characters are ASCII.
-     *
-     * Convert non-ascii characters to ASCII if possible (i.e. 'ü' is converted to 'u' and 'æ' to 'ae').
-     * Remove any characters that cannot be converted (i.e. most characters that are not based on the latin script).
-     *
-     * @return Stringy
-     */
-    public function asciiSafe()
-    {
-        return static::create(
-            Transliterator::utf8ToAscii($this->replace('€', 'EUR')->string),
-            'ASCII'
-        );
-    }
-
-    /**
-     * Convert all non-ASCII  characters into html entities.
-     *
-     * @see http://php.net/manual/function.htmlentities.php
-     *
-     * @param int $flags See php documentation for htmlentities
-     *
-     * @return Stringy
-     */
-    public function entityEncoded(int $flags = ENT_QUOTES | ENT_HTML5)
-    {
-        return $this->transform(function ($stringy) use ($flags) {
-            return htmlentities(
-                $stringy->string,
-                $flags,
-                'UTF-8'
-            );
-        });
-    }
-
-    /**
-     * Escape this string for use as html text.
-     *
-     * @see http://php.net/manual/function.htmlspecialchars.php
-     *
-     * @param int $flags See php documentation for htmlspecialchars
-     *
-     * @return Stringy
-     */
-    public function escapeForHtml(int $flags = ENT_QUOTES | ENT_HTML5)
-    {
-        return $this->transform(function ($stringy) use ($flags) {
-            return htmlspecialchars(
-                $stringy->string,
-                $flags,
-                'UTF-8'
-            );
-        });
     }
 
     /**
