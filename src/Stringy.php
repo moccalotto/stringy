@@ -729,22 +729,6 @@ class Stringy implements ArrayAccess, Countable, Serializable, JsonSerializable
     }
 
     /**
-     * Turn first letter lowercased.
-     *
-     * Do not change the casing of the rest of the letters.
-     */
-    public function lcfirst()
-    {
-        if ($this->length() === 0) {
-            return clone $this;
-        }
-
-        $first = $this->limit(1)->lower();
-
-        return $first->append($this->substring(1));
-    }
-
-    /**
      * Turn first letter uppercased.
      *
      * Do not change the casing of the rest of the letters.
@@ -756,6 +740,22 @@ class Stringy implements ArrayAccess, Countable, Serializable, JsonSerializable
         }
 
         $first = $this->limit(1)->upper();
+
+        return $first->append($this->substring(1));
+    }
+
+    /**
+     * Turn first letter lowercased.
+     *
+     * Do not change the casing of the rest of the letters.
+     */
+    public function lcfirst()
+    {
+        if ($this->length() === 0) {
+            return clone $this;
+        }
+
+        $first = $this->limit(1)->lower();
 
         return $first->append($this->substring(1));
     }
