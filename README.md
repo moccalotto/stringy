@@ -238,6 +238,9 @@ public function words() : array
 public function characters() : array
 ```
 
+### Map/transform the string
+
+```php
 /**
  * Transform the string.
  *
@@ -246,71 +249,23 @@ public function characters() : array
  * @return Stringy
  */
 public function transform(callable $callable)
+```
 
-/**
- * Get the part of the string that comes after $needle.
- *
- * @example: str('foo bar baz')->after('foo ') == 'bar baz'
- *
- * @param Stringy|string $needle
- * @param int            $index  Which occurrance of the string to search for:
- *                               0 means the first match, 1 means the second match, etc.
- *                               -1 means the last match, -2 means the penultimate match, etc
- *
- * @return Stringy a clone of $this with a content string containing the
- *                 part that comes after $needle. If $needle is not
- *                 found, an empty Stringy is returned
- */
-public function after($needle, int $index = 0)
+Examples:
 
-/**
- * Get the part of the string before the first character of $needle.
- *
- * @example: str('foo bar baz')->before('foo ') == 'bar baz'
- *
- * @param Stringy|string $needle
- * @param int            $index  Which occurrance of the string to search for:
- *                               0 means the first match, 1 means the second match, etc.
- *                               -1 means the last match, -2 means the penultimate match, etc
- *
- * @return Stringy a clone of $this with a content string containing the
- *                 part that comes after $needle. If $needle is not
- *                 found, an empty Stringy is returned
- */
-public function before($needle, int $index = 0)
+```php
+$str = str('foo bar baz');
 
-/**
- * Remove the substring that comes after the nth $needle.
- *
- * @param Stringy|string $needle
- * @param int            $index
- *
- * @return Stringy
- */
-public function removeAfter($needle, int $index = 0)
+$formatted = $str->transform(function (Stringy $stringy) {
+    return str_rot13($stringy->asciiSafe());
+});
 
-/**
- * Remove the substring that comes before the nth $needle.
- *
- * @param Stringy|string $needle
- * @param int            $index
- *
- * @return Stringy
- */
-public function removeBefore($needle, int $index = 0)
+print $formatted->string();
+```
 
-/**
- * Return the text that comes after $start and before $stop.
- *
- * @param Stringy|string $start
- * @param Stringy|string $stop
- * @param int            $pairIndex search for the nth pair and
- *                                  find what lies between those strings
- *
- * @return Stringy the string between $start and $stop
- */
-public function between($start, $stop, int $pairIndex = 0)
+### Fetch a substring
 
+```
 /**
  * Get a substring.
  *
@@ -329,7 +284,102 @@ public function between($start, $stop, int $pairIndex = 0)
  * @return Stringy
  */
 public function substring(int $start, int $length = null)
+```
 
+
+### Fetch segments of a string based on searches.
+
+Fetch the part of the string that comes after a given search term.
+
+```php
+/**
+ * Get the part of the string that comes after $needle.
+ *
+ * @example: str('foo bar baz')->after('foo ') == 'bar baz'
+ *
+ * @param Stringy|string $needle
+ * @param int            $index  Which occurrance of the string to search for:
+ *                               0 means the first match, 1 means the second match, etc.
+ *                               -1 means the last match, -2 means the penultimate match, etc
+ *
+ * @return Stringy a clone of $this with a content string containing the
+ *                 part that comes after $needle. If $needle is not
+ *                 found, an empty Stringy is returned
+ */
+public function after($needle, int $index = 0)
+```
+
+Fetch the part of the string that comes before a given search term.
+```php
+/**
+ * Get the part of the string before the first character of $needle.
+ *
+ * @example: str('foo bar baz')->before('foo ') == 'bar baz'
+ *
+ * @param Stringy|string $needle
+ * @param int            $index  Which occurrance of the string to search for:
+ *                               0 means the first match, 1 means the second match, etc.
+ *                               -1 means the last match, -2 means the penultimate match, etc
+ *
+ * @return Stringy a clone of $this with a content string containing the
+ *                 part that comes after $needle. If $needle is not
+ *                 found, an empty Stringy is returned
+ */
+public function before($needle, int $index = 0)
+```
+
+Fetch the part of the string that resides between two search terms.
+
+```php
+/**
+ * Return the text that comes after $start and before $stop.
+ *
+ * @param Stringy|string $start
+ * @param Stringy|string $stop
+ * @param int            $pairIndex search for the nth pair and
+ *                                  find what lies between those strings
+ *
+ * @return Stringy the string between $start and $stop
+ */
+public function between($start, $stop, int $pairIndex = 0)
+```
+
+### Remove parts of the string based on search terms.
+
+Remove the part of the string that comes after the given search term.
+
+```php
+/**
+ * Remove the substring that comes after the nth $needle.
+ *
+ * @param Stringy|string $needle
+ * @param int            $index
+ *
+ * @return Stringy
+ */
+public function removeAfter($needle, int $index = 0)
+```
+
+Remove the part of the string that comes before the given search term.
+
+```php
+/**
+ * Remove the substring that comes before the nth $needle.
+ *
+ * @param Stringy|string $needle
+ * @param int            $index
+ *
+ * @return Stringy
+ */
+public function removeBefore($needle, int $index = 0)
+```
+
+### Repetition
+
+
+Repeating a string
+
+```php
 /**
  * Repeat this string a number of times.
  *
@@ -338,9 +388,14 @@ public function substring(int $start, int $length = null)
  * @return Stringy a string repeated $times times
  */
 public function repeat(int $times)
+```
 
+```php
 /**
- * If a substring is repeated 2 or more times in a rowwithin the content string, reduce it to being there only once.
+ * Remove repititions of substrings.
+ *
+ * If a substring is repeated 2 or more times in a row within the
+ * content string,reduce it to being there only once.
  *
  * str('hello    world')->unrepeat(' ') would be turned into 'hello world'
  * str('foo    bar    baz')->unrepeat(' ') would be turned into 'foo bar baz'
@@ -350,7 +405,11 @@ public function repeat(int $times)
  * @return Stringy
  */
 public function unrepeat($substring)
+```
 
+### Add padding
+
+```php
 /**
  * Append padding to the right hand side of the string.
  *
@@ -360,7 +419,9 @@ public function unrepeat($substring)
  * @return Stringy
  */
 public function rightPadded(int $totalLengthOfResult, $padding = ' ')
+```
 
+```php
 /**
  * Prepend padding to the left hand side of the string.
  *
@@ -370,7 +431,9 @@ public function rightPadded(int $totalLengthOfResult, $padding = ' ')
  * @return Stringy
  */
 public function leftPadded(int $totalLengthOfResult, $padding = ' ')
+```
 
+```php
 /**
  * Add padding to both sides of the content string such that it becomes centered.
  *
@@ -385,6 +448,55 @@ public function leftPadded(int $totalLengthOfResult, $padding = ' ')
  * @return Stringy
  */
 public function centered(int $totalLengthOfResult, $padding = ' ', $tieBreak = 'left')
+```
+
+### Remove Padding
+
+```php
+/**
+ * Remove all instances of $needle from the beginning of the content string.
+ *
+ * @param Stringy|string $needle the substring to remove from the
+ *                               beginning of the content string
+ *
+ * @return Stringy
+ */
+public function leftTrim($needle)
+```
+
+```php
+/**
+ * Remove all instances of $needle from the end of the content string.
+ *
+ * @param Stringy|string $needle the substring to remove from the
+ *                               end of the content string
+ *
+ * @return Stringy
+ */
+public function rightTrim($needle)
+```
+
+```php
+/**
+ * Remove all occurances of $strings from the beginning of the content string.
+ *
+ * @param array $strings An array of strings or Stringy objects.
+ *
+ * @return Stringy
+ */
+public function leftTrimAll(array $strings)
+```
+
+```php
+/**
+ * Remove all occurances of $strings from the end of the content string.
+ *
+ * @param array $strings An array of strings or Stringy objects.
+ *
+ * @return Stringy
+ */
+public function rightTrimAll(array $strings)
+```
 
 /**
  * Convert the content string to uppercase.
@@ -536,26 +648,6 @@ public function prepend($other)
 public function surroundWith($left, $right = null)
 
 /**
- * Remove all instances of $needle from the beginning of the content string.
- *
- * @param Stringy|string $needle the substring to remove from the
- *                               beginning of the content string
- *
- * @return Stringy
- */
-public function leftTrim($needle)
-
-/**
- * Remove all instances of $needle from the end of the content string.
- *
- * @param Stringy|string $needle the substring to remove from the
- *                               end of the content string
- *
- * @return Stringy
- */
-public function rightTrim($needle)
-
-/**
  * Include the content string in another, using sprintf syntax.
  *
  * @see http://php.net/manual/function.sprintf.php
@@ -578,10 +670,6 @@ public function includeIn($string, array $extraParams = [])
  * @return Stringy
  */
 public function format(array $args)
-
-public function leftTrimAll(array $strings)
-
-public function rightTrimAll(array $strings)
 
 public function reverse()
 
