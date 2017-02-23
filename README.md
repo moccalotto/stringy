@@ -213,6 +213,7 @@ public function positionOf($needle, int $index = 0)
 You can get individual characters via the php array accessor language construct like so:
 
 ```php
+// Accessing individual characters:
 $str = str('foo bar baz');
 
 $str[0]->string() === 'f'; // true
