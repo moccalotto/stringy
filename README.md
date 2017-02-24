@@ -17,13 +17,12 @@ composer require moccalotto/stringy
 
 ## Documentation
 
-The `Stringy` object is immutable. This means that all operations that return a `Stringy` instance
-will return a *new* instnace and not a modified version of the current instance. This means that
-you will not have to `clone` the object if you need to do two different, branching operations 
-on a given string. 
+The `Stringy` object is immutable. This means that all operations that return a *new* `Stringy` instance
+This means that you will not have to `clone` the object if you need to do two different,
+branching operations on a given string.
 
-On the other hand, it is quite likely that you cannot identity-compare two stringy objects because
-they are very short-lived. In cases where you need to check if two stringy objects contain the same
+On the other hand, it is quite likely that you cannot identity-compare two stringy objects because they
+are often very short-lived. In cases where you need to check if two stringy objects contain the same
 string, we suggest using the `is()` method. See the example below:
 
 ```php
@@ -31,6 +30,10 @@ $s0 = str('Foo');
 
 $s1 = $s0->lower(),
 $s2 = $s0->lower();
+
+if ($s0 === $s1) {
+    echo 'this code will not be executed';
+}
 
 if ($s1 === $s2) {
     echo 'this code will not be executed';
