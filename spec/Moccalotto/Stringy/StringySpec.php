@@ -199,6 +199,8 @@ EOT;
         $this->positionOf('Foo', 6)->shouldBe(null);
         $this->positionOf('Foo', -7)->shouldBe(null);
         $this->positionOf('Bar', 6)->shouldBe(null);
+
+        $this->positionOfLast('Foo')->shouldBe(30);
     }
 
     public function it_can_be_left_trimmed()

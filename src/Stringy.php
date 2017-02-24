@@ -291,6 +291,21 @@ class Stringy implements ArrayAccess, Countable, Serializable, JsonSerializable
     }
 
     /**
+     * Find a the position of the first character of the right-most $needle within this string.
+     *
+     * @param Stringy|string $needle The string to search for
+     *
+     * @return int|null The position of the first character of the $needle found.
+     *                  NULL if $needle with the given $index could not be found
+     *                  NOTE: that this behavior deviates from strpos in that strpos returns FALSE
+     *                  in case $needle was not found
+     */
+    public function positionOfLast($needle)
+    {
+        return $this->positionOf($needle, -1);
+    }
+
+    /**
      * Get an array of characters in the content string.
      *
      * @return Stringy[]
