@@ -1120,7 +1120,7 @@ class Stringy implements ArrayAccess, Countable, Serializable, JsonSerializable
     {
         return $this->replace('-', ' ')
             ->replace('_', ' ')
-            ->unrepeat(' ')
+            ->normalizeSpace(' ')
             ->ucwords()
             ->replace(' ', '');
     }
@@ -1146,10 +1146,10 @@ class Stringy implements ArrayAccess, Countable, Serializable, JsonSerializable
             preg_replace(
                 '/(.)(?=\p{Lu})/u',
                 static::create($delimiter)->prepend('$1'),
-                $this->replace(' ', '-')
+                $this->normalizeSpace($delimiter)
             ),
             'UTF-8'
-        )->lower();
+        )->unrepeat($delimiter)->lower();
     }
 
     /**
