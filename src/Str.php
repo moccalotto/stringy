@@ -58,6 +58,7 @@ use BadFunctionCallException;
  * @method Stringy reverse()
  * @method Stringy limit(int $length)
  * @method Stringy shorten($maxLength, $breakPoint = '', $padding = '…')
+ * @method Stringy normalizeSpace($separator = ' ')
  * @method Stringy studlyCase()
  * @method Stringy camelCase()
  * @method Stringy snakeCase($delimiter = '_')
