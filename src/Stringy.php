@@ -51,7 +51,7 @@ class Stringy implements ArrayAccess, Countable, Serializable, JsonSerializable
      *
      * @throws EncodingException in case $encoding is not recognized via mb_list_encodings()
      * @throws EncodingException if it appears that $string contians an encoding attack.
-     *                            i.e. if it cannot be validated via mb_check_encoding()
+     *                           i.e. if it cannot be validated via mb_check_encoding()
      */
     protected static function toUtf8(string $string, string $encoding) : string
     {
@@ -67,7 +67,6 @@ class Stringy implements ArrayAccess, Countable, Serializable, JsonSerializable
 
         return $string;
     }
-
 
     /**
      * Constructor.
@@ -178,7 +177,7 @@ class Stringy implements ArrayAccess, Countable, Serializable, JsonSerializable
      *
      * @param Stringy|string $string
      *
-     * @return bool only true if the two strings are equal using strict (===) comparison.
+     * @return bool only true if the two strings are equal using strict (===) comparison
      */
     public function is($string) : bool
     {
@@ -220,7 +219,7 @@ class Stringy implements ArrayAccess, Countable, Serializable, JsonSerializable
     /**
      * Does the string start with $needle ?
      *
-     * @param Stringy|string $needle.
+     * @param Stringy|string $needle
      *
      * @return bool
      */
@@ -234,7 +233,7 @@ class Stringy implements ArrayAccess, Countable, Serializable, JsonSerializable
     /**
      * Does the string end with $needle ?
      *
-     * @param Stringy|string $needle.
+     * @param Stringy|string $needle
      *
      * @return bool
      */
@@ -669,7 +668,7 @@ class Stringy implements ArrayAccess, Countable, Serializable, JsonSerializable
     /**
      * Remove all occurances of $strings from the beginning of the content string.
      *
-     * @param array $strings An array of strings or Stringy objects.
+     * @param array $strings an array of strings or Stringy objects
      *
      * @return Stringy
      */
@@ -685,7 +684,7 @@ class Stringy implements ArrayAccess, Countable, Serializable, JsonSerializable
     /**
      * Remove all occurances of $strings from the end of the content string.
      *
-     * @param array $strings An array of strings or Stringy objects.
+     * @param array $strings an array of strings or Stringy objects
      *
      * @return Stringy
      */
@@ -866,7 +865,7 @@ class Stringy implements ArrayAccess, Countable, Serializable, JsonSerializable
      *
      * @see http://php.net/manual/function.implode.php
      *
-     * @param array $strings An array of strings or Stringy objects that will be glued together.
+     * @param array $strings an array of strings or Stringy objects that will be glued together
      *
      * @return Stringy
      */
@@ -1117,9 +1116,9 @@ class Stringy implements ArrayAccess, Countable, Serializable, JsonSerializable
      * Words separated by any number of "whitespace" characters
      * will be separated by a single instance of $separator.
      *
-     * @param Stringy|string $separator The word-seperator.
+     * @param Stringy|string $separator the word-seperator
      *
-     * @return Stringy The normalized string.
+     * @return Stringy the normalized string
      */
     public function normalizeSpace($separator = ' ')
     {
@@ -1255,8 +1254,8 @@ class Stringy implements ArrayAccess, Countable, Serializable, JsonSerializable
      * In the string: "Start Foo Bar Baz Foo Bar Baz End", there would be no pattern because the string
      * does not end with the part of the pattern.
      *
-     * @param int $minChars  The minimum length (in characters) of the pattern.
-     * @param int $minCycles The minimum number of full cycles the pattern must appear in.
+     * @param int $minChars  the minimum length (in characters) of the pattern
+     * @param int $minCycles the minimum number of full cycles the pattern must appear in
      *
      * @return Stringy
      */
