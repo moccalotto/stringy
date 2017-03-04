@@ -1127,7 +1127,7 @@ class Stringy implements ArrayAccess, Countable, Serializable, JsonSerializable
             preg_replace(
                 '/(.)(?=\p{Lu})/u',
                 static::create($delimiter)->prepend('$1'),
-                $this->string
+                $this->replace(' ', '-')
             ),
             'UTF-8'
         )->lower();
