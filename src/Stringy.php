@@ -1093,6 +1093,25 @@ class Stringy implements ArrayAccess, Countable, Serializable, JsonSerializable
     }
 
     /**
+     * Normalize word separation.
+     *
+     * Words separated by any number of "whitespace" characters
+     * will be separated by a single instance of $separator.
+     *
+     * @param Stringy|string $separator The word-seperator.
+     *
+     * @return Stringy The normalized string.
+     */
+    public function normalizeSpace($separator = ' ')
+    {
+        return static::create(preg_replace(
+            '/\s+/u',
+            static::create($separator)->string,
+            $this->string
+        ), 'UTF-8');
+    }
+
+    /**
      * Turn the normally worded (or snakeCased) string into a StudlyCasedVersionOfItself.
      *
      * @return Stringy
