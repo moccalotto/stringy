@@ -186,6 +186,25 @@ class Stringy implements ArrayAccess, Countable, Serializable, JsonSerializable
     }
 
     /**
+     * Compare this string to an array of items.
+     *
+     * @param array $strings an array of strings to compare against
+     *
+     * @return bool returns true of one of the items in $strings is the same
+     *              string as the content string
+     */
+    public function isOneOf(array $strings) : bool
+    {
+        foreach ($strings as $string) {
+            if ($this->is($string)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Does the string contain $needle.
      *
      * @param Stringy|string $needle
