@@ -327,6 +327,7 @@ public function after($needle, int $index = 0)
 ```
 
 Fetch the part of the string that comes before a given search term.
+
 ```php
 /**
  * Get the part of the string before the first character of $needle.
