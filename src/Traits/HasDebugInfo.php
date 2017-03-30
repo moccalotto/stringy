@@ -13,7 +13,7 @@ declare(strict_types=1);
 namespace Moccalotto\Stringy\Traits;
 
 /**
- * Add serialization support for class
+ * Add serialization support for class.
  */
 trait HasDebugInfo
 {

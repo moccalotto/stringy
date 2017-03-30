@@ -29,11 +29,11 @@ class Dumper
      * Constructor.
      *
      * @param int $maxStringLength Max length of dumped strings.
-     *     this does not mean that the outputted string cannot be longer than
-     *     @maxStringLength, it just means that if we dump a string, that particular
-     *     string cannot be longer than $maxStringLength.
-     *     A string is usually dumped like so:
-     *     String("kim")
+     *                             this does not mean that the outputted string cannot be longer than
+     * @maxStringLength, it just means that if we dump a string, that particular
+     *                             string cannot be longer than $maxStringLength.
+     *                             A string is usually dumped like so:
+     *                             String("kim")
      */
     public function __construct(int $maxStringLength)
     {

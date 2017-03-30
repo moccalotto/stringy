@@ -6,7 +6,7 @@ use Exception;
 use BadFunctionCallException;
 
 /**
- * Facade
+ * Facade.
  *
  * @method bool is($string)
  * @method bool contains($needle, int $index = 0)

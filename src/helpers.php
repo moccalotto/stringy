@@ -4,7 +4,7 @@ use Moccalotto\Stringy\Stringy;
 
 if (!function_exists('str')) {
     /**
-     * Stringify a string
+     * Stringify a string.
      *
      * @param Stringy|string $string   The string to be Stringyfied.
      *                                 If $string is a (descendant of) Stringy, it will

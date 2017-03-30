@@ -7,9 +7,9 @@ declare(strict_types=1);
  *
  * @codingStandardsIgnoreFile
  */
+
 namespace spec\Moccalotto\Stringy;
 
-use Prophecy\Argument;
 use PhpSpec\ObjectBehavior;
 use Moccalotto\Stringy\Stringy;
 use Moccalotto\Stringy\StringyException;
@@ -48,7 +48,7 @@ EOT;
     }
 
     /**
-     * Setup
+     * Setup.
      */
     public function let()
     {
@@ -61,18 +61,18 @@ EOT;
         $this->toggleEncoding(null);
     }
 
-    function testString($encodedAs = 'UTF-8')
+    public function testString($encodedAs = 'UTF-8')
     {
         return mb_convert_encoding(static::UTF_8_TEST_STRING, $encodedAs, 'UTF-8');
     }
 
-    function it_is_initializable_with_an_empty_string()
+    public function it_is_initializable_with_an_empty_string()
     {
         $this->beConstructedWith('');
         $this->shouldHaveType(Stringy::class);
     }
 
-    function it_detects_bad_strings_during_instantiation()
+    public function it_detects_bad_strings_during_instantiation()
     {
         $this->beConstructedWith(
             $this->testString('UTF-32')
@@ -81,7 +81,7 @@ EOT;
         $this->shouldThrow(EncodingException::class)->duringInstantiation();
     }
 
-    function it_can_be_created_from_utf_32()
+    public function it_can_be_created_from_utf_32()
     {
         $this->beConstructedWith(
             $this->testString('UTF-32'),
@@ -91,33 +91,32 @@ EOT;
         $this->string()->shouldBe(static::UTF_8_TEST_STRING);
     }
 
-    function it_has_a_static_constructor()
+    public function it_has_a_static_constructor()
     {
         $this->beConstructedThrough('create', ['foo']);
         $this->string()->shouldBe('foo');
     }
 
-
-    function it_contains_a_string()
+    public function it_contains_a_string()
     {
         $this->beConstructedWith($this->testString());
         $this->string('UTF-8')->shouldBe($this->testString());
     }
 
-    function it_has_sane_default_parameters_in_constructor()
+    public function it_has_sane_default_parameters_in_constructor()
     {
         $this->beConstructedWith();
         $this->string()->shouldBe('');
     }
 
-    function it_can_be_constructed_with_strings_of_non_native_encoding()
+    public function it_can_be_constructed_with_strings_of_non_native_encoding()
     {
         $this->beConstructedWith($this->testString('UTF-32'), 'UTF-32');
 
         $this->string('UTF-8')->shouldBe($this->testString());
     }
 
-    function it_can_convert_encoding()
+    public function it_can_convert_encoding()
     {
         $this->beConstructedWith($this->testString());
 
@@ -126,7 +125,7 @@ EOT;
         );
     }
 
-    function it_can_compare_similarity()
+    public function it_can_compare_similarity()
     {
         $this->beConstructedWith(static::UTF_8_TEST_STRING);
         $this->is(static::UTF_8_TEST_STRING)->shouldBe(true);
@@ -143,14 +142,14 @@ EOT;
         );
     }
 
-    function it_can_be_truncated()
+    public function it_can_be_truncated()
     {
         $this->beConstructedWith('test string');
         $this->limit(0)->shouldHaveType(Stringy::class);
         $this->limit(4)->string()->shouldBe('test');
     }
 
-    function it_can_be_shortened_for_human_readability()
+    public function it_can_be_shortened_for_human_readability()
     {
         $this->beConstructedWith('test string of doom');
 
@@ -165,7 +164,7 @@ EOT;
         $this->shorten(18, ' ', '...')->string()->shouldBe('test string of...');
     }
 
-    function it_can_detect_the_precense_of_substrings()
+    public function it_can_detect_the_precense_of_substrings()
     {
         $this->beConstructedWith('Foo 1/Foo 2/Foo 3-Foo 4\Foo 5\Foo 6');
 
@@ -176,7 +175,7 @@ EOT;
         $this->contains('')->shouldBe(true);
     }
 
-    function it_can_locate_the_position_of_substrings()
+    public function it_can_locate_the_position_of_substrings()
     {
         $this->beConstructedWith('Foo 1/Foo 2/Foo 3-Foo 4\Foo 5\Foo 6');
 
@@ -433,7 +432,6 @@ EOT;
         ])->string()->shouldBe('fxxobarobaz');
     }
 
-
     public function it_can_be_uppercased()
     {
         $this->beConstructedWith('foo');
@@ -645,7 +643,7 @@ EOT;
     public function it_has_the_set_state_constructor()
     {
         $this->beConstructedThrough('__set_state', [
-            ['string' => $this->testString()]
+            ['string' => $this->testString()],
         ]);
 
         $this->string()->shouldBe($this->testString());

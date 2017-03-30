@@ -4,13 +4,10 @@ declare(strict_types=1);
 
 namespace Moccalotto\Stringy\Traits;
 
-use Exception;
-use OutOfRangeException;
-use InvalidArgumentException;
 use Moccalotto\Stringy\Stringy;
 
 /**
- * Add serialization support for class
+ * Add serialization support for class.
  */
 trait CanBeSerialized
 {
@@ -51,7 +48,7 @@ trait CanBeSerialized
     }
 
     /**
-     * Support for unserialization of Stirngies exported via var_export
+     * Support for unserialization of Stirngies exported via var_export.
      *
      * @see http://php.net/manual/language.oop5.magic.php#object.set-state
      *
