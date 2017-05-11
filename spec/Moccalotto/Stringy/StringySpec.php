@@ -56,6 +56,9 @@ EOT;
         $this->toggleEncoding('UTF-8');
     }
 
+    /**
+     * Teardown
+     */
     public function letGo()
     {
         $this->toggleEncoding(null);
