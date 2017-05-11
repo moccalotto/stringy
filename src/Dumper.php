@@ -69,6 +69,10 @@ class Dumper
             return Stringy::create('Bool(%s)')->format([$scalar ? 'TRUE' : 'FALSE']);
         }
 
+        if (is_string($scalar) && class_exists($scalar)) {
+            return Stringy::create('ClassReference(%s)')->format([$scalar]);
+        }
+
         return Stringy::create($scalar)
             ->shorten($this->maxStringLength)
             ->replace("\r", ' ')
@@ -95,7 +99,7 @@ class Dumper
         }
     }
 
-    protected function resource($resource)
+    protected function resource($resource) : Stringy
     {
         $type = get_resource_type($resource);
 
@@ -121,7 +125,7 @@ class Dumper
             ]);
     }
 
-    protected function object($object)
+    protected function object($object) : Stringy
     {
         if ($object instanceof Throwable) {
             return Stringy::create('Object(%s: %s:%s)')
@@ -143,12 +147,20 @@ class Dumper
         return Stringy::create('Object(%s)')->format([get_class($object)]);
     }
 
-    protected function array($array)
+    protected function array($array) : Stringy
     {
-        return Stringy::create('Array(%d entries)')->format([count($array)]);
+        if (empty($array)) {
+            return Stringy::create('EmptyArray()');
+        }
+
+        if (array_keys($array) === range(0, count($array) - 1)) {
+            return Stringy::create('NumericArray(%d entries)')->format([count($array)]);
+        }
+
+        return Stringy::create('AssociativeArray(%d entries)')->format([count($array)]);
     }
 
-    public function dump($variable)
+    public function dump($variable) : Stringy
     {
         if (is_scalar($variable)) {
             return $this->scalar($variable);
