@@ -63,7 +63,7 @@ class Dumper
         }
 
         if (is_float($scalar)) {
-            return Stringy::create('Float(%s)')->format([(float) $scalar]);
+            return Stringy::create('Float(%s)')->format([$scalar]);
         }
 
         if (is_bool($scalar)) {
