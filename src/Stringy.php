@@ -728,7 +728,7 @@ class Stringy implements ArrayAccess, Countable, Serializable, JsonSerializable
     {
         $regex = static::create('|')->glue(static::mapMany($strings, function ($string) {
             return $string->escapeForRegex('/');
-        }, $strings))->includeIn('/^(%s)+/u');
+        }))->includeIn('/^(%s)+/u');
 
         return static::create(preg_replace($regex->string, '', $this->string), 'UTF-8');
     }
