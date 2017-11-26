@@ -57,7 +57,7 @@ EOT;
     }
 
     /**
-     * Teardown
+     * Teardown.
      */
     public function letGo()
     {
@@ -150,6 +150,22 @@ EOT;
         $this->beConstructedWith('test string');
         $this->limit(0)->shouldHaveType(Stringy::class);
         $this->limit(4)->string()->shouldBe('test');
+    }
+
+    public function it_can_ensure_a_string_starts_with_a_single_substring()
+    {
+        $this->beConstructedWith('//somePath/');
+
+        $this->startWithSingle('/')->shouldHaveType(Stringy::class);
+        $this->startWithSingle('/')->__toString()->shouldBe('/somePath/');
+    }
+
+    public function it_can_ensure_a_string_ends_with_a_single_substring()
+    {
+        $this->beConstructedWith('//somePath');
+
+        $this->endWithSingle('/')->shouldHaveType(Stringy::class);
+        $this->endWithSingle('/')->__toString()->shouldBe('//somePath/');
     }
 
     public function it_can_be_shortened_for_human_readability()

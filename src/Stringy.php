@@ -245,6 +245,58 @@ class Stringy implements ArrayAccess, Countable, Serializable, JsonSerializable
     }
 
     /**
+     * Trim all instances of $other from the end of the string, and prepend a single instance of $other.
+     *
+     * The classic use case is urls and paths where some components
+     * can be entered by external users who may not always know weather
+     * or not to include slashes and other control characters.
+     *
+     * @example $url = $scheme->endWithSingle('://')
+     *                        ->append($host)
+     *                        ->append($path->startWithSingle('/')->endWithSingle('/'))
+     *                        ->append($query->startWithSingle('?'))
+     *                        ->append($hash->startsWithSingle('#'));
+     *
+     * Calling endWithSingle() is effectively a short-hand to calling:
+     * leftTrim($other)->prepend($other)
+     *
+     * @param Stringy|string $other
+     *
+     * @return Stringy
+     */
+    public function endWithSingle($other)
+    {
+        return $this->rightTrim($other)
+            ->append($other);
+    }
+
+    /**
+     * Trim all instances of $other from the beginning of the string, and append a single instance of $other.
+     *
+     * The classic use case is urls and paths where some components
+     * can be entered by external users who may not always know weather
+     * or not to include slashes and other control characters.
+     *
+     * @example $url = $scheme->endWithSingle('://')
+     *                        ->append($host)
+     *                        ->append($path->startWithSingle('/')->endWithSingle('/'))
+     *                        ->append($query->startWithSingle('?'))
+     *                        ->append($hash->startsWithSingle('#'));
+     *
+     * Calling startWithSingle() is effectively a short-hand to calling:
+     * leftTrim($other)->prepend($other)
+     *
+     * @param Stringy|string $other
+     *
+     * @return Stringy
+     */
+    public function startWithSingle($other)
+    {
+        return $this->leftTrim($other)
+            ->prepend($other);
+    }
+
+    /**
      * Get the length (in characters) of the content string.
      *
      * @return int
