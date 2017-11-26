@@ -337,14 +337,14 @@ class Stringy implements ArrayAccess, Countable, Serializable, JsonSerializable
             $matches,
             PREG_OFFSET_CAPTURE
         )) {
-            return;
+            return null;
         }
 
         $matchCount = count($matches[0]);
 
         // index is too high
         if ($index >= $matchCount) {
-            return;
+            return null;
         }
 
         // index is negative, correct it into a positive index
@@ -354,7 +354,7 @@ class Stringy implements ArrayAccess, Countable, Serializable, JsonSerializable
 
         // index was so low it could not be correct (i.e. too few matches)
         if ($index < 0) {
-            return;
+            return null;
         }
 
         return $matches[0][$index][1];
