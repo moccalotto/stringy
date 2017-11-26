@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Moccalotto\Stringy;
 
 use Throwable;
+use RuntimeException;
 
 /**
  * Turns variables into a easy-debuggable textual representation.
