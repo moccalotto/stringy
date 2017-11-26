@@ -45,13 +45,13 @@ trait HasArrayAccess
      * @param mixed $offsetSet
      * @param mixed $value
      *
-     * @throws StringyException if called
+     * @throws InvalidArgumentException if called
      *
      * @SuppressWarnings(PHPMD.UnusedFormalParameters)
      */
     public function offsetSet($offset, $value)
     {
-        throw new StringyException(sprintf(
+        throw new InvalidArgumentException(sprintf(
             'Trying to set $this[%s] to %s. Object mutation not allowed',
             $offset,
             $value
@@ -65,13 +65,13 @@ trait HasArrayAccess
      *
      * @param mixed $offsetSet
      *
-     * @throws StringyException if called
+     * @throws InvalidArgumentException if called
      *
      * @SuppressWarnings(PHPMD.UnusedFormalParameters)
      */
     public function offsetUnset($offset)
     {
-        throw new StringyException(sprintf(
+        throw new InvalidArgumentException(sprintf(
             'Trying to unset [%s]. Object mutation not allowed',
             $offset
         ));
