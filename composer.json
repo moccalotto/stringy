@@ -18,7 +18,8 @@
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^2.8",
-        "phpspec/phpspec": "^3.0"
+        "phpspec/phpspec": "^3.0",
+        "phpstan/phpstan": "^0.8.5"
     },
     "autoload": {
         "psr-4": {
@@ -27,6 +28,19 @@
         "files": ["src/helpers.php"]
     },
     "scripts": {
-        "test": "vendor/bin/phpspec run --format=pretty -vvv -n"
+        "test-code-style": [
+            "@php vendor/bin/php-cs-fixer fix --dry-run --diff"
+        ],
+        "test-bdd": [
+            "@php vendor/bin/phpspec run --format=pretty"
+        ],
+        "test-analysis": [
+            "@php vendor/bin/phpstan analyse -l 4 src"
+        ],
+        "test": [
+            "@test-code-style",
+            "@test-analysis",
+            "@test-bdd"
+        ]
     }
 }
