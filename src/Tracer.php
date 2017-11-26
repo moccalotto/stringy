@@ -2,8 +2,6 @@
 
 namespace Moccalotto\Stringy;
 
-use Exception;
-
 /**
  * Class for creating serializable stack traces.
  */
@@ -18,7 +16,6 @@ class Tracer
      *               - The 'object' entry is not present.
      *               - The array is ALWAYS serializable.
      *               - All entries in the $args array are strings describing the value.
-     *
      */
     public function simplify(array $trace) : array
     {
@@ -67,10 +64,9 @@ class Tracer
 
         return vsprintf('%s::%s', [
             $traceElement['file'],
-            $traceElement['line']
+            $traceElement['line'],
         ]);
     }
-
 
     /**
      * Turn a list of function arguments into a list of strings.
