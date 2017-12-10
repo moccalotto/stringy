@@ -88,7 +88,7 @@ class Dumper
         }
 
         if (is_array($callable)) {
-            [$classOrObject, $method] = $callable;
+            list($classOrObject, $method) = $callable;
 
             return is_object($classOrObject)
                 ? Stringy::create('Callable(%s->%s)')->format([get_class($classOrObject), $method])
