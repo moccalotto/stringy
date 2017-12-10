@@ -2,7 +2,7 @@
 
 $rules = [
     '@Symfony' => true,
-    '@PHP71Migration' => true,
+    '@PHP70Migration' => true,
     'yoda_style' => false,
     'increment_style' => false,
     'unary_operator_spaces' => false,
