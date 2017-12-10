@@ -46,10 +46,6 @@ class Dumper
      */
     public static function stringify($variable, int $maxStringLength = PHP_INT_MAX) : Stringy
     {
-        // for some reason, phpcs gives the follwing error:
-        // "Arguments with default values must be at the end of the argument list"
-        // We ignore that :-)
-        // @codingStandardsIgnoreLine
         return (new static($maxStringLength))->dump($variable);
     }
 
