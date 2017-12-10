@@ -35,7 +35,7 @@
             "@php vendor/bin/phpspec run --format=pretty"
         ],
         "test-analysis": [
-            "@php vendor/bin/phpstan analyse -l 4 src"
+            "@php vendor/bin/phpstan analyse -v -l 4 src"
         ],
         "test": [
             "@test-code-style",
